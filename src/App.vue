@@ -6,7 +6,7 @@
         QuickDash</b-navbar-brand
       ></b-navbar
     >
-    <LinkPanel />
+    <LinkPanel class="mt-3" />
   </div>
 </template>
 
