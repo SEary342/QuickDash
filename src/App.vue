@@ -1,29 +1,23 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+    <b-navbar variant="light" fluid
+      ><b-navbar-brand fluid
+        ><b-img fluid :src="require('./assets/favicon-32x32.png')"></b-img>
+        QuickDash</b-navbar-brand
+      ></b-navbar
+    >
+    <LinkPanel />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import HelloWorld from "./components/HelloWorld.vue";
+import LinkPanel from "./components/LinkPanel.vue";
 
 @Component({
   components: {
-    HelloWorld
+    LinkPanel
   }
 })
 export default class App extends Vue {}
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
