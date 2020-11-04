@@ -44,3 +44,17 @@ export class LinkGroup {
     }
   }
 }
+
+export class LinkPage {
+  name: string;
+  groupList: LinkGroup[];
+
+  constructor(name: string, groupList?: LinkGroup[]) {
+    this.name = name;
+    if (groupList) {
+      this.groupList = groupList;
+    } else {
+      this.groupList = [];
+    }
+  }
+}
