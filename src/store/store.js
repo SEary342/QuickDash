@@ -25,6 +25,9 @@ export const store = new Vuex.Store({
     },
     addEmptyDash(state, newDashName) {
       state.quickDashConfig.push(new LinkPage(newDashName));
+    },
+    setNumberOfColumns(state, numberOfColumns) {
+      state.numberOfColumns = numberOfColumns;
     }
   },
   getters: {
@@ -37,6 +40,7 @@ export const store = new Vuex.Store({
 export function initialLoad() {
   const selectedDash = localStorage.getItem("QuickDashSelected");
   const quickDashConfig = localStorage.getItem("QuickDashConfig");
+  const numberOfColumns = localStorage.getItem("NumberOfColumns");
   //store.commit("setSelectedDash", "Programming 2");
   store.commit("setQuickDashConfig", QuickDashConfig);
 }

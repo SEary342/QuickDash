@@ -1,14 +1,14 @@
 <template>
-  <b-tabs content-class="mt-3" pills>
+  <b-tabs content-class="mt-3" pills variant="secondary">
     <b-tab
       :title="dash.name"
-      v-for="dash in $store.getters.quickDashConfig"
+      v-for="dash in displayDashboards"
       v-bind:active="dash.name === $store.getters.selectedDash"
       :key="dash.name"
     >
       <b-container>
         <b-row
-          v-for="(row, rowIndex) in displayArray(dash.groupList)"
+          v-for="(row, rowIndex) in dash.groupList"
           :key="rowIndex"
           class="mb-3"
         >
@@ -34,7 +34,7 @@
     </b-tab>
 
     <template #tabs-end>
-      <b-nav-item role="presentation" @click.prevent="newTab" href="#"
+      <b-nav-item role="presentation" v-b-modal.new-tab href="#"
         ><BIconPlus
       /></b-nav-item>
     </template>
@@ -45,38 +45,59 @@
         Open a new tab using the <b>+</b> button above.
       </div>
     </template>
+    <b-modal
+      id="new-tab"
+      @hidden="newTabName = null"
+      title="New Dashboard"
+      @ok="$store.commit('addEmptyDash', newTabName)"
+    >
+      <b-form-group label="Dashboard Name:"
+        ><b-form-input v-model="newTabName"></b-form-input
+      ></b-form-group>
+    </b-modal>
   </b-tabs>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { LinkPage, LinkGroup } from "../ConfigStructure";
-import { BIconPlus } from "bootstrap-vue";
+import { numberOfColumns } from "../LinkConfig";
 
-Vue.component('BIconPlus', BIconPlus)
+type DisplayDash = {
+  name: string;
+  groupList: LinkGroup[][];
+};
 
 @Component
 export default class LinkPanel extends Vue {
+  newTabName = null;
 
-  displayArray(inputGroups: LinkGroup[]) {
-    const rowsArray: LinkGroup[][] = [[]];
-    let rowNum = 0;
-    for (const item of inputGroups) {
-      if (
-        rowsArray[rowNum].length >
-        this.$store.getters.numberOfColumns - 1
-      ) {
-        rowsArray.push([]);
-        rowNum++;
+  get displayDashboards() {
+    const initConfig = this.currentConfig;
+    const displayConfig = [];
+    for (const dash of initConfig) {
+      const displayItem: DisplayDash = { name: dash.name, groupList: [[]] };
+      const rowsArray: LinkGroup[][] = [[]];
+      let rowNum = 0;
+      for (const item of dash.groupList) {
+        if (rowsArray[rowNum].length > this.numberOfColumns - 1) {
+          rowsArray.push([]);
+          rowNum++;
+        }
+        rowsArray[rowNum].push(item);
       }
-      rowsArray[rowNum].push(item);
+      displayItem.groupList = rowsArray;
+      displayConfig.push(displayItem);
     }
-
-    return rowsArray;
+    return displayConfig;
   }
 
-  newTab() {
-    this.$store.commit("addEmptyDash", "test")
+  get numberOfColumns() {
+    return this.$store.getters.numberOfColumns;
+  }
+
+  get currentConfig() {
+    return this.$store.getters.quickDashConfig;
   }
 }
 </script>
