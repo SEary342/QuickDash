@@ -46,7 +46,8 @@ export const QuickDashConfig: LinkPage[] = [
       new LinkData("PluralSight", "https://app.pluralsight.com/"),
       new LinkData("GitHub", "https://github.com/"),
       new LinkData("StackOverflow", "https://stackoverflow.com/")
-    ])
+    ]),
+    new LinkGroup("New Stuff")
   ]),
   new LinkPage("Programming 2", [
     new LinkGroup("Python", [

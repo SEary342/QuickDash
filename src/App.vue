@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <b-navbar variant="light" fluid
+    <b-navbar variant="dark" type="dark" fluid
       ><b-navbar-brand fluid
         ><b-img fluid :src="require('./assets/favicon-32x32.png')"></b-img>
         QuickDash</b-navbar-brand
