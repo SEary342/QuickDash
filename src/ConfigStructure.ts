@@ -15,6 +15,16 @@ export enum ColorOption {
   DarkOutline = "outline-dark"
 }
 
+const colorOptionKeys = Object.keys(ColorOption);
+colorOptionKeys.sort();
+
+export const ColorOptionArray = colorOptionKeys.map(k => {
+  return {
+    text: k.replace(/[A-Z]/g, m => "-" + m).slice(1),
+    value: Object(ColorOption)[k]
+  };
+});
+
 export class LinkData {
   text: string;
   url: string;
