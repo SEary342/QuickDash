@@ -12,24 +12,7 @@
             <b-row
               v-for="(grp, grpIndex) in col"
               :key="''.concat(colIndex, '-', grpIndex)"
-              ><b-col>
-                <b-card :title="grp.name" class="mb-4">
-                  <b-button
-                    v-for="(link, btnIndex) in grp.linkList"
-                    :key="''.concat(colIndex, '-', grpIndex, '-', btnIndex)"
-                    :href="link.url"
-                    target="_blank"
-                    :variant="link.color"
-                    size="lg"
-                    block
-                    >{{ link.text }}</b-button
-                  >
-                  <b-button
-                    variant="outline-secondary"
-                    block
-                    @click="createLink(dash.name, grp)"
-                    ><BIconPlus font-scale="2"/></b-button></b-card
-              ></b-col>
+              ><b-col><LinkCard :dash="dash" :grp="grp"/></b-col>
             </b-row>
           </b-col>
         </b-row>
@@ -58,96 +41,29 @@
         ><b-form-input v-model="newTabName"></b-form-input
       ></b-form-group>
     </b-modal>
-    <b-modal
-      id="new-link"
-      @hidden="resetLinkModal"
-      title="New Link"
-      @ok="saveLink"
-      :ok-disabled="
-        newLinkData.name === null ||
-          newLinkData.name.length === 0 ||
-          newLinkData.URL === null ||
-          newLinkData.URL.length === null ||
-          linkNameValid !== true
-      "
-    >
-      <b-form-group label="Link Name:"
-        ><b-form-input
-          v-model="newLinkData.name"
-          :state="linkNameValid"
-        ></b-form-input
-      ></b-form-group>
-      <b-form-group label="Link URL:"
-        ><b-form-input v-model="newLinkData.URL"></b-form-input
-      ></b-form-group>
-    </b-modal>
   </b-tabs>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { LinkGroup } from "../ConfigStructure";
+import LinkCard from "./LinkCard.vue";
 
-type DisplayDash = {
+export type DisplayDash = {
   name: string;
   groupList: LinkGroup[][];
 };
 
-type NewLink = {
-  name: string | null;
-  URL: string | null;
-  dashName: string | null;
-  dashGroup: LinkGroup | null;
-};
-
-@Component
+@Component({
+  components: {
+    LinkCard
+  }
+})
 export default class LinkPanel extends Vue {
   newTabName = null;
-  newLinkData: NewLink = {
-    name: null,
-    URL: null,
-    dashName: null,
-    dashGroup: null
-  };
 
-  createLink(dashName: string, dashGroup: LinkGroup) {
-    this.newLinkData.dashName = dashName;
-    this.newLinkData.dashGroup = dashGroup;
-    this.$bvModal.show("new-link");
-  }
-
-  get linkNameValid() {
-    if (
-      this.newLinkData.name === null ||
-      this.newLinkData.dashGroup === null
-    ) {
-      return null;
-    }
-    return !this.newLinkData.dashGroup.linkList
-      .map(x => x.text.toLowerCase())
-      .includes(String(this.newLinkData.name).toLowerCase());
-  }
-
-  saveLink() {
-    // TODO implement this on the store end
-    // Make the new tabs save
-    // Make it possible to add new groups
-    // Implement import & export
-    // Add the ability to edit group data
-    console.log(this.newLinkData);
-  }
-
-  resetLinkModal() {
-    this.newLinkData = {
-      name: null,
-      URL: null,
-      dashName: null,
-      dashGroup: null
-    };
-  }
-
-  get displayDashboards() {
-    const displayConfig = [];
+  get displayDashboards(): DisplayDash[] {
+    const displayConfig: DisplayDash[] = [];
     for (const dash of this.currentConfig) {
       const displayItem: DisplayDash = { name: dash.name, groupList: [[]] };
       const colsArray: LinkGroup[][] = [];
