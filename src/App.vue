@@ -36,6 +36,7 @@ import LinkPanel from "./components/LinkPanel.vue";
   }
 })
 export default class App extends Vue {
+  // TODO implement import and export
   get dispColumns() {
     return this.$store.getters.numberOfColumns;
   }
