@@ -4,12 +4,12 @@ import { QuickDashConfig } from "../LinkConfig";
 import { LinkPage } from "../ConfigStructure";
 
 Vue.use(Vuex);
-
+// TODO connect store to local storage
 // const localStorage = window.localStorage;
 
 export const store = new Vuex.Store({
   state: {
-    selectedDash: null,
+    selectedDash: 0,
     quickDashConfig: [],
     numberOfColumns: 3
   },
@@ -33,7 +33,16 @@ export const store = new Vuex.Store({
   getters: {
     selectedDash: state => state.selectedDash,
     quickDashConfig: state => state.quickDashConfig,
-    numberOfColumns: state => state.numberOfColumns
+    numberOfColumns: state => state.numberOfColumns,
+    groupNames: state =>
+      state.quickDashConfig
+        .map(dash =>
+          dash.groupList.map(grp => {
+            return { dash: dash.name, grp: grp.name };
+          })
+        )
+        .flat(),
+    dashNames: state => state.quickDashConfig.map(dash => dash.name)
   }
 });
 
@@ -41,6 +50,6 @@ export function initialLoad() {
   // const selectedDash = localStorage.getItem("QuickDashSelected");
   // const quickDashConfig = localStorage.getItem("QuickDashConfig");
   // const numberOfColumns = localStorage.getItem("NumberOfColumns");
-  //store.commit("setSelectedDash", "Programming 2");
+  // store.commit("setSelectedDash", 0);
   store.commit("setQuickDashConfig", QuickDashConfig);
 }
