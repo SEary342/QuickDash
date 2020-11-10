@@ -62,7 +62,7 @@
         title="Add a new group"
         ><BIconPlus font-scale="2"/></b-button></b-card
     ><b-modal
-      :id="`link-modal-${dash.name}-${grp.name}`"
+      :id="linkModalName"
       @hidden="resetLinkModal"
       :title="linkEditMode ? 'Edit Link' : 'New Link'"
       @ok="saveLink"
@@ -107,14 +107,15 @@
       </b-form-group>
     </b-modal>
     <b-modal
-      :id="`grp-modal-${dash.name}-${grp.name}`"
-      title="Edit Group"
+      :id="grpModalName"
+      :title="grp.name === null ? 'New Group' : 'Edit Group'"
       ok-title="Save"
       :ok-disabled="groupName === grp.name || !groupNameValid"
       @hidden="resetGrpModal"
       cancel-title="Delete"
       ok-variant="success"
       cancel-variant="danger"
+      :ok-only="grp.name === null"
       @ok="saveGroup"
       @cancel="deleteGroup"
       ><b-form-group label="Group Name:"
@@ -183,14 +184,21 @@ export default class LinkCard extends Vue {
   }
 
   createGroup() {
-    // TODO implement create group
-    console.log("hi");
+    this.$bvModal.show(this.grpModalName);
+  }
+
+  get linkModalName() {
+    return `link-modal-${this.dash.name}-${String(this.grp.name)}`;
+  }
+
+  get grpModalName() {
+    return `grp-modal-${this.dash.name}-${String(this.grp.name)}`;
   }
 
   createLink() {
     this.linkConfig.dashName = this.dash.name;
     this.linkConfig.dashGroup = this.grp;
-    this.$bvModal.show(`link-modal-${this.dash.name}-${this.grp.name}`);
+    this.$bvModal.show(this.linkModalName);
   }
 
   editLink(linkData: LinkData) {
@@ -202,12 +210,12 @@ export default class LinkCard extends Vue {
     this.linkConfig.color = linkData.color;
     this.initialLinkConfig = { ...this.linkConfig };
     this.linkEditMode = true;
-    this.$bvModal.show(`link-modal-${this.dash.name}-${this.grp.name}`);
+    this.$bvModal.show(this.linkModalName);
   }
 
   editGroup() {
     this.groupName = this.grp.name;
-    this.$bvModal.show(`grp-modal-${this.dash.name}-${this.grp.name}`);
+    this.$bvModal.show(this.grpModalName);
   }
 
   get linkSaveDisabled() {
