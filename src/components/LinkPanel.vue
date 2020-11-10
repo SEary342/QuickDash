@@ -1,11 +1,20 @@
 <template>
   <b-tabs content-class="mt-3" variant="secondary" v-model="selectedDash">
     <b-tab
-      :title="dash.name"
       v-for="dash in displayDashboards"
       title-link-class="text-secondary"
       :key="dash.name"
     >
+      <template #title>
+        {{ dash.name
+        }}<b-button
+          @click="editDash(dash.name)"
+          variant="light"
+          size="sm"
+          class="ml-2 whiteButton"
+          ><BIconPencil
+        /></b-button>
+      </template>
       <b-container fluid class="w-75">
         <b-row>
           <b-col v-for="(col, colIndex) in dash.groupList" :key="colIndex">
@@ -22,18 +31,12 @@
     </b-tab>
 
     <template #tabs-end>
-      <b-nav-item-dropdown toggle-class="text-secondary">
-        <template #button-content><BIconList /> </template>
-        <b-dropdown-item link-class="dropColor" @click="addDash"
-          ><BIconPlus class="mr-2 text-success" />New Dash</b-dropdown-item
-        >
-        <b-dropdown-item link-class="dropColor" @click="editDash"
-          ><BIconPencil class="mr-2" />Edit Dash Name</b-dropdown-item
-        >
-        <b-dropdown-item link-class="dropColor" @click="deleteDash"
-          ><BIconTrash class="mr-2 text-danger" />Delete Dash</b-dropdown-item
-        >
-      </b-nav-item-dropdown>
+      <b-button
+        @click.prevent="addDash"
+        variant="light"
+        class="whiteButton largeFont py-1 border-bottom-0"
+        ><BIconPlus
+      /></b-button>
     </template>
 
     <template #empty>
@@ -42,12 +45,19 @@
         Open a new tab using the <b>+</b> button above.
       </div>
     </template>
+
     <b-modal
       id="dash-modal"
-      @hidden="editDashInd"
-      :title="editDashInd ? 'Edit Dash Name' : 'New Dash Name'"
+      @hidden="resetDashModal"
+      :title="editDashInd ? 'Edit Dash' : 'New Dash'"
       @ok="saveDash"
+      @cancel="deleteDash"
       :ok-disabled="dashValid !== true"
+      cancel-title="Delete"
+      ok-title="Save"
+      ok-variant="success"
+      cancel-variant="danger"
+      :ok-only="!editDashInd"
     >
       <b-form-group label="Dash Name:"
         ><b-form-input v-model="dashName" :state="dashValid"></b-form-input
@@ -59,6 +69,19 @@
 <style>
 .dropColor:active {
   background-color: var(--secondary) !important;
+}
+
+.whiteButton {
+  background-color: var(--white) !important;
+  border-color: var(--white) !important;
+  color: var(--secondary) !important;
+}
+.whiteButton:hover {
+  border-color: rgb(222, 226, 230) !important;
+}
+
+.largeFont {
+  font-size: 150% !important;
 }
 </style>
 
@@ -79,20 +102,23 @@ export type DisplayDash = {
 })
 export default class LinkPanel extends Vue {
   dashName: string | null = null;
+  initialDashName: string | null = null;
   editDashInd = false;
 
   addDash() {
     this.$bvModal.show("dash-modal");
   }
 
-  editDash() {
+  editDash(editDash: string) {
     this.editDashInd = true;
-    this.dashName = this.displayDashboards[this.selectedDash].name;
+    this.dashName = editDash;
+    this.initialDashName = editDash;
     this.$bvModal.show("dash-modal");
   }
 
   saveDash() {
     if (this.editDashInd) {
+      // TODO implemnt dash edit
       console.log("hi");
     } else {
       this.$store.commit("addEmptyDash", this.dashName);
@@ -100,11 +126,10 @@ export default class LinkPanel extends Vue {
   }
 
   deleteDash() {
+    const deleteDashName = String(this.initialDashName).slice();
     this.$bvModal
       .msgBoxConfirm(
-        `Are you sure that you want to delete '${
-          this.displayDashboards[this.selectedDash].name
-        }'`,
+        `Are you sure that you want to delete '${deleteDashName}'`,
         {
           title: "Confirm Dash Deletion",
           okVariant: "danger",
@@ -114,13 +139,14 @@ export default class LinkPanel extends Vue {
       .then(value => {
         if (value) {
           // TODO implement dash deletion in store
-          console.log(this.displayDashboards[this.selectedDash].name);
+          console.log(deleteDashName);
         }
       });
   }
 
   resetDashModal() {
     this.dashName = null;
+    this.initialDashName = null;
     this.editDashInd = false;
   }
 
@@ -140,7 +166,7 @@ export default class LinkPanel extends Vue {
     if (
       this.dashName === null ||
       this.dashName === "" ||
-      this.dashName === this.displayDashboards[this.selectedDash].name
+      this.dashName === this.initialDashName
     ) {
       return null;
     } else {
