@@ -8,6 +8,8 @@
       <template #title>
         {{ dash.name
         }}<b-button
+          v-b-tooltip.hover
+          title="Edit Dash"
           @click="editDash(dash.name)"
           variant="light"
           size="sm"
@@ -34,8 +36,10 @@
       <b-button
         @click.prevent="addDash"
         variant="light"
-        class="whiteButton largeFont py-1 border-bottom-0"
-        ><BIconPlus
+        class="whiteButton py-1 border-bottom-0"
+        v-b-tooltip.hover
+        title="Add Dash"
+        ><BIconPlus font-scale="2"
       /></b-button>
     </template>
 
@@ -78,10 +82,6 @@
 }
 .whiteButton:hover {
   border-color: rgb(222, 226, 230) !important;
-}
-
-.largeFont {
-  font-size: 150% !important;
 }
 </style>
 
@@ -196,6 +196,7 @@ export default class LinkPanel extends Vue {
           currCol = 0;
         }
       }
+      colsArray[currCol].push(new LinkGroup(null));
       displayItem.groupList = colsArray;
       displayConfig.push(displayItem);
     }
