@@ -45,7 +45,7 @@
         @click="createLink(dash.name, grp)"
         ><BIconPlus font-scale="2"/></b-button></b-card
     ><b-modal
-      :id="'link-modal-'.concat(dash.name, '-', grp.name)"
+      :id="`link-modal-${dash.name}-${grp.name}`"
       @hidden="resetLinkModal"
       :title="linkEditMode ? 'Edit Link' : 'New Link'"
       @ok="saveLink"
@@ -90,7 +90,7 @@
       </b-form-group>
     </b-modal>
     <b-modal
-      :id="'grp-modal-'.concat(dash.name, '-', grp.name)"
+      :id="`grp-modal-${dash.name}-${grp.name}`"
       title="Edit Group"
       ok-title="Save"
       :ok-disabled="groupName === grp.name || !groupNameValid"
@@ -168,9 +168,7 @@ export default class LinkCard extends Vue {
   createLink(dashName: string, dashGroup: LinkGroup) {
     this.linkConfig.dashName = dashName;
     this.linkConfig.dashGroup = dashGroup;
-    this.$bvModal.show(
-      "link-modal-".concat(this.dash.name, "-", this.grp.name)
-    );
+    this.$bvModal.show(`link-modal-${this.dash.name}-${this.grp.name}`);
   }
 
   editLink(linkData: LinkData) {
@@ -182,16 +180,12 @@ export default class LinkCard extends Vue {
     this.linkConfig.color = linkData.color;
     this.initialLinkConfig = { ...this.linkConfig };
     this.linkEditMode = true;
-    this.$bvModal.show(
-      "link-modal-".concat(this.dash.name, "-", this.grp.name)
-    );
+    this.$bvModal.show(`link-modal-${this.dash.name}-${this.grp.name}`);
   }
 
   editGroup() {
     this.groupName = this.grp.name;
-    this.$bvModal.show(
-      "grp-modal-".concat(this.dash.name, "-", this.grp.name)
-    );
+    this.$bvModal.show(`grp-modal-${this.dash.name}-${this.grp.name}`);
   }
 
   get linkSaveDisabled() {
@@ -272,11 +266,7 @@ export default class LinkCard extends Vue {
   deleteGroup() {
     this.$bvModal
       .msgBoxConfirm(
-        "".concat(
-          "Are you sure that you want to delete '",
-          String(this.grp.name),
-          "'"
-        ),
+        `Are you sure that you want to delete '${String(this.grp.name)}'`,
         {
           title: "Confirm Group Deletion",
           okVariant: "danger",
@@ -296,11 +286,7 @@ export default class LinkCard extends Vue {
     const deleteConfig = { ...this.linkConfig };
     this.$bvModal
       .msgBoxConfirm(
-        "".concat(
-          "Are you sure that you want to delete '",
-          String(deleteConfig.name),
-          "'"
-        ),
+        `Are you sure that you want to delete '${String(deleteConfig.name)}'`,
         {
           title: "Confirm Link Deletion",
           okVariant: "danger",

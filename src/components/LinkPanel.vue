@@ -11,7 +11,7 @@
           <b-col v-for="(col, colIndex) in dash.groupList" :key="colIndex">
             <b-row
               v-for="(grp, grpIndex) in col"
-              :key="''.concat(colIndex, '-', grpIndex)"
+              :key="`${colIndex}-${grpIndex}`"
               ><b-col
                 ><LinkCard :dash="dash" :grp="grp" :grpNames="groupNames"
               /></b-col>
@@ -102,11 +102,9 @@ export default class LinkPanel extends Vue {
   deleteDash() {
     this.$bvModal
       .msgBoxConfirm(
-        "".concat(
-          "Are you sure that you want to delete '",
-          this.displayDashboards[this.selectedDash].name,
-          "'"
-        ),
+        `Are you sure that you want to delete '${
+          this.displayDashboards[this.selectedDash].name
+        }'`,
         {
           title: "Confirm Dash Deletion",
           okVariant: "danger",
