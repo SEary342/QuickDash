@@ -7,6 +7,16 @@ Vue.use(Vuex);
 // TODO connect store to local storage
 // const localStorage = window.localStorage;
 
+function getEditDash(dashName, dashConfig) {
+  return dashConfig.find(x => x.name === dashName);
+}
+
+function getEditGrp(dashName, grpName, dashConfig) {
+  return getEditDash(dashName, dashConfig).groupList.find(
+    x => x.name === grpName
+  );
+}
+
 export const store = new Vuex.Store({
   state: {
     selectedDash: 0,
@@ -30,9 +40,11 @@ export const store = new Vuex.Store({
       state.numberOfColumns = numberOfColumns;
     },
     addEditLink(state, linkConfig) {
-      const editGrp = state.quickDashConfig
-        .find(x => x.name === linkConfig.dashName)
-        .groupList.find(x => x.name === linkConfig.dashGroup.name);
+      const editGrp = getEditGrp(
+        linkConfig.dashName,
+        linkConfig.dashGroup.name,
+        state.quickDashConfig
+      );
       if (linkConfig.initialName === null) {
         editGrp.addLink(linkConfig.name, linkConfig.url, linkConfig.color);
       } else {
@@ -40,10 +52,24 @@ export const store = new Vuex.Store({
       }
     },
     deleteLink(state, linkConfig) {
-      const editGrp = state.quickDashConfig
-        .find(x => x.name === linkConfig.dashName)
-        .groupList.find(x => x.name === linkConfig.dashGroup.name);
+      const editGrp = getEditGrp(
+        linkConfig.dashName,
+        linkConfig.dashGroup.name,
+        state.quickDashConfig
+      );
       editGrp.deleteLink(linkConfig.name);
+    },
+    addEditGroup(state, grpConfig) {
+      const editDash = getEditDash(grpConfig.dash, state.quickDashConfig);
+      if (grpConfig.name !== null) {
+        editDash.editGroup(grpConfig.name, grpConfig.newName);
+      } else {
+        editDash.addGroup(grpConfig.newName);
+      }
+    },
+    deleteGroup(state, grpConfig) {
+      const editDash = getEditDash(grpConfig.dash, state.quickDashConfig);
+      editDash.deleteGroup(grpConfig.name);
     }
   },
   getters: {

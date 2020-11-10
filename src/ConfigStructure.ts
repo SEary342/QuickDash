@@ -99,4 +99,30 @@ export class LinkPage {
       this.groupList = [];
     }
   }
+
+  addGroup(name: string) {
+    if (!this.groupList.map(x => x.name).includes(name)) {
+      this.groupList.push(new LinkGroup(name));
+    } else {
+      throw new Error(`A group with name: '${name}' already exists.`);
+    }
+  }
+
+  editGroup(name: string, newName: string) {
+    const grp = this.groupList.find(x => x.name === name);
+    if (grp === undefined) {
+      throw new Error(`A group with name: '${name}' cannot be found.`);
+    } else {
+      grp.name = newName;
+    }
+  }
+
+  deleteGroup(name: string) {
+    const grpIndex = this.groupList.findIndex(x => x.name === name);
+    if (grpIndex !== -1) {
+      this.groupList.splice(grpIndex, 1);
+    } else {
+      throw new Error(`A group with name: '${name}' cannot be found.`);
+    }
+  }
 }

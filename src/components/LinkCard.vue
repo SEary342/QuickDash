@@ -284,13 +284,11 @@ export default class LinkCard extends Vue {
   }
 
   saveGroup() {
-    const changeObj = {
+    this.$store.commit("addEditGroup", {
       dash: this.dash.name,
-      grp: this.grp.name,
+      name: this.grp.name,
       newName: this.groupName
-    };
-    // TODO connect save group to store
-    console.log(changeObj);
+    });
   }
 
   deleteGroup() {
@@ -305,8 +303,12 @@ export default class LinkCard extends Vue {
       )
       .then(value => {
         if (value) {
-          // TODO connect delete group to store
-          console.log(this.grp.name);
+          this.editToggle = false;
+          this.$store.commit("deleteGroup", {
+            dash: this.dash.name,
+            name: this.grp.name,
+            newName: null
+          });
         }
       });
   }
