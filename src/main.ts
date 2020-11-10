@@ -5,9 +5,7 @@ import {
   BIconGearFill,
   BIconPlus,
   BIconPencil,
-  BIconPencilFill,
-  BIconTrash,
-  BIconList
+  BIconPencilFill
 } from "bootstrap-vue";
 import { initialLoad, store } from "./store/store";
 import App from "./App.vue";
@@ -22,8 +20,6 @@ Vue.component("BIconGearFill", BIconGearFill);
 Vue.component("BIconPlus", BIconPlus);
 Vue.component("BIconPencil", BIconPencil);
 Vue.component("BIconPencilFill", BIconPencilFill);
-Vue.component("BIconTrash", BIconTrash);
-Vue.component("BIconList", BIconList);
 
 initialLoad();
 
