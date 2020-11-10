@@ -1,11 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { QuickDashConfig } from "../LinkConfig";
-import { LinkPage } from "../ConfigStructure";
+// TODO remove import { QuickDashConfig } from "../LinkConfig";
+import { LinkGroup, LinkPage, LinkData } from "../ConfigStructure";
 
 Vue.use(Vuex);
-// TODO connect store to local storage
-// const localStorage = window.localStorage;
+const localStorage = window.localStorage;
 
 function getEditDash(dashName, dashConfig) {
   return dashConfig.find(x => x.name === dashName);
@@ -17,6 +16,18 @@ function getEditGrp(dashName, grpName, dashConfig) {
   );
 }
 
+function updateDashSelected(selectedDash) {
+  localStorage.setItem("QuickDashSelected", selectedDash);
+}
+
+function updateDashConfig(dashConfig) {
+  localStorage.setItem("QuickDashConfig", JSON.stringify(dashConfig));
+}
+
+function updateNumberOfColumns(numColumns) {
+  localStorage.setItem("NumberOfColumns", numColumns);
+}
+
 export const store = new Vuex.Store({
   state: {
     selectedDash: 0,
@@ -26,18 +37,45 @@ export const store = new Vuex.Store({
   mutations: {
     setSelectedDash(state, selectedDash) {
       state.selectedDash = selectedDash;
+      updateDashSelected(state.selectedDash);
     },
     setQuickDashConfig(state, quickDashConfig) {
       state.quickDashConfig = quickDashConfig;
       if (state.selectedDash === null) {
         state.selectedDash = quickDashConfig[0].name;
+        updateDashSelected(state.selectedDash);
       }
+      updateDashConfig(state.quickDashConfig);
     },
-    addEmptyDash(state, newDashName) {
-      state.quickDashConfig.push(new LinkPage(newDashName));
+    addEditDash(state, dashConfig) {
+      if (dashConfig.name === null) {
+        state.quickDashConfig.push(new LinkPage(dashConfig.newDashName));
+      } else {
+        const editDash = state.quickDashConfig.find(
+          x => x.name === dashConfig.name
+        );
+        if (editDash !== undefined) {
+          editDash.name = dashConfig.newDashName;
+        } else {
+          throw new Error(`Cannot find dash: '${dashConfig.name}'`);
+        }
+      }
+      updateDashConfig(state.quickDashConfig);
+    },
+    deleteDash(state, dashName) {
+      const dashIndex = state.quickDashConfig.findIndex(
+        x => x.name === dashName
+      );
+      if (dashIndex !== -1) {
+        state.quickDashConfig.splice(dashIndex, 1);
+      } else {
+        throw new Error(`Cannot find dash: '${dashName}'`);
+      }
+      updateDashConfig(state.quickDashConfig);
     },
     setNumberOfColumns(state, numberOfColumns) {
       state.numberOfColumns = numberOfColumns;
+      updateNumberOfColumns(state.numberOfColumns);
     },
     addEditLink(state, linkConfig) {
       const editGrp = getEditGrp(
@@ -50,6 +88,7 @@ export const store = new Vuex.Store({
       } else {
         editGrp.editLink(linkConfig.name, linkConfig.url, linkConfig.color);
       }
+      updateDashConfig(state.quickDashConfig);
     },
     deleteLink(state, linkConfig) {
       const editGrp = getEditGrp(
@@ -58,6 +97,7 @@ export const store = new Vuex.Store({
         state.quickDashConfig
       );
       editGrp.deleteLink(linkConfig.name);
+      updateDashConfig(state.quickDashConfig);
     },
     addEditGroup(state, grpConfig) {
       const editDash = getEditDash(grpConfig.dash, state.quickDashConfig);
@@ -66,10 +106,13 @@ export const store = new Vuex.Store({
       } else {
         editDash.addGroup(grpConfig.newName);
       }
+      updateDashConfig(state.quickDashConfig);
     },
     deleteGroup(state, grpConfig) {
       const editDash = getEditDash(grpConfig.dash, state.quickDashConfig);
+      console.log(editDash);
       editDash.deleteGroup(grpConfig.name);
+      updateDashConfig(state.quickDashConfig);
     }
   },
   getters: {
@@ -88,10 +131,33 @@ export const store = new Vuex.Store({
   }
 });
 
+function convertJSONtoClasses(inputJSONstring) {
+  const conversionArray = [];
+  for (const dash of JSON.parse(inputJSONstring)) {
+    const newDash = new LinkPage(dash.name);
+    for (const grp of dash.groupList) {
+      const newGrp = new LinkGroup(grp.name);
+      for (const link of grp.linkList) {
+        newGrp.linkList.push(new LinkData(link.text, link.url, link.color));
+      }
+      newDash.groupList.push(newGrp);
+    }
+    conversionArray.push(newDash);
+  }
+  return conversionArray;
+}
+
 export function initialLoad() {
-  // const selectedDash = localStorage.getItem("QuickDashSelected");
-  // const quickDashConfig = localStorage.getItem("QuickDashConfig");
-  // const numberOfColumns = localStorage.getItem("NumberOfColumns");
-  // store.commit("setSelectedDash", 0);
-  store.commit("setQuickDashConfig", QuickDashConfig);
+  const selectedDash = localStorage.getItem("QuickDashSelected");
+  const quickDashConfig = localStorage.getItem("QuickDashConfig");
+  const numberOfColumns = localStorage.getItem("NumberOfColumns");
+  if (selectedDash) {
+    store.commit("setSelectedDash", Number(selectedDash));
+  }
+  if (quickDashConfig) {
+    store.commit("setQuickDashConfig", convertJSONtoClasses(quickDashConfig));
+  }
+  if (numberOfColumns) {
+    store.commit("setNumberOfColumns", Number(numberOfColumns));
+  }
 }

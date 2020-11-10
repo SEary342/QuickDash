@@ -44,10 +44,19 @@
     </template>
 
     <template #empty>
-      <div class="text-center text-muted">
-        There are no open tabs<br />
-        Open a new tab using the <b>+</b> button above.
-      </div>
+      <b-jumbotron header="Welcome to QuickDash!">
+        <p>There are no Dashboards loaded.</p>
+        <p>
+          Create a new Dash using the <b>+</b> button above or import an
+          existing QuickDash configuration.
+        </p>
+
+        <p>
+          Don't forget to export your dashboard configuration using the
+          <BIconGearFill /> menu just in case your browswer looses it!
+        </p>
+        <b-button variant="primary">Import Configuration</b-button>
+      </b-jumbotron>
     </template>
 
     <b-modal
@@ -117,12 +126,10 @@ export default class LinkPanel extends Vue {
   }
 
   saveDash() {
-    if (this.editDashInd) {
-      // TODO implemnt dash edit
-      console.log("hi");
-    } else {
-      this.$store.commit("addEmptyDash", this.dashName);
-    }
+    this.$store.commit("addEditDash", {
+      name: this.initialDashName,
+      newDashName: this.dashName
+    });
   }
 
   deleteDash() {
@@ -138,8 +145,7 @@ export default class LinkPanel extends Vue {
       )
       .then(value => {
         if (value) {
-          // TODO implement dash deletion in store
-          console.log(deleteDashName);
+          this.$store.commit("deleteDash", deleteDashName);
         }
       });
   }
