@@ -78,7 +78,7 @@ export type DisplayDash = {
   }
 })
 export default class LinkPanel extends Vue {
-  dashName = null;
+  dashName: string | null = null;
   editDashInd = false;
 
   addDash() {

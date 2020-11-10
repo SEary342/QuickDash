@@ -55,15 +55,7 @@
       cancel-title="Delete"
       :ok-only="!linkEditMode"
       :ok-title="linkEditMode ? 'Save' : 'Create'"
-      :ok-disabled="
-        linkConfig.name === null ||
-          linkConfig.name.length === 0 ||
-          linkConfig.url === null ||
-          linkConfig.url.length === null ||
-          linkConfig.color === null ||
-          linkConfig.color.length === 0 ||
-          linkNameValid !== true
-      "
+      :ok-disabled="linkSaveDisabled"
     >
       <b-form-group label="Link Name:"
         ><b-form-input
@@ -167,6 +159,8 @@ export default class LinkCard extends Vue {
     color: ColorOption.Dark
   };
 
+  initialLinkConfig: LinkConfig = { ...this.linkConfig };
+
   resetGrpModal() {
     this.groupName = null;
   }
@@ -186,6 +180,7 @@ export default class LinkCard extends Vue {
     this.linkConfig.name = linkData.text;
     this.linkConfig.url = linkData.url;
     this.linkConfig.color = linkData.color;
+    this.initialLinkConfig = { ...this.linkConfig };
     this.linkEditMode = true;
     this.$bvModal.show(
       "link-modal-".concat(this.dash.name, "-", this.grp.name)
@@ -196,6 +191,30 @@ export default class LinkCard extends Vue {
     this.groupName = this.grp.name;
     this.$bvModal.show(
       "grp-modal-".concat(this.dash.name, "-", this.grp.name)
+    );
+  }
+
+  get linkSaveDisabled() {
+    const lnk = this.linkConfig;
+    return (
+      lnk.name === null ||
+      lnk.name.length === 0 ||
+      lnk.url === null ||
+      lnk.url.length === null ||
+      lnk.color === null ||
+      lnk.color.length === 0 ||
+      this.linkNameValid !== true ||
+      !this.linkChanged
+    );
+  }
+
+  get linkChanged() {
+    const lnk = this.linkConfig;
+    const init = this.initialLinkConfig;
+    return (
+      lnk.name !== init.name ||
+      lnk.url !== init.url ||
+      lnk.color !== init.color
     );
   }
 
@@ -237,8 +256,7 @@ export default class LinkCard extends Vue {
   }
 
   saveLink() {
-    // TODO save new links in the store
-    console.log(this.linkConfig);
+    this.$store.commit("addEditLink", this.linkConfig);
   }
 
   saveGroup() {
@@ -274,6 +292,7 @@ export default class LinkCard extends Vue {
   }
 
   deleteLink() {
+    // This copy is here to prevent the modal reset from wiping the config when the confirm modal fires.
     const deleteConfig = { ...this.linkConfig };
     this.$bvModal
       .msgBoxConfirm(
@@ -290,8 +309,7 @@ export default class LinkCard extends Vue {
       )
       .then(value => {
         if (value) {
-          // TODO connect delete link to store
-          console.log(deleteConfig);
+          this.$store.commit("deleteLink", deleteConfig);
         }
       });
   }
@@ -305,6 +323,7 @@ export default class LinkCard extends Vue {
       dashName: null,
       dashGroup: null
     };
+    this.initialLinkConfig = { ...this.linkConfig };
     this.linkEditMode = false;
   }
 }

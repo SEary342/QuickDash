@@ -28,6 +28,22 @@ export const store = new Vuex.Store({
     },
     setNumberOfColumns(state, numberOfColumns) {
       state.numberOfColumns = numberOfColumns;
+    },
+    addEditLink(state, linkConfig) {
+      const editGrp = state.quickDashConfig
+        .find(x => x.name === linkConfig.dashName)
+        .groupList.find(x => x.name === linkConfig.dashGroup.name);
+      if (linkConfig.initialName === null) {
+        editGrp.addLink(linkConfig.name, linkConfig.url, linkConfig.color);
+      } else {
+        editGrp.editLink(linkConfig.name, linkConfig.url, linkConfig.color);
+      }
+    },
+    deleteLink(state, linkConfig) {
+      const editGrp = state.quickDashConfig
+        .find(x => x.name === linkConfig.dashName)
+        .groupList.find(x => x.name === linkConfig.dashGroup.name);
+      editGrp.deleteLink(linkConfig.name);
     }
   },
   getters: {
