@@ -42,10 +42,10 @@ export class LinkData {
 }
 
 export class LinkGroup {
-  name: string;
+  name: string | null;
   linkList: LinkData[];
 
-  constructor(name: string, linkList?: LinkData[]) {
+  constructor(name: string | null, linkList?: LinkData[]) {
     this.name = name;
     if (linkList) {
       this.linkList = linkList;
