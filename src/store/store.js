@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Vuex from "vuex";
-// TODO remove import { QuickDashConfig } from "../LinkConfig";
 import { LinkGroup, LinkPage, LinkData } from "../ConfigStructure";
 
 Vue.use(Vuex);
@@ -28,6 +27,25 @@ function updateNumberOfColumns(numColumns) {
   localStorage.setItem("NumberOfColumns", numColumns);
 }
 
+function convertJSONtoClasses(inputData, jsonMode) {
+  if (!jsonMode) {
+    inputData = JSON.parse(inputData);
+  }
+  const conversionArray = [];
+  for (const dash of inputData) {
+    const newDash = new LinkPage(dash.name);
+    for (const grp of dash.groupList) {
+      const newGrp = new LinkGroup(grp.name);
+      for (const link of grp.linkList) {
+        newGrp.linkList.push(new LinkData(link.text, link.url, link.color));
+      }
+      newDash.groupList.push(newGrp);
+    }
+    conversionArray.push(newDash);
+  }
+  return conversionArray;
+}
+
 export const store = new Vuex.Store({
   state: {
     selectedDash: 0,
@@ -46,6 +64,33 @@ export const store = new Vuex.Store({
         updateDashSelected(state.selectedDash);
       }
       updateDashConfig(state.quickDashConfig);
+    },
+    importConfig(state, importConfigData) {
+      const importKeys = Object.keys(importConfigData);
+      if (
+        importKeys.includes("QuickDashConfig") &&
+        Array.isArray(importConfigData.QuickDashConfig)
+      ) {
+        state.quickDashConfig = convertJSONtoClasses(
+          importConfigData.QuickDashConfig,
+          true
+        );
+        updateDashConfig(state.quickDashConfig);
+        if (
+          importKeys.includes("NumberOfColumns") &&
+          Number.isInteger(importConfigData.NumberOfColumns)
+        ) {
+          state.numberOfColumns = importConfigData.NumberOfColumns;
+          updateNumberOfColumns(state.numberOfColumns);
+        }
+        if (
+          importKeys.includes("QuickDashSelected") &&
+          Number.isInteger(importConfigData.QuickDashSelected)
+        ) {
+          state.selectedDash = importConfigData.QuickDashSelected;
+          updateDashSelected(state.selectedDash);
+        }
+      }
     },
     addEditDash(state, dashConfig) {
       if (dashConfig.name === null) {
@@ -127,25 +172,16 @@ export const store = new Vuex.Store({
           })
         )
         .flat(),
-    dashNames: state => state.quickDashConfig.map(dash => dash.name)
+    dashNames: state => state.quickDashConfig.map(dash => dash.name),
+    exportData: state => {
+      return {
+        QuickDashConfig: state.quickDashConfig,
+        NumberOfColumns: state.numberOfColumns,
+        QuickDashSelected: state.selectedDash
+      };
+    }
   }
 });
-
-function convertJSONtoClasses(inputJSONstring) {
-  const conversionArray = [];
-  for (const dash of JSON.parse(inputJSONstring)) {
-    const newDash = new LinkPage(dash.name);
-    for (const grp of dash.groupList) {
-      const newGrp = new LinkGroup(grp.name);
-      for (const link of grp.linkList) {
-        newGrp.linkList.push(new LinkData(link.text, link.url, link.color));
-      }
-      newDash.groupList.push(newGrp);
-    }
-    conversionArray.push(newDash);
-  }
-  return conversionArray;
-}
 
 export function initialLoad() {
   const selectedDash = localStorage.getItem("QuickDashSelected");
@@ -155,7 +191,10 @@ export function initialLoad() {
     store.commit("setSelectedDash", Number(selectedDash));
   }
   if (quickDashConfig) {
-    store.commit("setQuickDashConfig", convertJSONtoClasses(quickDashConfig));
+    store.commit(
+      "setQuickDashConfig",
+      convertJSONtoClasses(quickDashConfig, false)
+    );
   }
   if (numberOfColumns) {
     store.commit("setNumberOfColumns", Number(numberOfColumns));
