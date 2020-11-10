@@ -9,7 +9,9 @@
         <b-nav-item-dropdown right>
           <template #button-content> <BIconGearFill /> </template>
           <b-dropdown-item-button>Import</b-dropdown-item-button>
-          <b-dropdown-item-button>Export</b-dropdown-item-button>
+          <b-dropdown-item-button v-if="$store.getters.dashNames.length > 0"
+            >Export</b-dropdown-item-button
+          >
           <b-dropdown-divider></b-dropdown-divider>
           <b-dropdown-form>
             <b-form-group label="Columns"

@@ -52,8 +52,8 @@
         </p>
         <hr />
         <p>
-          Don't forget to export your dashboard configuration using the
-          <BIconGearFill /> menu just in case your browswer looses it!
+          Don't forget to export your QuickDash configuration using the
+          <BIconGearFill /> menu just in case your browswer misplaces it!
         </p>
         <b-button variant="primary">Import Configuration</b-button>
       </b-jumbotron>
