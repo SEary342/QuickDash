@@ -50,7 +50,7 @@
           Create a new Dash using the <b>+</b> button above or import an
           existing QuickDash configuration.
         </p>
-
+        <hr />
         <p>
           Don't forget to export your dashboard configuration using the
           <BIconGearFill /> menu just in case your browswer looses it!
