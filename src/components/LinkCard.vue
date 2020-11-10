@@ -1,14 +1,16 @@
 <template>
   <b-container fluid>
     <b-card class="mb-4">
-      <template #header
+      <template #header v-if="grp.name !== null"
         ><span class="h4 float-left">{{ grp.name }}</span
         ><b-button
           variant="light"
           size="sm"
           v-if="editToggle"
           class="float-left"
-          @click="editGroup(dash.name, grp)"
+          @click="editGroup"
+          v-b-tooltip.hover.right
+          title="Edit Group"
           ><BIconPencil
         /></b-button>
         <b-button
@@ -16,6 +18,8 @@
           class="float-right"
           size="sm"
           :pressed.sync="editToggle"
+          v-b-tooltip.hover
+          title="Toggle Edit Buttons"
           ><BIconPencilFill v-if="editToggle"/><BIconPencil v-else
         /></b-button>
       </template>
@@ -34,6 +38,8 @@
             v-if="editToggle"
             :variant="link.color"
             @click="editLink(link)"
+            v-b-tooltip.hover.right
+            title="Edit Link"
             ><BIconPencil
           /></b-button>
         </b-button-group>
@@ -42,7 +48,18 @@
         v-if="editToggle"
         variant="outline-secondary"
         block
-        @click="createLink(dash.name, grp)"
+        @click="createLink"
+        v-b-tooltip.hover.bottom
+        title="Add a new link"
+        ><BIconPlus font-scale="2"
+      /></b-button>
+      <b-button
+        v-if="grp.name === null"
+        variant="outline-secondary"
+        block
+        @click="createGroup"
+        v-b-tooltip.hover
+        title="Add a new group"
         ><BIconPlus font-scale="2"/></b-button></b-card
     ><b-modal
       :id="`link-modal-${dash.name}-${grp.name}`"
@@ -165,9 +182,14 @@ export default class LinkCard extends Vue {
     this.groupName = null;
   }
 
-  createLink(dashName: string, dashGroup: LinkGroup) {
-    this.linkConfig.dashName = dashName;
-    this.linkConfig.dashGroup = dashGroup;
+  createGroup() {
+    // TODO implement create group
+    console.log("hi");
+  }
+
+  createLink() {
+    this.linkConfig.dashName = this.dash.name;
+    this.linkConfig.dashGroup = this.grp;
     this.$bvModal.show(`link-modal-${this.dash.name}-${this.grp.name}`);
   }
 
