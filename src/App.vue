@@ -1,10 +1,7 @@
 <template>
   <div id="app">
     <b-navbar variant="dark" type="dark" fluid
-      ><b-navbar-brand fluid
-        ><b-img fluid :src="require('./assets/favicon-32x32.png')"></b-img>
-        QuickDash</b-navbar-brand
-      >
+      ><b-navbar-brand fluid><qdLogo /> QuickDash</b-navbar-brand>
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right>
           <template #button-content> <BIconGearFill /> </template>
@@ -52,12 +49,14 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import qdLogo from "./assets/qdLogo.svg";
 import LinkPanel from "./components/LinkPanel.vue";
 import { exportConfig, readFile } from "./utility";
 
 @Component({
   components: {
-    LinkPanel
+    LinkPanel,
+    qdLogo
   }
 })
 export default class App extends Vue {
