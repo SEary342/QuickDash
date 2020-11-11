@@ -1,13 +1,25 @@
 <template>
   <b-container fluid>
     <b-card class="mb-4">
-      <template #header
-        ><span class="h4 mb-0">{{ grp.name }}</span
+      <template #header v-if="grp.name !== null"
+        ><span class="h4 float-left">{{ grp.name }}</span
         ><b-button
+          variant="light"
+          size="sm"
+          v-if="editToggle"
+          class="float-left"
+          @click="editGroup"
+          v-b-tooltip.hover.right
+          title="Edit Group"
+          ><BIconPencil
+        /></b-button>
+        <b-button
           variant="light"
           class="float-right"
           size="sm"
           :pressed.sync="editToggle"
+          v-b-tooltip.hover
+          title="Toggle Edit Buttons"
           ><BIconPencilFill v-if="editToggle"/><BIconPencil v-else
         /></b-button>
       </template>
@@ -25,7 +37,9 @@
           <b-button
             v-if="editToggle"
             :variant="link.color"
-            @click="editLink(dash.name, grp, link)"
+            @click="editLink(link)"
+            v-b-tooltip.hover.right
+            title="Edit Link"
             ><BIconPencil
           /></b-button>
         </b-button-group>
@@ -34,31 +48,47 @@
         v-if="editToggle"
         variant="outline-secondary"
         block
-        @click="createLink(dash.name, grp)"
+        @click="createLink"
+        v-b-tooltip.hover.bottom
+        title="Add a new link"
+        ><BIconPlus font-scale="2"
+      /></b-button>
+      <b-button
+        v-if="grp.name === null"
+        variant="outline-secondary"
+        block
+        @click="createGroup"
+        v-b-tooltip.hover
+        title="Add a new group"
         ><BIconPlus font-scale="2"/></b-button></b-card
     ><b-modal
-      :id="'link-modal-'.concat(dash.name, '-', grp.name)"
+      :id="linkModalName"
       @hidden="resetLinkModal"
       :title="linkEditMode ? 'Edit Link' : 'New Link'"
       @ok="saveLink"
-      :ok-disabled="
-        linkConfig.name === null ||
-          linkConfig.name.length === 0 ||
-          linkConfig.url === null ||
-          linkConfig.url.length === null ||
-          linkConfig.color === null ||
-          linkConfig.color.length === 0 ||
-          linkNameValid !== true
-      "
+      @cancel="deleteLink"
+      cancel-variant="danger"
+      ok-variant="success"
+      cancel-title="Delete"
+      :ok-only="!linkEditMode"
+      :ok-title="linkEditMode ? 'Save' : 'Create'"
+      :ok-disabled="linkSaveDisabled"
     >
-      <b-form-group label="Link Name:"
+      <b-form-group
+        label="Link Name:"
+        invalid-feedback="Link names must be unique within a group"
         ><b-form-input
           v-model="linkConfig.name"
           :state="linkNameValid"
         ></b-form-input
       ></b-form-group>
-      <b-form-group label="Link url:"
-        ><b-form-input v-model="linkConfig.url"></b-form-input
+      <b-form-group
+        label="Link URL:"
+        invalid-feedback="URLs must start with http:// or https://"
+        ><b-form-input
+          v-model="linkConfig.url"
+          :state="URLValid"
+        ></b-form-input
       ></b-form-group>
       <b-form-group label="Link color:">
         <b-form-radio
@@ -82,8 +112,28 @@
           >{{ linkConfig.name }}</b-button
         >
       </b-form-group>
-    </b-modal></b-container
-  >
+    </b-modal>
+    <b-modal
+      :id="grpModalName"
+      :title="grp.name === null ? 'New Group' : 'Edit Group'"
+      ok-title="Save"
+      :ok-disabled="groupName === grp.name || !groupNameValid"
+      @hidden="resetGrpModal"
+      cancel-title="Delete"
+      ok-variant="success"
+      cancel-variant="danger"
+      :ok-only="grp.name === null"
+      @ok="saveGroup"
+      @cancel="deleteGroup"
+      ><b-form-group
+        label="Group Name:"
+        invalid-feedback="Group names must be unique within a dash"
+        ><b-form-input
+          v-model="groupName"
+          :state="groupNameValid"
+        ></b-form-input></b-form-group
+    ></b-modal>
+  </b-container>
 </template>
 
 <script lang="ts">
@@ -105,6 +155,8 @@ type LinkConfig = {
   color: string;
 };
 
+type GrpName = { dash: string; grp: string };
+
 @Component
 export default class LinkCard extends Vue {
   @Prop({ required: true })
@@ -113,12 +165,17 @@ export default class LinkCard extends Vue {
   @Prop({ required: true })
   public grp!: LinkGroup;
 
+  @Prop({ required: true })
+  public grpNames!: GrpName[];
+
   get colorOptionArray() {
     return ColorOptionArray;
   }
 
   editToggle = false;
   linkEditMode = false;
+
+  groupName: string | null = null;
 
   linkConfig: LinkConfig = {
     initialName: null,
@@ -129,25 +186,93 @@ export default class LinkCard extends Vue {
     color: ColorOption.Dark
   };
 
-  createLink(dashName: string, dashGroup: LinkGroup) {
-    this.linkConfig.dashName = dashName;
-    this.linkConfig.dashGroup = dashGroup;
-    this.$bvModal.show(
-      "link-modal-".concat(this.dash.name, "-", this.grp.name)
-    );
+  initialLinkConfig: LinkConfig = { ...this.linkConfig };
+
+  resetGrpModal() {
+    this.groupName = null;
   }
 
-  editLink(dashName: string, dashGroup: LinkGroup, linkData: LinkData) {
-    this.linkConfig.dashName = dashName;
-    this.linkConfig.dashGroup = dashGroup;
+  createGroup() {
+    this.$bvModal.show(this.grpModalName);
+  }
+
+  get linkModalName() {
+    return `link-modal-${this.dash.name}-${String(this.grp.name)}`;
+  }
+
+  get grpModalName() {
+    return `grp-modal-${this.dash.name}-${String(this.grp.name)}`;
+  }
+
+  get URLValid() {
+    if (this.linkConfig.url === null || this.linkConfig.url.length === 0) {
+      return null;
+    } else {
+      const patt = new RegExp("^https?://");
+      return patt.test(String(this.linkConfig.url));
+    }
+  }
+
+  createLink() {
+    this.linkConfig.dashName = this.dash.name;
+    this.linkConfig.dashGroup = this.grp;
+    this.$bvModal.show(this.linkModalName);
+  }
+
+  editLink(linkData: LinkData) {
+    this.linkConfig.dashName = this.dash.name;
+    this.linkConfig.dashGroup = this.grp;
     this.linkConfig.initialName = linkData.text;
     this.linkConfig.name = linkData.text;
     this.linkConfig.url = linkData.url;
     this.linkConfig.color = linkData.color;
+    this.initialLinkConfig = { ...this.linkConfig };
     this.linkEditMode = true;
-    this.$bvModal.show(
-      "link-modal-".concat(this.dash.name, "-", this.grp.name)
+    this.$bvModal.show(this.linkModalName);
+  }
+
+  editGroup() {
+    this.groupName = this.grp.name;
+    this.$bvModal.show(this.grpModalName);
+  }
+
+  get linkSaveDisabled() {
+    const lnk = this.linkConfig;
+    return (
+      lnk.name === null ||
+      lnk.name.length === 0 ||
+      lnk.url === null ||
+      lnk.url.length === null ||
+      lnk.color === null ||
+      lnk.color.length === 0 ||
+      this.linkNameValid !== true ||
+      this.URLValid !== true ||
+      !this.linkChanged
     );
+  }
+
+  get linkChanged() {
+    const lnk = this.linkConfig;
+    const init = this.initialLinkConfig;
+    return (
+      lnk.name !== init.name ||
+      lnk.url !== init.url ||
+      lnk.color !== init.color
+    );
+  }
+
+  get groupNameValid() {
+    if (this.groupName === this.grp.name) {
+      return null;
+    } else {
+      return (
+        this.grpNames.find(
+          x =>
+            x.dash === this.dash.name &&
+            x.grp.toLowerCase() === String(this.groupName).toLowerCase()
+        ) === undefined
+      );
+    }
   }
 
   get linkNameValid() {
@@ -174,14 +299,56 @@ export default class LinkCard extends Vue {
   }
 
   saveLink() {
-    // TODO implement this on the store end
-    // Make the new tabs save
-    // Make it possible to add new groups
-    // Implement import & export
-    // Add the ability to delete links
-    // Add the ability to edit group names
-    // Add the ability to delete groups
-    console.log(this.linkConfig);
+    this.$store.commit("addEditLink", this.linkConfig);
+  }
+
+  saveGroup() {
+    this.$store.commit("addEditGroup", {
+      dash: this.dash.name,
+      name: this.grp.name,
+      newName: this.groupName
+    });
+  }
+
+  deleteGroup() {
+    this.$bvModal
+      .msgBoxConfirm(
+        `Are you sure that you want to delete '${String(this.grp.name)}'`,
+        {
+          title: "Confirm Group Deletion",
+          okVariant: "danger",
+          okTitle: "Delete"
+        }
+      )
+      .then(value => {
+        if (value) {
+          this.editToggle = false;
+          this.$store.commit("deleteGroup", {
+            dash: this.dash.name,
+            name: this.grp.name,
+            newName: null
+          });
+        }
+      });
+  }
+
+  deleteLink() {
+    // This copy is here to prevent the modal reset from wiping the config when the confirm modal fires.
+    const deleteConfig = { ...this.linkConfig };
+    this.$bvModal
+      .msgBoxConfirm(
+        `Are you sure that you want to delete '${String(deleteConfig.name)}'`,
+        {
+          title: "Confirm Link Deletion",
+          okVariant: "danger",
+          okTitle: "Delete"
+        }
+      )
+      .then(value => {
+        if (value) {
+          this.$store.commit("deleteLink", deleteConfig);
+        }
+      });
   }
 
   resetLinkModal() {
@@ -193,6 +360,7 @@ export default class LinkCard extends Vue {
       dashName: null,
       dashGroup: null
     };
+    this.initialLinkConfig = { ...this.linkConfig };
     this.linkEditMode = false;
   }
 }

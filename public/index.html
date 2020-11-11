@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, shrink-to-fit=no"
-		/>
-		<link rel="icon" href="<%= BASE_URL %>favicon.ico" />
-		<title>QuickDash</title>
-	</head>
-	<body>
-		<noscript>
-			<strong
-				>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
-				properly without JavaScript enabled. Please enable it to
-				continue.</strong
-			>
-		</noscript>
-		<div id="app"></div>
-		<!-- built files will be auto injected -->
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQiIGhlaWdodD0iMzQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiA8IS0tIENyZWF0ZWQgd2l0aCBNZXRob2QgRHJhdyAtIGh0dHA6Ly9naXRodWIuY29tL2R1b3BpeGVsL01ldGhvZC1EcmF3LyAtLT4KIDxkZWZzPgogIDxmaWx0ZXIgaGVpZ2h0PSIyMDAlIiB3aWR0aD0iMjAwJSIgeT0iLTUwJSIgeD0iLTUwJSIgaWQ9InN2Z18yX2JsdXIiPgogICA8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIwIiBpbj0iU291cmNlR3JhcGhpYyIvPgogIDwvZmlsdGVyPgogPC9kZWZzPgogPGc+CiAgPHRpdGxlPmJhY2tncm91bmQ8L3RpdGxlPgogIDxyZWN0IGZpbGw9Im5vbmUiIGlkPSJjYW52YXNfYmFja2dyb3VuZCIgaGVpZ2h0PSIzNiIgd2lkdGg9IjM2IiB5PSItMSIgeD0iLTEiLz4KICA8ZyBkaXNwbGF5PSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgeT0iMCIgeD0iMCIgaGVpZ2h0PSIxMDAlIiB3aWR0aD0iMTAwJSIgaWQ9ImNhbnZhc0dyaWQiPgogICA8cmVjdCBmaWxsPSJ1cmwoI2dyaWRwYXR0ZXJuKSIgc3Ryb2tlLXdpZHRoPSIwIiB5PSIxIiB4PSIxIiBoZWlnaHQ9IjMyIiB3aWR0aD0iMzIiLz4KICA8L2c+CiA8L2c+CiA8Zz4KICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+CiAgPHBhdGggc3Ryb2tlPSIjMDAwIiBpZD0ic3ZnXzEzIiBkPSJtLTAuMTY2MjUsNS41MDYzMmwwLDBjMCwtMy4xNTQ4OCAxLjc2MDU1LC01LjcxMjQxIDMuOTMyMywtNS43MTI0MWwxLjc4NzQxLDBsMCwwbDguNTc5NTYsMGwxNi4wODY2NywwYzEuMDQyOTEsMCAyLjA0MzExLDAuNjAxODQgMi43ODA1NiwxLjY3MzEzYzAuNzM3NDUsMS4wNzEyOSAxLjE1MTc0LDIuNTI0MjYgMS4xNTE3NCw0LjAzOTI5bDAsMTQuMjgxMDRsMCwwbDAsOC41Njg2MmwwLDBjMCwzLjE1NDg4IC0xLjc2MDU1LDUuNzEyNDEgLTMuOTMyMyw1LjcxMjQxbC0xNi4wODY2NywwbC0xMS4yMDgxNCwxNC41MjUzNGwyLjYyODU4LC0xNC41MjUzNGwtMS43ODc0MSwwYy0yLjE3MTc1LDAgLTMuOTMyMywtMi41NTc1MyAtMy45MzIzLC01LjcxMjQxbDAsMGwwLC04LjU2ODYybDAsMGwwLC0xNC4yODEwNHoiIGZpbGwtb3BhY2l0eT0ibnVsbCIgc3Ryb2tlLW9wYWNpdHk9Im51bGwiIHN0cm9rZS13aWR0aD0iMCIgZmlsbD0iIzdmMDBmZiIvPgogIDx0ZXh0IGZpbHRlcj0idXJsKCNzdmdfMl9ibHVyKSIgZm9udC13ZWlnaHQ9ImJvbGQiIHN0cm9rZT0iIzAwMCIgdHJhbnNmb3JtPSJtYXRyaXgoMC45ODgyMzQ5NzcxODE4MTQxLDAsMCwxLjE4NjYwNzAxODI1MDIwOTUsLTEuODE3OTc2OTcxNTg0MDkzOSwtMC42NDI2Nzg4NzE2ODY3NjY0KSAiIHhtbDpzcGFjZT0icHJlc2VydmUiIHRleHQtYW5jaG9yPSJzdGFydCIgZm9udC1mYW1pbHk9IidUcmVidWNoZXQgTVMnLCBHYWRnZXQsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGlkPSJzdmdfMiIgeT0iMjEuNjk0NDgiIHg9IjUuNzgyMTQiIHN0cm9rZS13aWR0aD0iMCIgZmlsbD0iI2ZmZmZmZiI+UUQ8L3RleHQ+CiA8L2c+Cjwvc3ZnPg=="
+      type="image/svg+xml"
+    />
+    <title>QuickDash</title>
+  </head>
+  <body>
+    <noscript>
+      <strong
+        >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
+        properly without JavaScript enabled. Please enable it to
+        continue.</strong
+      >
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
 </html>
