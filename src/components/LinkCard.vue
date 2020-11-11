@@ -74,14 +74,21 @@
       :ok-title="linkEditMode ? 'Save' : 'Create'"
       :ok-disabled="linkSaveDisabled"
     >
-      <b-form-group label="Link Name:"
+      <b-form-group
+        label="Link Name:"
+        invalid-feedback="Link names must be unique within a group"
         ><b-form-input
           v-model="linkConfig.name"
           :state="linkNameValid"
         ></b-form-input
       ></b-form-group>
-      <b-form-group label="Link url:"
-        ><b-form-input v-model="linkConfig.url"></b-form-input
+      <b-form-group
+        label="Link URL:"
+        invalid-feedback="URLs must start with http:// or https://"
+        ><b-form-input
+          v-model="linkConfig.url"
+          :state="URLValid"
+        ></b-form-input
       ></b-form-group>
       <b-form-group label="Link color:">
         <b-form-radio
@@ -118,7 +125,9 @@
       :ok-only="grp.name === null"
       @ok="saveGroup"
       @cancel="deleteGroup"
-      ><b-form-group label="Group Name:"
+      ><b-form-group
+        label="Group Name:"
+        invalid-feedback="Group names must be unique within a dash"
         ><b-form-input
           v-model="groupName"
           :state="groupNameValid"
@@ -195,6 +204,15 @@ export default class LinkCard extends Vue {
     return `grp-modal-${this.dash.name}-${String(this.grp.name)}`;
   }
 
+  get URLValid() {
+    if (this.linkConfig.url === null || this.linkConfig.url.length === 0) {
+      return null;
+    } else {
+      const patt = new RegExp("^https?://");
+      return patt.test(String(this.linkConfig.url));
+    }
+  }
+
   createLink() {
     this.linkConfig.dashName = this.dash.name;
     this.linkConfig.dashGroup = this.grp;
@@ -228,6 +246,7 @@ export default class LinkCard extends Vue {
       lnk.color === null ||
       lnk.color.length === 0 ||
       this.linkNameValid !== true ||
+      this.URLValid !== true ||
       !this.linkChanged
     );
   }

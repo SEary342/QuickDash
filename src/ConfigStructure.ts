@@ -100,9 +100,9 @@ export class LinkPage {
     }
   }
 
-  addGroup(name: string) {
+  addGroup(name: string, linkList?: LinkData[]) {
     if (!this.groupList.map(x => x.name).includes(name)) {
-      this.groupList.push(new LinkGroup(name));
+      this.groupList.push(new LinkGroup(name, linkList));
     } else {
       throw new Error(`A group with name: '${name}' already exists.`);
     }

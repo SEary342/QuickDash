@@ -1,9 +1,10 @@
 <template>
   <b-tabs content-class="mt-3" variant="secondary" v-model="selectedDash">
     <b-tab
-      v-for="dash in displayDashboards"
+      v-for="(dash, idx) in displayDashboards"
       title-link-class="text-secondary"
       :key="dash.name"
+      :ref="`dash${idx}`"
     >
       <template #title>
         {{ dash.name
@@ -55,7 +56,9 @@
           Don't forget to export your QuickDash configuration using the
           <BIconGearFill /> menu just in case your browswer misplaces it!
         </p>
-        <b-button variant="primary">Import Configuration</b-button>
+        <b-button variant="primary" @click="showFullImport"
+          >Import Configuration</b-button
+        >
       </b-jumbotron>
     </template>
 
@@ -63,18 +66,49 @@
       id="dash-modal"
       @hidden="resetDashModal"
       :title="editDashInd ? 'Edit Dash' : 'New Dash'"
-      @ok="saveDash"
-      @cancel="deleteDash"
-      :ok-disabled="dashValid !== true"
-      cancel-title="Delete"
-      ok-title="Save"
-      ok-variant="success"
-      cancel-variant="danger"
-      :ok-only="!editDashInd"
     >
-      <b-form-group label="Dash Name:"
+      <b-form-group
+        label="Dash Name:"
+        invalid-feedback="Dash names must be unique"
         ><b-form-input v-model="dashName" :state="dashValid"></b-form-input
       ></b-form-group>
+      <b-form-file
+        @input="fileAdded"
+        :accept="dashExportExt"
+        v-model="uploadFile"
+        v-if="importInd"
+        placeholder="Choose a file or drop it here..."
+        drop-placeholder="Drop file here..."
+      ></b-form-file>
+
+      <template #modal-footer>
+        <b-row class="w-100">
+          <b-col cols="6"
+            ><b-button @click="exportDash" v-if="editDashInd"
+              >Export Dash</b-button
+            ><b-button @click="importInd = true" v-if="!editDashInd"
+              >Import Dash</b-button
+            ></b-col
+          >
+          <b-col cols="6" class="text-right"
+            ><b-button
+              class="mr-2"
+              @click="deleteDash"
+              variant="danger"
+              v-if="editDashInd"
+              >Delete</b-button
+            ><b-button
+              class="ml-2"
+              @click="saveDash"
+              variant="success"
+              :disabled="
+                dashValid !== true || (importInd && uploadFile === null)
+              "
+              >Save</b-button
+            ></b-col
+          >
+        </b-row>
+      </template>
     </b-modal>
   </b-tabs>
 </template>
@@ -96,8 +130,10 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { LinkGroup } from "../ConfigStructure";
+import { LinkGroup, LinkPage } from "../ConfigStructure";
 import LinkCard from "./LinkCard.vue";
+import { exportConfig, readFile } from "../utility";
+import App from "../App.vue";
 
 export type DisplayDash = {
   name: string;
@@ -113,9 +149,26 @@ export default class LinkPanel extends Vue {
   dashName: string | null = null;
   initialDashName: string | null = null;
   editDashInd = false;
+  importInd = false;
+  uploadFile: File | null = null;
+  dashExportExt = ".QDdashConfig";
 
   addDash() {
     this.$bvModal.show("dash-modal");
+  }
+
+  fileAdded() {
+    if (
+      (this.dashName === null || this.dashName.length === 0) &&
+      this.uploadFile !== null
+    ) {
+      this.dashName = this.uploadFile.name.split(".")[0];
+    }
+  }
+
+  showFullImport() {
+    const parentComp = this.$parent as App;
+    parentComp.showUpload();
   }
 
   editDash(editDash: string) {
@@ -125,18 +178,25 @@ export default class LinkPanel extends Vue {
     this.$bvModal.show("dash-modal");
   }
 
-  saveDash() {
+  async saveDash() {
     this.$store.commit("addEditDash", {
       name: this.initialDashName,
       newDashName: this.dashName
     });
+    if (this.importInd) {
+      const importData = await readFile(this.uploadFile as File);
+      this.$store.commit("bulkAddGroups", {
+        groupList: importData,
+        name: this.dashName
+      });
+    }
+    this.$bvModal.hide("dash-modal");
   }
 
   deleteDash() {
-    const deleteDashName = String(this.initialDashName).slice();
     this.$bvModal
       .msgBoxConfirm(
-        `Are you sure that you want to delete '${deleteDashName}'`,
+        `Are you sure that you want to delete '${this.initialDashName}'`,
         {
           title: "Confirm Dash Deletion",
           okVariant: "danger",
@@ -145,15 +205,38 @@ export default class LinkPanel extends Vue {
       )
       .then(value => {
         if (value) {
-          this.$store.commit("deleteDash", deleteDashName);
+          this.$store.commit("deleteDash", this.initialDashName);
+          this.$bvModal.hide("dash-modal");
         }
       });
+  }
+
+  exportDash() {
+    const exportDashData = this.currentConfig.find(
+      x => x.name === this.initialDashName
+    );
+    if (exportDashData) {
+      exportConfig(
+        this.initialDashName as string,
+        this.dashExportExt,
+        exportDashData.groupList
+      );
+    } else {
+      this.$bvToast.toast("Unable to find dash to export!", {
+        title: "Export Error",
+        solid: true,
+        variant: "danger"
+      });
+    }
+    this.$bvModal.hide("dash-modal");
   }
 
   resetDashModal() {
     this.dashName = null;
     this.initialDashName = null;
     this.editDashInd = false;
+    this.importInd = false;
+    this.uploadFile = null;
   }
 
   get selectedDash() {
@@ -209,11 +292,11 @@ export default class LinkPanel extends Vue {
     return displayConfig;
   }
 
-  get numberOfColumns() {
+  get numberOfColumns(): number {
     return this.$store.getters.numberOfColumns;
   }
 
-  get currentConfig() {
+  get currentConfig(): LinkPage[] {
     return this.$store.getters.quickDashConfig;
   }
 }

@@ -27,20 +27,28 @@ function updateNumberOfColumns(numColumns) {
   localStorage.setItem("NumberOfColumns", numColumns);
 }
 
+function convertJSONtoGrpClasses(groupList) {
+  const outputList = [];
+  for (const grp of groupList) {
+    const newGrp = new LinkGroup(grp.name);
+    for (const link of grp.linkList) {
+      newGrp.linkList.push(new LinkData(link.text, link.url, link.color));
+    }
+    outputList.push(newGrp);
+  }
+  return outputList;
+}
+
 function convertJSONtoClasses(inputData, jsonMode) {
   if (!jsonMode) {
     inputData = JSON.parse(inputData);
   }
   const conversionArray = [];
   for (const dash of inputData) {
-    const newDash = new LinkPage(dash.name);
-    for (const grp of dash.groupList) {
-      const newGrp = new LinkGroup(grp.name);
-      for (const link of grp.linkList) {
-        newGrp.linkList.push(new LinkData(link.text, link.url, link.color));
-      }
-      newDash.groupList.push(newGrp);
-    }
+    const newDash = new LinkPage(
+      dash.name,
+      convertJSONtoGrpClasses(dash.groupList)
+    );
     conversionArray.push(newDash);
   }
   return conversionArray;
@@ -153,9 +161,23 @@ export const store = new Vuex.Store({
       }
       updateDashConfig(state.quickDashConfig);
     },
+    bulkAddGroups(state, importGrpConfig) {
+      const editDash = getEditDash(
+        importGrpConfig.name,
+        state.quickDashConfig
+      );
+      if (Array.isArray(importGrpConfig.groupList)) {
+        const convGrps = convertJSONtoGrpClasses(importGrpConfig.groupList);
+        for (const grp of convGrps) {
+          editDash.addGroup(grp.name, grp.linkList);
+        }
+      } else {
+        throw new Error("Invalid input data");
+      }
+      updateDashConfig(state.quickDashConfig);
+    },
     deleteGroup(state, grpConfig) {
       const editDash = getEditDash(grpConfig.dash, state.quickDashConfig);
-      console.log(editDash);
       editDash.deleteGroup(grpConfig.name);
       updateDashConfig(state.quickDashConfig);
     }
