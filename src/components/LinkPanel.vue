@@ -70,7 +70,11 @@
       <b-form-group
         label="Dash Name:"
         invalid-feedback="Dash names must be unique"
-        ><b-form-input v-model="dashName" :state="dashValid"></b-form-input
+        ><b-form-input
+          v-model="dashName"
+          :state="dashValid"
+          placeholder="Enter a name for the dash"
+        ></b-form-input
       ></b-form-group>
       <b-form-file
         @input="fileAdded"
