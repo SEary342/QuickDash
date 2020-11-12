@@ -139,7 +139,12 @@ export const store = new Vuex.Store({
       if (linkConfig.initialName === null) {
         editGrp.addLink(linkConfig.name, linkConfig.url, linkConfig.color);
       } else {
-        editGrp.editLink(linkConfig.name, linkConfig.url, linkConfig.color);
+        editGrp.editLink(
+          linkConfig.initialName,
+          linkConfig.name,
+          linkConfig.url,
+          linkConfig.color
+        );
       }
       updateDashConfig(state.quickDashConfig);
     },
