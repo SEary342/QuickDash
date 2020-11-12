@@ -1,27 +1,44 @@
 <template>
   <b-container fluid>
     <b-card class="mb-4">
-      <template #header v-if="grp.name !== null"
-        ><span class="h4 float-left">{{ grp.name }}</span
-        ><b-button
-          variant="light"
-          size="sm"
-          v-if="editToggle"
-          class="float-left"
-          @click="editGroup"
-          v-b-tooltip.hover.right
-          title="Edit Group"
-          ><BIconPencil
-        /></b-button>
-        <b-button
-          variant="light"
-          class="float-right"
-          size="sm"
-          :pressed.sync="editToggle"
-          v-b-tooltip.hover
-          title="Toggle Edit Buttons"
-          ><BIconPencilFill v-if="editToggle"/><BIconPencil v-else
-        /></b-button>
+      <template #header
+        ><div v-if="grp.name !== null">
+          <span class="h4 float-left">{{ grp.name }}</span
+          ><b-button
+            variant="light"
+            size="sm"
+            v-if="editToggle"
+            class="float-left"
+            @click="editGroup"
+            v-b-tooltip.hover.right
+            title="Edit Group"
+            ><BIconPencil
+          /></b-button>
+          <b-button
+            variant="light"
+            class="float-right"
+            size="sm"
+            :pressed.sync="editToggle"
+            v-b-tooltip.hover
+            title="Toggle Edit Buttons"
+            ><BIconPencilFill v-if="editToggle"/><BIconPencil v-else
+          /></b-button>
+        </div>
+        <div v-else>
+          <b-form-group
+            label="Add Group"
+            class="h5 font-italic text-secondary mb-0"
+            label-cols="4"
+          >
+            <b-button
+              block
+              variant="outline-secondary"
+              @click="createGroup"
+              v-b-tooltip.hover
+              title="Add a new group"
+              ><BIconPlus font-scale="2"/></b-button
+          ></b-form-group>
+        </div>
       </template>
       <div v-for="(link, btnIndex) in grp.linkList" :key="btnIndex">
         <b-button-group class="w-100 mb-3"
@@ -52,15 +69,7 @@
         v-b-tooltip.hover.bottom
         title="Add a new link"
         ><BIconPlus font-scale="2"
-      /></b-button>
-      <b-button
-        v-if="grp.name === null"
-        variant="outline-secondary"
-        block
-        @click="createGroup"
-        v-b-tooltip.hover
-        title="Add a new group"
-        ><BIconPlus font-scale="2"/></b-button></b-card
+      /></b-button> </b-card
     ><b-modal
       :id="linkModalName"
       @hidden="resetLinkModal"
@@ -80,6 +89,7 @@
         ><b-form-input
           v-model="linkConfig.name"
           :state="linkNameValid"
+          placeholder="Enter a display name for the link"
         ></b-form-input
       ></b-form-group>
       <b-form-group
@@ -88,6 +98,7 @@
         ><b-form-input
           v-model="linkConfig.url"
           :state="URLValid"
+          placeholder="http://"
         ></b-form-input
       ></b-form-group>
       <b-form-group label="Link color:">
@@ -131,6 +142,7 @@
         ><b-form-input
           v-model="groupName"
           :state="groupNameValid"
+          placeholder="Enter a name for the group"
         ></b-form-input></b-form-group
     ></b-modal>
   </b-container>

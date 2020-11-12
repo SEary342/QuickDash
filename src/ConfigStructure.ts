@@ -66,8 +66,8 @@ export class LinkGroup {
     }
   }
 
-  editLink(text: string, url: string, color: string) {
-    const link = this.linkList.find(x => x.text === text);
+  editLink(originalText: string, text: string, url: string, color: string) {
+    const link = this.linkList.find(x => x.text === originalText);
     if (link === undefined) {
       throw new Error(`A link with text: '${text}' cannot be found.`);
     } else {
