@@ -1,5 +1,9 @@
 # QuickDash
 
+## Installation
+1. Download QuickDash.html from the most recent Github release: https://github.com/SEary342/QuickDash/releases/latest
+2. Open the html file as save it as a bookmark
+
 ## Project Develompent setup
 Change directories to the quickdash directory and run `yarn install`
 
