@@ -1,28 +1,30 @@
 <template>
   <b-container fluid>
     <b-card class="mb-4">
-      <template #header
-        ><div v-if="grp.name !== null">
+      <template #header>
+        <div v-if="grp.name !== null">
           <span class="h4 float-left">{{ grp.name }}</span
           ><b-button
+            v-if="editToggle"
+            v-b-tooltip.hover.right
             variant="light"
             size="sm"
-            v-if="editToggle"
             class="float-left"
-            @click="editGroup"
-            v-b-tooltip.hover.right
             title="Edit Group"
-            ><BIconPencil
-          /></b-button>
+            @click="editGroup"
+          >
+            <BIconPencil />
+          </b-button>
           <b-button
+            :pressed.sync="editToggle"
+            v-b-tooltip.hover
             variant="light"
             class="float-right"
             size="sm"
-            :pressed.sync="editToggle"
-            v-b-tooltip.hover
             title="Toggle Edit Buttons"
-            ><BIconPencilFill v-if="editToggle"/><BIconPencil v-else
-          /></b-button>
+          >
+            <BIconPencilFill v-if="editToggle" /><BIconPencil v-else />
+          </b-button>
         </div>
         <div v-else>
           <b-form-group
@@ -31,97 +33,122 @@
             label-cols="4"
           >
             <b-button
+              v-b-tooltip.hover
               block
               variant="outline-secondary"
-              @click="createGroup"
-              v-b-tooltip.hover
               title="Add a new group"
-              ><BIconPlus font-scale="2"/></b-button
-          ></b-form-group>
+              @click="createGroup"
+            >
+              <BIconPlus font-scale="2" />
+            </b-button>
+          </b-form-group>
         </div>
       </template>
       <div v-for="(link, btnIndex) in grp.linkList" :key="btnIndex">
-        <b-button-group class="w-100 mb-3"
-          ><b-button
+        <b-button-group class="w-100 mb-3">
+          <b-button
             class="w-100"
             :href="link.url"
             target="_blank"
             :variant="link.color"
             size="lg"
             block
-            >{{ link.text }}</b-button
           >
+            {{ link.text }}
+          </b-button>
           <b-button
             v-if="editToggle"
+            v-b-tooltip.hover.top
             :variant="link.color"
-            @click="editLink(link)"
-            v-b-tooltip.hover.right
             title="Edit Link"
-            ><BIconPencil
+            @click="editLink(link)"
+          >
+            <BIconPencil />
+          </b-button>
+          <b-button
+            v-if="editToggle && btnIndex !== 0"
+            :variant="link.color"
+            title="Move Up"
+            v-b-tooltip.hover.top
+            @click="moveLink(btnIndex, true)"
+            ><BIconChevronUp
+          /></b-button>
+          <b-button
+            v-if="editToggle && btnIndex !== grp.linkList.length - 1"
+            :variant="link.color"
+            @click="moveLink(btnIndex, false)"
+            title="Move Down"
+            v-b-tooltip.hover.right
+            ><BIconChevronDown
           /></b-button>
         </b-button-group>
       </div>
       <b-button
         v-if="editToggle"
+        v-b-tooltip.hover.bottom
         variant="outline-secondary"
         block
-        @click="createLink"
-        v-b-tooltip.hover.bottom
         title="Add a new link"
-        ><BIconPlus font-scale="2"
-      /></b-button> </b-card
+        @click="createLink"
+      >
+        <BIconPlus font-scale="2" />
+      </b-button> </b-card
     ><b-modal
       :id="linkModalName"
-      @hidden="resetLinkModal"
       :title="linkEditMode ? 'Edit Link' : 'New Link'"
-      @ok="saveLink"
-      @cancel="deleteLink"
       cancel-variant="danger"
       ok-variant="success"
       cancel-title="Delete"
       :ok-only="!linkEditMode"
       :ok-title="linkEditMode ? 'Save' : 'Create'"
       :ok-disabled="linkSaveDisabled"
+      @hidden="resetLinkModal"
+      @ok="saveLink"
+      @cancel="deleteLink"
     >
       <b-form-group
         label="Link Name:"
         invalid-feedback="Link names must be unique within a group"
-        ><b-form-input
+      >
+        <b-form-input
           v-model="linkConfig.name"
           :state="linkNameValid"
           placeholder="Enter a display name for the link"
-        ></b-form-input
-      ></b-form-group>
+        />
+      </b-form-group>
       <b-form-group
         label="Link URL:"
         invalid-feedback="URLs must start with http:// or https://"
-        ><b-form-input
+      >
+        <b-form-input
           v-model="linkConfig.url"
           :state="URLValid"
           placeholder="http://"
-        ></b-form-input
-      ></b-form-group>
+        />
+      </b-form-group>
       <b-form-group label="Link color:">
         <b-form-radio
-          class="m-2"
           v-for="(opt, idx) in colorOptionArray"
           :key="idx"
           v-model="linkConfig.color"
+          class="m-2"
           :value="opt.value"
           button
           :button-variant="opt.value"
-          >{{ opt.text }}</b-form-radio
-        ></b-form-group
-      >
-      <b-form-group label="Preview:" v-if="linkConfig.name">
+        >
+          {{ opt.text }}
+        </b-form-radio>
+      </b-form-group>
+      <b-form-group v-if="linkConfig.name" label="Preview:">
         <b-button
           :href="linkConfig.url"
           :variant="linkConfig.color"
           block
           target="_blank"
           size="lg"
-          >{{ linkConfig.name }}</b-button
         >
+          {{ linkConfig.name }}
+        </b-button>
       </b-form-group>
     </b-modal>
     <b-modal
@@ -129,22 +156,25 @@
       :title="grp.name === null ? 'New Group' : 'Edit Group'"
       ok-title="Save"
       :ok-disabled="groupName === grp.name || !groupNameValid"
-      @hidden="resetGrpModal"
       cancel-title="Delete"
       ok-variant="success"
       cancel-variant="danger"
       :ok-only="grp.name === null"
+      @hidden="resetGrpModal"
       @ok="saveGroup"
       @cancel="deleteGroup"
-      ><b-form-group
+    >
+      <b-form-group
         label="Group Name:"
         invalid-feedback="Group names must be unique within a dash"
-        ><b-form-input
+      >
+        <b-form-input
           v-model="groupName"
           :state="groupNameValid"
           placeholder="Enter a name for the group"
-        ></b-form-input></b-form-group
-    ></b-modal>
+        />
+      </b-form-group>
+    </b-modal>
   </b-container>
 </template>
 
@@ -279,7 +309,7 @@ export default class LinkCard extends Vue {
     } else {
       return (
         this.grpNames.find(
-          x =>
+          (x) =>
             x.dash === this.dash.name &&
             x.grp.toLowerCase() === String(this.groupName).toLowerCase()
         ) === undefined
@@ -295,7 +325,7 @@ export default class LinkCard extends Vue {
     ) {
       return null;
     }
-    const linkNames = this.linkConfig.dashGroup.linkList.map(x =>
+    const linkNames = this.linkConfig.dashGroup.linkList.map((x) =>
       x.text.toLowerCase()
     );
     if (this.linkEditMode) {
@@ -322,6 +352,23 @@ export default class LinkCard extends Vue {
     });
   }
 
+  moveLink(index: number, moveUp: boolean) {
+    const element = this.grp.linkList[index];
+    const newLinkList = [...this.grp.linkList];
+    newLinkList.splice(index, 1);
+    if (moveUp) {
+      newLinkList.splice(index - 1, 0, element);
+    } else {
+      newLinkList.splice(index + 1, 0, element);
+    }
+    const reorderConfig = {
+      dashName: this.dash.name,
+      name: this.grp.name,
+      linkList: newLinkList
+    };
+    this.$store.commit("reorderGroup", reorderConfig);
+  }
+
   deleteGroup() {
     this.$bvModal
       .msgBoxConfirm(
@@ -332,7 +379,7 @@ export default class LinkCard extends Vue {
           okTitle: "Delete"
         }
       )
-      .then(value => {
+      .then((value) => {
         if (value) {
           this.editToggle = false;
           this.$store.commit("deleteGroup", {
@@ -356,7 +403,7 @@ export default class LinkCard extends Vue {
           okTitle: "Delete"
         }
       )
-      .then(value => {
+      .then((value) => {
         if (value) {
           this.$store.commit("deleteLink", deleteConfig);
         }

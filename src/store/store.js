@@ -6,12 +6,12 @@ Vue.use(Vuex);
 const localStorage = window.localStorage;
 
 function getEditDash(dashName, dashConfig) {
-  return dashConfig.find(x => x.name === dashName);
+  return dashConfig.find((x) => x.name === dashName);
 }
 
 function getEditGrp(dashName, grpName, dashConfig) {
   return getEditDash(dashName, dashConfig).groupList.find(
-    x => x.name === grpName
+    (x) => x.name === grpName
   );
 }
 
@@ -105,7 +105,7 @@ export const store = new Vuex.Store({
         state.quickDashConfig.push(new LinkPage(dashConfig.newDashName));
       } else {
         const editDash = state.quickDashConfig.find(
-          x => x.name === dashConfig.name
+          (x) => x.name === dashConfig.name
         );
         if (editDash !== undefined) {
           editDash.name = dashConfig.newDashName;
@@ -117,7 +117,7 @@ export const store = new Vuex.Store({
     },
     deleteDash(state, dashName) {
       const dashIndex = state.quickDashConfig.findIndex(
-        x => x.name === dashName
+        (x) => x.name === dashName
       );
       if (dashIndex !== -1) {
         state.quickDashConfig.splice(dashIndex, 1);
@@ -129,6 +129,15 @@ export const store = new Vuex.Store({
     setNumberOfColumns(state, numberOfColumns) {
       state.numberOfColumns = numberOfColumns;
       updateNumberOfColumns(state.numberOfColumns);
+    },
+    reorderGroup(state, reorderConfig) {
+      const editGrp = getEditGrp(
+        reorderConfig.dashName,
+        reorderConfig.name,
+        state.quickDashConfig
+      );
+      editGrp.linkList = [...reorderConfig.linkList];
+      updateDashConfig(state.quickDashConfig);
     },
     addEditLink(state, linkConfig) {
       const editGrp = getEditGrp(
@@ -188,19 +197,19 @@ export const store = new Vuex.Store({
     }
   },
   getters: {
-    selectedDash: state => state.selectedDash,
-    quickDashConfig: state => state.quickDashConfig,
-    numberOfColumns: state => state.numberOfColumns,
-    groupNames: state =>
+    selectedDash: (state) => state.selectedDash,
+    quickDashConfig: (state) => state.quickDashConfig,
+    numberOfColumns: (state) => state.numberOfColumns,
+    groupNames: (state) =>
       state.quickDashConfig
-        .map(dash =>
-          dash.groupList.map(grp => {
+        .map((dash) =>
+          dash.groupList.map((grp) => {
             return { dash: dash.name, grp: grp.name };
           })
         )
         .flat(),
-    dashNames: state => state.quickDashConfig.map(dash => dash.name),
-    exportData: state => {
+    dashNames: (state) => state.quickDashConfig.map((dash) => dash.name),
+    exportData: (state) => {
       return {
         QuickDashConfig: state.quickDashConfig,
         NumberOfColumns: state.numberOfColumns,

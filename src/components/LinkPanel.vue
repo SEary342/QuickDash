@@ -2,21 +2,22 @@
   <b-tabs content-class="mt-3" variant="secondary" v-model="selectedDash">
     <b-tab
       v-for="(dash, idx) in displayDashboards"
-      title-link-class="text-secondary"
       :key="dash.name"
       :ref="`dash${idx}`"
+      title-link-class="text-secondary"
     >
       <template #title>
         {{ dash.name
         }}<b-button
           v-b-tooltip.hover
           title="Edit Dash"
-          @click="editDash(dash.name)"
           variant="light"
           size="sm"
           class="ml-2 whiteButton"
-          ><BIconPencil
-        /></b-button>
+          @click="editDash(dash.name)"
+        >
+          <BIconPencil />
+        </b-button>
       </template>
       <b-container fluid class="w-75">
         <b-row>
@@ -24,9 +25,10 @@
             <b-row
               v-for="(grp, grpIndex) in col"
               :key="`${colIndex}-${grpIndex}`"
-              ><b-col
-                ><LinkCard :dash="dash" :grp="grp" :grpNames="groupNames"
-              /></b-col>
+            >
+              <b-col>
+                <LinkCard :dash="dash" :grp="grp" :grp-names="groupNames" />
+              </b-col>
             </b-row>
           </b-col>
         </b-row>
@@ -35,13 +37,14 @@
 
     <template #tabs-end>
       <b-button
-        @click.prevent="addDash"
+        v-b-tooltip.hover
         variant="light"
         class="whiteButton py-1 border-bottom-0"
-        v-b-tooltip.hover
         title="Add Dash"
-        ><BIconPlus font-scale="2"
-      /></b-button>
+        @click.prevent="addDash"
+      >
+        <BIconPlus font-scale="2" />
+      </b-button>
     </template>
 
     <template #empty>
@@ -56,61 +59,64 @@
           Don't forget to export your QuickDash configuration using the
           <BIconGearFill /> menu just in case your browswer misplaces it!
         </p>
-        <b-button variant="primary" @click="showFullImport"
-          >Import Configuration</b-button
-        >
+        <b-button variant="primary" @click="showFullImport">
+          Import Configuration
+        </b-button>
       </b-jumbotron>
     </template>
 
     <b-modal
       id="dash-modal"
-      @hidden="resetDashModal"
       :title="editDashInd ? 'Edit Dash' : 'New Dash'"
+      @hidden="resetDashModal"
     >
       <b-form-group
         label="Dash Name:"
         invalid-feedback="Dash names must be unique"
-        ><b-form-input
+      >
+        <b-form-input
           v-model="dashName"
           :state="dashValid"
           placeholder="Enter a name for the dash"
-        ></b-form-input
-      ></b-form-group>
+        />
+      </b-form-group>
       <b-form-file
-        @input="fileAdded"
-        :accept="dashExportExt"
-        v-model="uploadFile"
         v-if="importInd"
+        v-model="uploadFile"
+        :accept="dashExportExt"
         placeholder="Choose a file or drop it here..."
         drop-placeholder="Drop file here..."
-      ></b-form-file>
+        @input="fileAdded"
+      />
 
       <template #modal-footer>
         <b-row class="w-100">
-          <b-col cols="6"
-            ><b-button @click="exportDash" v-if="editDashInd"
-              >Export Dash</b-button
-            ><b-button @click="importInd = true" v-if="!editDashInd"
-              >Import Dash</b-button
-            ></b-col
-          >
-          <b-col cols="6" class="text-right"
-            ><b-button
-              class="mr-2"
-              @click="deleteDash"
-              variant="danger"
+          <b-col cols="6">
+            <b-button v-if="editDashInd" @click="exportDash">
+              Export Dash </b-button
+            ><b-button v-if="!editDashInd" @click="importInd = true">
+              Import Dash
+            </b-button>
+          </b-col>
+          <b-col cols="6" class="text-right">
+            <b-button
               v-if="editDashInd"
-              >Delete</b-button
+              class="mr-2"
+              variant="danger"
+              @click="deleteDash"
+            >
+              Delete </b-button
             ><b-button
               class="ml-2"
-              @click="saveDash"
               variant="success"
               :disabled="
                 dashValid !== true || (importInd && uploadFile === null)
               "
-              >Save</b-button
-            ></b-col
-          >
+              @click="saveDash"
+            >
+              Save
+            </b-button>
+          </b-col>
         </b-row>
       </template>
     </b-modal>
@@ -207,7 +213,7 @@ export default class LinkPanel extends Vue {
           okTitle: "Delete"
         }
       )
-      .then(value => {
+      .then((value) => {
         if (value) {
           this.$store.commit("deleteDash", this.initialDashName);
           this.$bvModal.hide("dash-modal");
@@ -217,7 +223,7 @@ export default class LinkPanel extends Vue {
 
   exportDash() {
     const exportDashData = this.currentConfig.find(
-      x => x.name === this.initialDashName
+      (x) => x.name === this.initialDashName
     );
     if (exportDashData) {
       exportConfig(
@@ -269,7 +275,7 @@ export default class LinkPanel extends Vue {
 
   get dashNames() {
     const dashNames: string[] = this.$store.getters.dashNames;
-    return dashNames.map(x => x.toLowerCase());
+    return dashNames.map((x) => x.toLowerCase());
   }
 
   get displayDashboards(): DisplayDash[] {
