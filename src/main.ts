@@ -5,7 +5,9 @@ import {
   BIconGearFill,
   BIconPlus,
   BIconPencil,
-  BIconPencilFill
+  BIconPencilFill,
+  BIconChevronDown,
+  BIconChevronUp
 } from "bootstrap-vue";
 import { initialLoad, store } from "./store/store";
 import App from "./App.vue";
@@ -20,11 +22,13 @@ Vue.component("BIconGearFill", BIconGearFill);
 Vue.component("BIconPlus", BIconPlus);
 Vue.component("BIconPencil", BIconPencil);
 Vue.component("BIconPencilFill", BIconPencilFill);
+Vue.component("BIconChevronDown", BIconChevronDown);
+Vue.component("BIconChevronUp", BIconChevronUp);
 
 initialLoad();
 
 new Vue({
   components: { App },
   store,
-  render: h => h(App)
+  render: (h) => h(App)
 }).$mount("#app");

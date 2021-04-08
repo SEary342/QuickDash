@@ -18,9 +18,9 @@ export enum ColorOption {
 const colorOptionKeys = Object.keys(ColorOption);
 colorOptionKeys.sort();
 
-export const ColorOptionArray = colorOptionKeys.map(k => {
+export const ColorOptionArray = colorOptionKeys.map((k) => {
   return {
-    text: k.replace(/[A-Z]/g, m => "-" + m).slice(1),
+    text: k.replace(/[A-Z]/g, (m) => "-" + m).slice(1),
     value: Object(ColorOption)[k]
   };
 });
@@ -57,7 +57,7 @@ export class LinkGroup {
   addLink(text: string, url: string, color: string) {
     if (
       !this.linkList
-        .map(x => x.text.toLowerCase())
+        .map((x) => x.text.toLowerCase())
         .includes(text.toLowerCase())
     ) {
       this.linkList.push(new LinkData(text, url, color));
@@ -67,7 +67,7 @@ export class LinkGroup {
   }
 
   editLink(originalText: string, text: string, url: string, color: string) {
-    const link = this.linkList.find(x => x.text === originalText);
+    const link = this.linkList.find((x) => x.text === originalText);
     if (link === undefined) {
       throw new Error(`A link with text: '${text}' cannot be found.`);
     } else {
@@ -78,7 +78,7 @@ export class LinkGroup {
   }
 
   deleteLink(text: string) {
-    const itemIndex = this.linkList.findIndex(x => x.text === text);
+    const itemIndex = this.linkList.findIndex((x) => x.text === text);
     if (itemIndex !== -1) {
       this.linkList.splice(itemIndex, 1);
     } else {
@@ -101,7 +101,7 @@ export class LinkPage {
   }
 
   addGroup(name: string, linkList?: LinkData[]) {
-    if (!this.groupList.map(x => x.name).includes(name)) {
+    if (!this.groupList.map((x) => x.name).includes(name)) {
       this.groupList.push(new LinkGroup(name, linkList));
     } else {
       throw new Error(`A group with name: '${name}' already exists.`);
@@ -109,7 +109,7 @@ export class LinkPage {
   }
 
   editGroup(name: string, newName: string) {
-    const grp = this.groupList.find(x => x.name === name);
+    const grp = this.groupList.find((x) => x.name === name);
     if (grp === undefined) {
       throw new Error(`A group with name: '${name}' cannot be found.`);
     } else {
@@ -118,7 +118,7 @@ export class LinkPage {
   }
 
   deleteGroup(name: string) {
-    const grpIndex = this.groupList.findIndex(x => x.name === name);
+    const grpIndex = this.groupList.findIndex((x) => x.name === name);
     if (grpIndex !== -1) {
       this.groupList.splice(grpIndex, 1);
     } else {

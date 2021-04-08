@@ -1,26 +1,26 @@
 <template>
   <div id="app">
-    <b-navbar variant="dark" type="dark" fluid
-      ><b-navbar-brand fluid><qdLogo /> QuickDash</b-navbar-brand>
+    <b-navbar variant="dark" type="dark" fluid>
+      <b-navbar-brand fluid> <qdLogo /> QuickDash </b-navbar-brand>
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right>
-          <template #button-content> <BIconGearFill /> </template>
-          <b-dropdown-item-button @click="showUpload"
-            >Import</b-dropdown-item-button
-          >
+          <template #button-content>
+            <BIconGearFill />
+          </template>
+          <b-dropdown-item-button @click="showUpload">
+            Import
+          </b-dropdown-item-button>
           <b-dropdown-item-button
             v-if="$store.getters.dashNames.length > 0"
             @click="exportFullConfig"
-            >Export</b-dropdown-item-button
           >
-          <b-dropdown-divider></b-dropdown-divider>
+            Export
+          </b-dropdown-item-button>
+          <b-dropdown-divider />
           <b-dropdown-form>
-            <b-form-group label="Columns"
-              ><b-form-spinbutton
-                v-model="dispColumns"
-                class="w-100"
-              ></b-form-spinbutton
-            ></b-form-group>
+            <b-form-group label="Columns">
+              <b-form-spinbutton v-model="dispColumns" class="w-100" />
+            </b-form-group>
           </b-dropdown-form>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -29,21 +29,22 @@
     <b-modal
       id="upload-modal"
       title="Upload QuickDash Configuration JSON"
-      @ok="importFullConfig"
       :ok-disabled="uploadFile === null"
       ok-title="Upload"
+      @ok="importFullConfig"
       @hide="uploadFile = null"
-      ><h6 class="text-danger">
+    >
+      <h6 class="text-danger">
         Warning: Uploading a file will replace all content in QuickDash!
       </h6>
       <hr />
       <b-form-file
-        accept=".QDconfig"
         v-model="uploadFile"
+        accept=".QDconfig"
         placeholder="Choose a file or drop it here..."
         drop-placeholder="Drop file here..."
-      ></b-form-file
-    ></b-modal>
+      />
+    </b-modal>
   </div>
 </template>
 
