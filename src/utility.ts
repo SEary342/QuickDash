@@ -1,10 +1,18 @@
-import { LinkGroup, LinkPage } from "./ConfigStructure";
+import { LinkGroup, LinkPage } from "./configStructure";
 
-export function exportConfig(
-  exportFileName: string,
-  fileExtension: string,
-  exportData: LinkPage[] | LinkGroup[]
-) {
+declare global {
+  interface Navigator {
+    msSaveBlob?: (blob: any, defaultName?: string) => boolean;
+  }
+}
+
+interface QDConfig {
+  QuickDashConfig: LinkPage[];
+  NumberOfColumns: number;
+  QuickDashSelected: number;
+}
+
+export function exportConfig(exportFileName: string, fileExtension: string, exportData: LinkPage[] | LinkGroup[]) {
   const jsonFile = JSON.stringify(exportData);
   const blob = new Blob([jsonFile], { type: "application/json" });
   if (navigator.msSaveBlob) {
@@ -26,7 +34,7 @@ export function exportConfig(
   }
 }
 
-export function readFile(uploadFile: File) {
+export function readFile(uploadFile: File): Promise<LinkGroup[] | QDConfig> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 

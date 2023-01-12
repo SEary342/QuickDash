@@ -7,10 +7,10 @@
 2. Open the html file as save it as a bookmark
 
 ## Project Develompent setup
-Change directories to the quickdash directory and run `yarn install`
+Change directories to the quickdash directory and run `npm install`
 
 ## Page deployment
-To deploy your changes, run `yarn build` in the quickdash directroy and copy the quickdash/dist/QuickDash.html file to it's deployed destination.
+To deploy your changes, run `npm run build` in the quickdash directroy and copy the quickdash/dist/QuickDash.html file to it's deployed destination.
 
 Please note that the build process is customized for a local webpage deployment. A server is not required.
 

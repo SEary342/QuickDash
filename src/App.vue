@@ -1,4 +1,15 @@
 <template>
+  <v-app>
+    <v-main>
+    </v-main>
+  </v-app>
+</template>
+
+<script setup lang="ts">
+
+</script>
+
+<template>
   <div id="app">
     <b-navbar variant="dark" type="dark" fluid>
       <b-navbar-brand fluid> <qdLogo /> QuickDash </b-navbar-brand>
@@ -53,7 +64,6 @@ import { Component, Vue } from "vue-property-decorator";
 import qdLogo from "./assets/qdLogo.svg";
 import LinkPanel from "./components/LinkPanel.vue";
 import { exportConfig, readFile } from "./utility";
-
 @Component({
   components: {
     LinkPanel,
@@ -62,19 +72,15 @@ import { exportConfig, readFile } from "./utility";
 })
 export default class App extends Vue {
   uploadFile: File | null = null;
-
   public showUpload() {
     this.$bvModal.show("upload-modal");
   }
-
   get dispColumns() {
     return this.$store.getters.numberOfColumns;
   }
-
   set dispColumns(colValue) {
     this.$store.commit("setNumberOfColumns", colValue);
   }
-
   async importFullConfig() {
     try {
       const importData = await readFile(this.uploadFile as File);
@@ -86,7 +92,6 @@ export default class App extends Vue {
       });
     }
   }
-
   exportFullConfig() {
     exportConfig(
       "QuickDashConfig",
