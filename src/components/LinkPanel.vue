@@ -22,6 +22,8 @@ const colCt = computed(() => Math.floor(12 / numberOfColumns.value));
 
 const renderTabs = computed(() => quickDashConfig.value.map((x) => x.name));
 
+// TODO add dash move systems
+
 function addDash(name: string) {
   quickDashConfig.value.push({ name: name, groupList: [] });
   selectedDash.value = name;
