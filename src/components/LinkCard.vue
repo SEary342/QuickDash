@@ -11,7 +11,8 @@ const props = defineProps({
   linkList: { type: Array as PropType<LinkData[]>, required: true },
   moveLeft: { type: Boolean, default: false },
   moveRight: { type: Boolean, default: false },
-  addMode: { type: Boolean, default: false }
+  addMode: { type: Boolean, default: false },
+  dashGroupNames: {type: Array as PropType<string[]>, required: true}
 });
 
 const editMode = ref<number>();
@@ -40,7 +41,11 @@ function moveGroupRight() {}
             <v-btn variant="text" size="35" rounded="pill" class="ml-2"
               ><v-icon icon="mdi-pencil"></v-icon
               ><v-tooltip activator="parent">Edit Group</v-tooltip>
-              <AddItem :current-name="name" type-name="Group" />
+              <AddItem
+                :current-name="name"
+                type-name="Group"
+                :existing-items="dashGroupNames.filter((x) => x != name)"
+              />
             </v-btn>
             <v-btn
               variant="text"
@@ -78,7 +83,7 @@ function moveGroupRight() {}
       ><v-btn v-else variant="outlined" width="300"
         ><v-tooltip activator="parent">Add Group</v-tooltip
         ><v-icon icon="mdi-plus"></v-icon>
-        <AddItem type-name="Group" /></v-btn></v-card-title
+        <AddItem type-name="Group" :existing-items="dashGroupNames" /></v-btn></v-card-title
     ><v-card-text>
       <LinkDisplay
         v-for="(btn, i) in linkList"

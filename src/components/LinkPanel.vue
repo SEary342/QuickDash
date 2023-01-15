@@ -7,7 +7,8 @@ import { storeToRefs } from "pinia";
 import { useAppStore } from "@/store/app";
 
 const appStore = useAppStore();
-const { numberOfColumns, selectedDash } = storeToRefs(appStore);
+const { numberOfColumns, selectedDash, quickDashConfig } =
+  storeToRefs(appStore);
 
 const tab = computed({
   get: () =>
@@ -17,17 +18,33 @@ const tab = computed({
   set: (value) => (selectedDash.value = value)
 });
 
-const renderTabs = computed(() => {
-  // TODO get the tabs from the store
-  return ["p1", "p2"];
-});
+const renderTabs = computed(() => quickDashConfig.value.map((x) => x.name));
 
 function addDash(name: string) {
-  // TODO integrate with the store
+  quickDashConfig.value.push({ name: name, groupList: [] });
+  selectedDash.value = name;
 }
 
 function updateDash(name: string, oldName: string) {
-  // TODO integrate with the store
+  const dashData = quickDashConfig.value.find((x) => x.name == oldName);
+  if (dashData) {
+    dashData.name = name;
+  }
+}
+
+function deleteDash(name: string) {
+  const idx = quickDashConfig.value.findIndex((x) => x.name == name);
+
+  if (idx != -1) {
+    if (selectedDash.value == name) {
+      let newSelIdx = idx - 1;
+      if (newSelIdx < 0) {
+        newSelIdx = 1;
+      }
+      selectedDash.value = renderTabs.value[newSelIdx];
+    }
+    quickDashConfig.value.splice(idx, 1);
+  }
 }
 
 const devGrp: LinkGroup = {
@@ -85,6 +102,8 @@ const pageData = computed(() => {
   }
 });
 
+const groupNames = computed(() => pageData.value.map((x) => x.name));
+
 const displayPage = computed(() => {
   return pageData.value.reduce((resultArray: LinkGroup[][], item, index) => {
     const chunkIndex = Math.floor(index / numberOfColumns.value);
@@ -105,10 +124,15 @@ const displayPage = computed(() => {
         ><AddItem
           :current-name="t"
           type-name="Dash"
-          @update:name="(v) => updateDash(v, t)" /></v-btn></v-tab
+          @update:name="(v) => updateDash(v, t)"
+          @delete:name="() => deleteDash(t)"
+          :existing-items="renderTabs.filter((x) => x != t)" /></v-btn></v-tab
     ><v-btn size="large" variant="text"
       ><v-icon icon="mdi-plus"></v-icon
-      ><AddItem @update:name="addDash" type-name="Dash" /></v-btn
+      ><AddItem
+        @update:name="addDash"
+        type-name="Dash"
+        :existing-items="renderTabs" /></v-btn
   ></v-tabs>
   <v-container
     ><v-row v-for="(row, idx) in displayPage" :key="`row-${idx}`">
@@ -126,10 +150,15 @@ const displayPage = computed(() => {
               idc == displayPage[displayPage.length - 1].length - 1
             )
           "
+          :dash-group-names="groupNames"
         />
       </v-col>
       <v-col v-if="idx == displayPage.length - 1"
-        ><LinkCard name="Add Group" :link-list="[]" :add-mode="true"
+        ><LinkCard
+          name="Add Group"
+          :link-list="[]"
+          :add-mode="true"
+          :dash-group-names="groupNames"
       /></v-col> </v-row
   ></v-container>
 </template>
