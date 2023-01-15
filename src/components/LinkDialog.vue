@@ -8,6 +8,11 @@ import LinkDisplay from "./LinkDisplay.vue";
 const props = defineProps({
   dataModel: { type: Object as PropType<LinkData> }
 });
+const emits = defineEmits<{
+  (e: "add:link", value: LinkData): void;
+  (e: "update:link", value: LinkData): void;
+  (e: "delete:link", value: LinkData): void;
+}>();
 
 function getLink(): LinkData {
   return { text: "", url: "", color: "", outline: false, icon: undefined };
@@ -22,6 +27,7 @@ const dataChanged = computed(
 );
 
 // TODO implement rules and add validation
+// TODO implement color & icon selection
 
 const dataValid = computed(() => {
   // TODO implement checks
@@ -40,11 +46,17 @@ function reset() {
 }
 
 function deleteLink() {
-  // TODO implement delete -> this should be an emit
+  emits("delete:link", editLink.value)
   reset();
 }
 function save() {
-  // TODO implement save -> this should be an emit
+  if (props.dataModel == undefined){
+    emits("add:link", editLink.value)
+  }
+  else{
+    emits("update:link", editLink.value)
+  }
+  
   reset();
 }
 </script>

@@ -100,6 +100,8 @@ function moveDown(index: number) {}
         :index="i"
         :move-up="i != 0 ? moveUp : undefined"
         :move-down="i != linkList?.length - 1 ? moveDown : undefined"
+        @update:link="(v) => (linkList[v.index] = v.data)"
+        @delete:link="(v) => linkList.splice(v, 1)"
       ></LinkDisplay
       ><v-expand-transition>
         <div v-show="editActive">
@@ -117,7 +119,10 @@ function moveDown(index: number) {}
                 :index="-1"
                 :edit-mode="false"
                 :hover-color="isHovering ? 'grey-lighten-5' : undefined"
-                ><LinkDialog /></LinkDisplay></template
+                ><LinkDialog
+                  @add:link="
+                    (v) => linkList.push(v)
+                  " /></LinkDisplay></template
           ></v-hover></div
       ></v-expand-transition>
     </v-card-text>
