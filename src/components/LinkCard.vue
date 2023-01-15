@@ -19,6 +19,7 @@ const emits = defineEmits<{
   (e: "add:name", value: string): void;
   (e: "update:name", value: string): void;
   (e: "delete:name", value: string): void;
+  (e: "move:group", value: number): void;
 }>();
 
 const editMode = ref<number>();
@@ -30,10 +31,6 @@ const editActive = computed(() => editMode.value != undefined);
 function moveUp(index: number) {}
 
 function moveDown(index: number) {}
-
-function moveGroupLeft() {}
-
-function moveGroupRight() {}
 </script>
 <template>
   <v-card variant="outlined" class="mx-6 my-3"
@@ -60,7 +57,7 @@ function moveGroupRight() {}
               rounded="pill"
               class="ml-2"
               v-if="moveLeft"
-              @click="moveGroupLeft"
+              @click="emits('move:group', -1)"
               ><v-icon icon="mdi-chevron-left"></v-icon
               ><v-tooltip activator="parent">Move Left</v-tooltip> </v-btn
             ><v-btn
@@ -69,7 +66,7 @@ function moveGroupRight() {}
               rounded="pill"
               class="ml-2"
               v-if="moveRight"
-              @click="moveGroupRight"
+              @click="emits('move:group', 1)"
               ><v-icon icon="mdi-chevron-right"></v-icon
               ><v-tooltip activator="parent">Move Right</v-tooltip>
             </v-btn>

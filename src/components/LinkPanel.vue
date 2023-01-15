@@ -103,6 +103,21 @@ function deleteGroup(name: string) {
     }
   }
 }
+
+function moveGroup(name: string, direction: number) {
+  const data = getCurrentDash();
+  if (data) {
+    const idx = data.groupList.findIndex((x) => x.name == name);
+    const newIndex = idx + direction;
+    if (newIndex >= data.groupList.length) {
+      var k = newIndex - data.groupList.length + 1;
+      while (k--) {
+        data.groupList.push({name:"", linkList:[]});
+      }
+    }
+    data.groupList.splice(newIndex, 0, data.groupList.splice(idx, 1)[0]);
+  }
+}
 </script>
 <template>
   <v-tabs v-model="tab"
@@ -142,6 +157,7 @@ function deleteGroup(name: string) {
           :dash-group-names="groupNames"
           @update:name="(v) => updateGroup(v, col.name)"
           @delete:name="deleteGroup"
+          @move:group="(v) => moveGroup(col.name, v)"
         />
       </v-col>
       <v-col v-if="idx == displayPage.length - 1" :cols="colCt"
