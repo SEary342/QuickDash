@@ -112,10 +112,36 @@ function moveGroup(name: string, direction: number) {
     if (newIndex >= data.groupList.length) {
       var k = newIndex - data.groupList.length + 1;
       while (k--) {
-        data.groupList.push({name:"", linkList:[]});
+        data.groupList.push({ name: "", linkList: [] });
       }
     }
     data.groupList.splice(newIndex, 0, data.groupList.splice(idx, 1)[0]);
+  }
+}
+
+function moveLink(groupName: string, index: number, direction: number) {
+  const data = getCurrentDash();
+  if (data) {
+    const groupData = data.groupList.find((x) => x.name == groupName);
+    if (groupData) {
+      const newIndex = index + direction;
+      if (newIndex >= groupData.linkList.length) {
+        var k = newIndex - groupData.linkList.length + 1;
+        while (k--) {
+          groupData.linkList.push({
+            text: "",
+            url: "",
+            color: "",
+            outline: false
+          });
+        }
+      }
+      groupData.linkList.splice(
+        newIndex,
+        0,
+        groupData.linkList.splice(index, 1)[0]
+      );
+    }
   }
 }
 </script>
@@ -158,6 +184,7 @@ function moveGroup(name: string, direction: number) {
           @update:name="(v) => updateGroup(v, col.name)"
           @delete:name="deleteGroup"
           @move:group="(v) => moveGroup(col.name, v)"
+          @move:link="(v) => moveLink(col.name, v.index, v.direction)"
         />
       </v-col>
       <v-col v-if="idx == displayPage.length - 1" :cols="colCt"

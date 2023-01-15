@@ -20,17 +20,20 @@ const emits = defineEmits<{
   (e: "update:name", value: string): void;
   (e: "delete:name", value: string): void;
   (e: "move:group", value: number): void;
+  (e: "move:link", value: { index: number; direction: number }): void;
 }>();
 
 const editMode = ref<number>();
 
 const editActive = computed(() => editMode.value != undefined);
 
-// TODO implement move systems
+function moveUp(index: number) {
+  emits("move:link", { index: index, direction: -1 });
+}
 
-function moveUp(index: number) {}
-
-function moveDown(index: number) {}
+function moveDown(index: number) {
+  emits("move:link", { index: index, direction: 1 });
+}
 </script>
 <template>
   <v-card variant="outlined" class="mx-6 my-3"
