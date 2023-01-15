@@ -12,15 +12,20 @@ const props = defineProps({
   moveLeft: { type: Boolean, default: false },
   moveRight: { type: Boolean, default: false },
   addMode: { type: Boolean, default: false },
-  dashGroupNames: {type: Array as PropType<string[]>, required: true}
+  dashGroupNames: { type: Array as PropType<string[]>, required: true }
 });
+
+const emits = defineEmits<{
+  (e: "add:name", value: string): void;
+  (e: "update:name", value: string): void;
+  (e: "delete:name", value: string): void;
+}>();
 
 const editMode = ref<number>();
 
 const editActive = computed(() => editMode.value != undefined);
 
-// TODO implement edit dialog for the group name
-// TODO implement group add button
+// TODO implement move systems
 
 function moveUp(index: number) {}
 
@@ -45,6 +50,8 @@ function moveGroupRight() {}
                 :current-name="name"
                 type-name="Group"
                 :existing-items="dashGroupNames.filter((x) => x != name)"
+                @update:name="(v) => emits('update:name', v)"
+                @delete:name="(v) => emits('delete:name', v)"
               />
             </v-btn>
             <v-btn
@@ -83,7 +90,10 @@ function moveGroupRight() {}
       ><v-btn v-else variant="outlined" width="300"
         ><v-tooltip activator="parent">Add Group</v-tooltip
         ><v-icon icon="mdi-plus"></v-icon>
-        <AddItem type-name="Group" :existing-items="dashGroupNames" /></v-btn></v-card-title
+        <AddItem
+          type-name="Group"
+          :existing-items="dashGroupNames"
+          @update:name="(v) => emits('add:name', v)" /></v-btn></v-card-title
     ><v-card-text>
       <LinkDisplay
         v-for="(btn, i) in linkList"

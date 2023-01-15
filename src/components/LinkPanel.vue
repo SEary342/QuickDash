@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { LinkGroup } from "@/configStructure";
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import AddItem from "./AddItem.vue";
 import LinkCard from "./LinkCard.vue";
 import { storeToRefs } from "pinia";
@@ -72,6 +72,37 @@ const displayPage = computed(() => {
     return resultArray;
   }, []);
 });
+
+function getCurrentDash() {
+  return quickDashConfig.value.find((x) => x.name == selectedDash.value);
+}
+
+function addGroup(name: string) {
+  const data = getCurrentDash();
+  if (data) {
+    data.groupList.push({ name: name, linkList: [] });
+  }
+}
+
+function updateGroup(name: string, oldName: string) {
+  const data = getCurrentDash();
+  if (data) {
+    const grpRec = data.groupList.find((x) => x.name == oldName);
+    if (grpRec) {
+      grpRec.name = name;
+    }
+  }
+}
+
+function deleteGroup(name: string) {
+  const data = getCurrentDash();
+  if (data) {
+    const idx = data.groupList.findIndex((x) => x.name == name);
+    if (idx != -1) {
+      data.groupList.splice(idx, 1);
+    }
+  }
+}
 </script>
 <template>
   <v-tabs v-model="tab"
@@ -109,6 +140,8 @@ const displayPage = computed(() => {
             )
           "
           :dash-group-names="groupNames"
+          @update:name="(v) => updateGroup(v, col.name)"
+          @delete:name="deleteGroup"
         />
       </v-col>
       <v-col v-if="idx == displayPage.length - 1" :cols="colCt"
@@ -117,6 +150,7 @@ const displayPage = computed(() => {
           :link-list="[]"
           :add-mode="true"
           :dash-group-names="groupNames"
+          @add:name="addGroup"
       /></v-col>
     </v-row>
     <v-row v-if="displayPage.length == 0"
@@ -126,6 +160,7 @@ const displayPage = computed(() => {
           :link-list="[]"
           :add-mode="true"
           :dash-group-names="groupNames"
+          @add:name="addGroup"
       /></v-col>
     </v-row>
   </v-container>

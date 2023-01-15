@@ -10,7 +10,8 @@ import { useAppStore } from "@/store/app";
 const appStore = useAppStore();
 const {numberOfColumns} =storeToRefs(appStore)
 
-// TODO implement full export function (tied to the store )
+// TODO implement full import/export function (tied to the store )
+// Make load compatible with the old 1.0.x versions
 function exportFullConfig() {
   exportConfig("QuickDashConfig", ".QDconfig", []);
 }
