@@ -3,7 +3,8 @@ import { ref, watchEffect } from "vue";
 import ConfirmationDialog from "./ConfirmationDialog.vue";
 
 const props = defineProps({
-  currentName: { type: String, default: "" }
+  currentName: { type: String, default: "" },
+  typeName: {type: String, required: true}
 });
 
 const emits = defineEmits<{
@@ -30,7 +31,7 @@ function reset() {
   dialog.value = false;
 }
 
-function deleteDash(){
+function deleteItem(){
     emits("delete:name", props.currentName);
     reset();
 }
@@ -38,16 +39,16 @@ function deleteDash(){
 
 <template>
   <v-dialog activator="parent" v-model="dialog" width="600">
-    <v-card :title="props.currentName.length == 0 ? 'New Dash' : 'Edit Dash'">
+    <v-card :title="props.currentName.length == 0 ? `New ${typeName}` : `Edit ${typeName}`">
       <v-card-text
-        ><v-text-field label="Dash Name" v-model="editName"></v-text-field
+        ><v-text-field label="Group Name" v-model="editName"></v-text-field
       ></v-card-text>
       <v-card-actions class="mb-3 mx-3 justify-space-between d-flex"
         ><v-btn color="grey" @click="reset">Cancel</v-btn>
         <v-btn
           class="bg-error"
           v-if="props.currentName.length != 0"
-          >Delete<ConfirmationDialog :text="`Are you sure you want to delete Dash: ${props.currentName}`" @confirm="deleteDash"/></v-btn
+          >Delete<ConfirmationDialog :text="`Are you sure you want to delete ${typeName}: ${props.currentName}`" @confirm="deleteItem"/></v-btn
         ><v-btn
           class="bg-primary"
           :disabled="editName.length == 0 || editName == props.currentName"

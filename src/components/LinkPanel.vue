@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { LinkGroup } from "@/configStructure";
 import { ref, computed } from "vue";
-import AddDash from "./AddDash.vue";
+import AddItem from "./AddItem.vue";
 import LinkCard from "./LinkCard.vue";
 import { storeToRefs } from "pinia";
 import { useAppStore } from "@/store/app";
@@ -102,12 +102,13 @@ const displayPage = computed(() => {
       >{{ t
       }}<v-btn size="35" variant="text" class="ml-3" rounded="pill"
         ><v-icon icon="mdi-pencil"></v-icon
-        ><AddDash
+        ><AddItem
           :current-name="t"
+          type-name="Dash"
           @update:name="(v) => updateDash(v, t)" /></v-btn></v-tab
     ><v-btn size="large" variant="text"
       ><v-icon icon="mdi-plus"></v-icon
-      ><AddDash @update:name="addDash" /></v-btn
+      ><AddItem @update:name="addDash" type-name="Dash" /></v-btn
   ></v-tabs>
   <v-container
     ><v-row v-for="(row, idx) in displayPage" :key="`row-${idx}`">
@@ -125,6 +126,10 @@ const displayPage = computed(() => {
               idc == displayPage[displayPage.length - 1].length - 1
             )
           "
-        /> </v-col></v-row
+        />
+      </v-col>
+      <v-col v-if="idx == displayPage.length - 1"
+        ><LinkCard name="Add Group" :link-list="[]" :add-mode="true"
+      /></v-col> </v-row
   ></v-container>
 </template>

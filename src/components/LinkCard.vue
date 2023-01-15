@@ -4,12 +4,14 @@ import type { PropType } from "vue";
 import { ref, computed } from "vue";
 import LinkDialog from "./LinkDialog.vue";
 import LinkDisplay from "./LinkDisplay.vue";
+import AddItem from "./AddItem.vue";
 
 const props = defineProps({
   name: { type: String, required: true },
   linkList: { type: Array as PropType<LinkData[]>, required: true },
   moveLeft: { type: Boolean, default: false },
-  moveRight: { type: Boolean, default: false }
+  moveRight: { type: Boolean, default: false },
+  addMode: { type: Boolean, default: false }
 });
 
 const editMode = ref<number>();
@@ -31,13 +33,14 @@ function moveGroupRight() {}
   <v-card variant="outlined" class="mx-6 my-3"
     ><v-card-title
       class="bg-grey-lighten-4 justify-space-between d-flex align-center"
-      ><div class="d-flex align-center">
+      ><div class="d-flex align-center" :class="addMode ? 'font-italic' : ''">
         {{ name
         }}<v-expand-x-transition
           ><div v-show="editActive">
             <v-btn variant="text" size="35" rounded="pill" class="ml-2"
               ><v-icon icon="mdi-pencil"></v-icon
               ><v-tooltip activator="parent">Edit Group</v-tooltip>
+              <AddItem :current-name="name" type-name="Group" />
             </v-btn>
             <v-btn
               variant="text"
@@ -61,14 +64,21 @@ function moveGroupRight() {}
           </div></v-expand-x-transition
         >
       </div>
-      <v-btn-toggle v-model="editMode" class="d-flex align-center"
+
+      <v-btn-toggle
+        v-model="editMode"
+        class="d-flex align-center"
+        v-if="!addMode"
         ><v-btn variant="text" size="35" rounded="pill"
           ><v-icon icon="mdi-playlist-edit"></v-icon
           ><v-tooltip location="top" activator="parent"
             >Toggle Group Controls</v-tooltip
           ></v-btn
         ></v-btn-toggle
-      ></v-card-title
+      ><v-btn v-else variant="outlined" width="300"
+        ><v-tooltip activator="parent">Add Group</v-tooltip
+        ><v-icon icon="mdi-plus"></v-icon>
+        <AddItem type-name="Group" /></v-btn></v-card-title
     ><v-card-text>
       <LinkDisplay
         v-for="(btn, i) in linkList"
