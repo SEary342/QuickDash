@@ -18,6 +18,8 @@ const tab = computed({
   set: (value) => (selectedDash.value = value)
 });
 
+const colCt = computed(() => Math.floor(12 / numberOfColumns.value));
+
 const renderTabs = computed(() => quickDashConfig.value.map((x) => x.name));
 
 function addDash(name: string) {
@@ -47,58 +49,14 @@ function deleteDash(name: string) {
   }
 }
 
-const devGrp: LinkGroup = {
-  name: "Test Group",
-  linkList: [
-    {
-      text: "test link1",
-      url: "https://www.google.com",
-      color: "success",
-      outline: false
-    },
-    {
-      text: "test link12",
-      url: "https://www.google.com",
-      color: "error",
-      outline: true
-    }
-  ]
-};
-
-const devGrp2: LinkGroup = {
-  name: "Test Group22",
-  linkList: [
-    {
-      text: "test link1",
-      url: "https://www.google.com",
-      color: "warning",
-      outline: true,
-      icon: "mdi-death-star"
-    },
-    {
-      text: "test link12",
-      url: "https://www.google.com",
-      color: "error",
-      outline: true
-    }
-  ]
-};
-
 const pageData = computed(() => {
-  // TODO replace with store
-  if (selectedDash.value == "p1") {
-    return [
-      devGrp,
-      devGrp,
-      devGrp,
-      devGrp2,
-      devGrp2,
-      devGrp2,
-      devGrp2,
-      devGrp2
-    ];
+  const data = quickDashConfig.value.find(
+    (x) => x.name == selectedDash.value
+  );
+  if (data) {
+    return data.groupList;
   } else {
-    return [devGrp2, devGrp];
+    return [];
   }
 });
 
@@ -139,7 +97,7 @@ const displayPage = computed(() => {
       <v-col
         v-for="(col, idc) in row"
         :key="`col-${idx}-${idc}`"
-        :cols="Math.floor(12 / numberOfColumns)"
+        :cols="colCt"
         ><LinkCard
           :name="col.name"
           :link-list="col.linkList"
@@ -153,12 +111,22 @@ const displayPage = computed(() => {
           :dash-group-names="groupNames"
         />
       </v-col>
-      <v-col v-if="idx == displayPage.length - 1"
+      <v-col v-if="idx == displayPage.length - 1" :cols="colCt"
         ><LinkCard
           name="Add Group"
           :link-list="[]"
           :add-mode="true"
           :dash-group-names="groupNames"
-      /></v-col> </v-row
-  ></v-container>
+      /></v-col>
+    </v-row>
+    <v-row v-if="displayPage.length == 0"
+      ><v-col :cols="colCt"
+        ><LinkCard
+          name="Add Group"
+          :link-list="[]"
+          :add-mode="true"
+          :dash-group-names="groupNames"
+      /></v-col>
+    </v-row>
+  </v-container>
 </template>
