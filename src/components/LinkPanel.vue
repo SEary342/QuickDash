@@ -1,237 +1,130 @@
-<script lang="ts">
-import { LinkGroup, LinkPage } from "../configStructure";
-export type DisplayDash = {
-  name: string;
-  groupList: LinkGroup[][];
-};
-</script>
-
 <script setup lang="ts">
+import type { LinkGroup } from "@/configStructure";
 import { ref, computed } from "vue";
-
+import AddDash from "./AddDash.vue";
 import LinkCard from "./LinkCard.vue";
-import { exportConfig, readFile } from "../utility";
-import { useAppStore } from "@/store/app";
 import { storeToRefs } from "pinia";
-import App from "../App.vue";
+import { useAppStore } from "@/store/app";
 
 const appStore = useAppStore();
-const { quickDashConfig, numberOfColumns, selectedDash, groupNames, dashNames } = storeToRefs(appStore);
+const { numberOfColumns, selectedDash } = storeToRefs(appStore);
 
-const props = defineProps({ showUpload: { type: Function, default: () => undefined } });
+const tab = computed({
+  get: () =>
+    selectedDash.value == undefined
+      ? renderTabs.value[0]
+      : selectedDash.value,
+  set: (value) => (selectedDash.value = value)
+});
 
-const dashName = ref<string>();
-const initialDashName = ref<string>();
-const editDashInd = ref(false);
-const importInd = ref(false);
-const uploadFile = ref<File>();
-const dashExportExt = ".QDdashConfig";
-const dialog = ref(false);
+const renderTabs = computed(() => {
+  // TODO get the tabs from the store
+  return ["p1", "p2"];
+});
 
-function addDash() {
-  dialog.value = true;
+function addDash(name: string) {
+  // TODO integrate with the store
 }
 
-function fileAdded() {
-  if ((dashName.value === undefined || dashName.value.length === 0) && uploadFile.value !== undefined) {
-    dashName.value = uploadFile.value.name.split(".")[0];
-  }
+function updateDash(name: string, oldName: string) {
+  // TODO integrate with the store
 }
 
-function editDash(editDash: string) {
-  editDashInd.value = true;
-  dashName.value = editDash;
-  initialDashName.value = editDash;
-  dialog.value = true;
-}
+const devGrp: LinkGroup = {
+  name: "Test Group",
+  linkList: [
+    {
+      text: "test link1",
+      url: "https://www.google.com",
+      color: "success",
+      outline: false
+    },
+    {
+      text: "test link12",
+      url: "https://www.google.com",
+      color: "error",
+      outline: true
+    }
+  ]
+};
 
-const dashValid = computed(() => {
-  if (dashName.value === undefined || dashName.value === "" || dashName.value === initialDashName.value) {
-    return null;
+const devGrp2: LinkGroup = {
+  name: "Test Group22",
+  linkList: [
+    {
+      text: "test link1",
+      url: "https://www.google.com",
+      color: "warning",
+      outline: true,
+      icon: "mdi-death-star"
+    },
+    {
+      text: "test link12",
+      url: "https://www.google.com",
+      color: "error",
+      outline: true
+    }
+  ]
+};
+
+const pageData = computed(() => {
+  // TODO replace with store
+  if (selectedDash.value == "p1") {
+    return [
+      devGrp,
+      devGrp,
+      devGrp,
+      devGrp2,
+      devGrp2,
+      devGrp2,
+      devGrp2,
+      devGrp2
+    ];
   } else {
-    return !dashNames.value.map((x) => x.toLowerCase()).includes(String(dashName.value).toLowerCase());
+    return [devGrp2, devGrp];
   }
 });
 
-async function saveDash() {
-  if (dashName.value) {
-    appStore.addEditDash({ name: initialDashName.value, newDashName: dashName.value });
-    if (importInd.value && uploadFile.value) {
-      const importData = await readFile(uploadFile.value);
-      if (!("QuickDashConfig" in importData)) {
-        appStore.bulkAddGroups(new LinkPage(dashName.value, importData));
-      }
+const displayPage = computed(() => {
+  return pageData.value.reduce((resultArray: LinkGroup[][], item, index) => {
+    const chunkIndex = Math.floor(index / numberOfColumns.value);
+    if (!resultArray[chunkIndex]) {
+      resultArray[chunkIndex] = []; // start a new chunk
     }
-    dialog.value = false;
-  }
-
-  function deleteDash() {
-    if (initialDashName.value) {
-      appStore.deleteDash(initialDashName.value);
-    }
-  }
-
-  function exportDash() {
-    const exportDashData = quickDashConfig.value.find((x) => x.name === initialDashName.value);
-    if (exportDashData && initialDashName.value) {
-      exportConfig(initialDashName.value, dashExportExt, exportDashData.groupList);
-    }
-    dialog.value = false;
-  }
-}
-
-/*export default class LinkPanel extends Vue {
-
-  
-
-  resetDashModal() {
-    this.dashName = null;
-    this.initialDashName = null;
-    this.editDashInd = false;
-    this.importInd = false;
-    this.uploadFile = null;
-  }
-
-  get selectedDash() {
-    return this.$store.getters.selectedDash;
-  }
-
-  set selectedDash(selectedDash) {
-    this.$store.commit("setSelectedDash", selectedDash);
-  }
-
-  get 
-
-  get displayDashboards(): DisplayDash[] {
-    const displayConfig: DisplayDash[] = [];
-    for (const dash of this.currentConfig) {
-      const displayItem: DisplayDash = { name: dash.name, groupList: [[]] };
-      const colsArray: LinkGroup[][] = [];
-      for (let i = 0; i < this.numberOfColumns; i++) {
-        colsArray.push([]);
-      }
-      let currCol = 0;
-      for (const grp of dash.groupList) {
-        colsArray[currCol].push(grp);
-        if (currCol < this.numberOfColumns - 1) {
-          currCol++;
-        } else {
-          currCol = 0;
-        }
-      }
-      colsArray[currCol].push(new LinkGroup(null));
-      displayItem.groupList = colsArray;
-      displayConfig.push(displayItem);
-    }
-    return displayConfig;
-  }
-
-  get numberOfColumns(): number {
-    return this.$store.getters.numberOfColumns;
-  }
-
-}*/
+    resultArray[chunkIndex].push(item);
+    return resultArray;
+  }, []);
+});
 </script>
 <template>
-  <b-tabs content-class="mt-3" variant="secondary" v-model="selectedDash">
-    <b-tab
-      v-for="(dash, idx) in displayDashboards"
-      :key="dash.name"
-      :ref="`dash${idx}`"
-      title-link-class="text-secondary"
-    >
-      <template #title>
-        {{ dash.name
-        }}<v-btn v-b-tooltip.hover title="Edit Dash" size="sm" class="ml-2 whiteButton" @click="editDash(dash.name)">
-          <BIconPencil />
-        </v-btn>
-      </template>
-      <v-container fluid class="w-75">
-        <v-row>
-          <v-col v-for="(col, colIndex) in dash.groupList" :key="colIndex">
-            <v-row v-for="(grp, grpIndex) in col" :key="`${colIndex}-${grpIndex}`">
-              <v-col>
-                <LinkCard :dash="dash" :grp="grp" :grp-names="groupNames" />
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-container>
-    </b-tab>
-
-    <template #tabs-end>
-      <v-btn class="whiteButton py-1 border-bottom-0" title="Add Dash" @click.prevent="addDash">
-        <BIconPlus font-scale="2" />
-      </v-btn>
-    </template>
-
-    <template #empty>
-      <b-jumbotron header="Welcome to QuickDash!">
-        <p>There are no Dashboards loaded.</p>
-        <p>Create a new Dash using the <b>+</b> button above or import an existing QuickDash configuration.</p>
-        <hr />
-        <p>
-          Don't forget to export your QuickDash configuration using the
-          <BIconGearFill /> menu just in case your browswer misplaces it!
-        </p>
-        <v-btn color="primary" @click="props.showUpload"> Import Configuration </v-btn>
-      </b-jumbotron>
-    </template>
-
-    <v-dialog v-model="dialog" :title="editDashInd ? 'Edit Dash' : 'New Dash'" @hidden="resetDashModal">
-      <b-form-group label="Dash Name:" invalid-feedback="Dash names must be unique">
-        <b-form-input v-model="dashName" :state="dashValid" placeholder="Enter a name for the dash" />
-      </b-form-group>
-      <b-form-file
-        v-if="importInd"
-        v-model="uploadFile"
-        :accept="dashExportExt"
-        placeholder="Choose a file or drop it here..."
-        drop-placeholder="Drop file here..."
-        @input="fileAdded"
-      />
-
-      <template #modal-footer>
-        <v-row class="w-100">
-          <v-col cols="6">
-            <v-btn v-if="editDashInd" @click="exportDash"> Export Dash </v-btn
-            ><v-btn v-if="!editDashInd" @click="importInd = true"> Import Dash </v-btn>
-          </v-col>
-          <v-col cols="6" class="text-right">
-            <v-btn v-if="editDashInd" class="mr-2" color="error">
-              Delete
-              <v-dialog activator="parent"
-                ><v-card title="Confirmation"
-                  ><v-card-text>Are you sure that you want to delete {{ initialDashName }}?</v-card-text
-                  ><v-card-actions><v-btn @click="deleteDash">Delete</v-btn></v-card-actions></v-card
-                ></v-dialog
-              ></v-btn
-            ><v-btn
-              class="ml-2"
-              color="success"
-              :disabled="dashValid !== true || (importInd && uploadFile === null)"
-              @click="saveDash"
-            >
-              Save
-            </v-btn>
-          </v-col>
-        </v-row>
-      </template>
-    </v-dialog>
-  </b-tabs>
+  <v-tabs v-model="tab"
+    ><v-tab v-for="t in renderTabs" :key="t" :value="t"
+      >{{ t
+      }}<v-btn size="35" variant="text" class="ml-3" rounded="pill"
+        ><v-icon icon="mdi-pencil"></v-icon
+        ><AddDash
+          :current-name="t"
+          @update:name="(v) => updateDash(v, t)" /></v-btn></v-tab
+    ><v-btn size="large" variant="text"
+      ><v-icon icon="mdi-plus"></v-icon
+      ><AddDash @update:name="addDash" /></v-btn
+  ></v-tabs>
+  <v-container
+    ><v-row v-for="(row, idx) in displayPage" :key="`row-${idx}`">
+      <v-col
+        v-for="(col, idc) in row"
+        :key="`col-${idx}-${idc}`"
+        :cols="Math.floor(12 / numberOfColumns)"
+        ><LinkCard
+          :name="col.name"
+          :link-list="col.linkList"
+          :move-left="idx + idc != 0"
+          :move-right="
+            !(
+              idx == displayPage.length - 1 &&
+              idc == displayPage[displayPage.length - 1].length - 1
+            )
+          "
+        /> </v-col></v-row
+  ></v-container>
 </template>
-
-<style>
-.dropColor:active {
-  background-color: var(--secondary) !important;
-}
-
-.whiteButton {
-  background-color: var(--white) !important;
-  border-color: var(--white) !important;
-  color: var(--secondary) !important;
-}
-.whiteButton:hover {
-  border-color: rgb(222, 226, 230) !important;
-}
-</style>

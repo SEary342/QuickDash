@@ -1,19 +1,13 @@
-<svg width="34" height="34" xmlns="http://www.w3.org/2000/svg">
- <defs>
-  <filter height="200%" width="200%" y="-50%" x="-50%" id="svg_2_blur">
-   <feGaussianBlur stdDeviation="0" in="SourceGraphic"/>
-  </filter>
- </defs>
- <g>
-  <title>background</title>
-  <rect fill="none" id="canvas_background" height="36" width="36" y="-1" x="-1"/>
-  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
-   <rect fill="url(#gridpattern)" stroke-width="0" y="1" x="1" height="32" width="32"/>
-  </g>
- </g>
- <g>
-  <title>Layer 1</title>
-  <path stroke="#000" id="svg_13" d="m-0.16625,5.50632l0,0c0,-3.15488 1.76055,-5.71241 3.9323,-5.71241l1.78741,0l0,0l8.57956,0l16.08667,0c1.04291,0 2.04311,0.60184 2.78056,1.67313c0.73745,1.07129 1.15174,2.52426 1.15174,4.03929l0,14.28104l0,0l0,8.56862l0,0c0,3.15488 -1.76055,5.71241 -3.9323,5.71241l-16.08667,0l-11.20814,14.52534l2.62858,-14.52534l-1.78741,0c-2.17175,0 -3.9323,-2.55753 -3.9323,-5.71241l0,0l0,-8.56862l0,0l0,-14.28104z" fill-opacity="null" stroke-opacity="null" stroke-width="0" fill="#7f00ff"/>
-  <text filter="url(#svg_2_blur)" font-weight="bold" stroke="#000" transform="matrix(0.9882349771818141,0,0,1.1866070182502095,-1.8179769715840939,-0.6426788716867664) " xml:space="preserve" text-anchor="start" font-family="'Trebuchet MS', Gadget, sans-serif" font-size="20" id="svg_2" y="21.69448" x="5.78214" stroke-width="0" fill="#ffffff">QD</text>
- </g>
+<svg width="34" height="34"
+	xmlns="http://www.w3.org/2000/svg" class="">
+	<defs>
+		<filter height="200%" width="200%" y="-50%" x="-50%" id="a">
+			<feGaussianBlur in="SourceGraphic"></feGaussianBlur>
+		</filter>
+	</defs>
+	<path fill="none" d="M-1-1h36v36H-1z"></path>
+	<g>
+		<path d="M-.166 5.506c0-3.155 1.76-5.712 3.932-5.712H30.22c1.043 0 2.043.602 2.78 1.673.738 1.071 1.152 2.524 1.152 4.04v22.849c0 3.155-1.76 5.712-3.932 5.712H14.133L2.925 48.594l2.628-14.526H3.766c-2.172 0-3.932-2.557-3.932-5.712V5.507z" fill-opacity="null" fill="#7f00ff"></path>
+		<text filter="url(#a)" font-weight="bold" stroke="#000" transform="matrix(.98823 0 0 1.1866 -1.818 -.643)" font-family="'Trebuchet MS', Gadget, sans-serif" font-size="20" y="21.694" x="5.782" stroke-width="0" fill="#fff">QD</text>
+	</g>
 </svg>
