@@ -274,7 +274,7 @@ function moveDash(direction: number) {
       /><v-tooltip activator="parent">Add Dash</v-tooltip></v-btn
     ></v-tabs
   >
-  <v-container
+  <v-container class="scroll-lock"
     ><v-row v-for="(row, idx) in displayPage" :key="`row-${idx}`">
       <v-col
         v-for="(col, idc) in row"

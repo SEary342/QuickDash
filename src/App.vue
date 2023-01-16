@@ -16,7 +16,7 @@ function exportFullConfig() {
 
 <template>
   <v-app>
-    <v-app-bar color="blue-grey-darken-2"
+    <v-app-bar color="blue-grey-darken-4"
       ><QdLogo class="ml-3" /><v-app-bar-title
         class="ml-2 text-h5 font-weight-bold"
         >QuickDash</v-app-bar-title
@@ -69,8 +69,6 @@ function exportFullConfig() {
     <v-main><LinkPanel /></v-main>
   </v-app>
 </template>
-<style scoped>
-.small-btn {
-  min-width: 30px;
-}
+<style>
+@import "@/assets/main.css";
 </style>
