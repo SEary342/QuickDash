@@ -30,9 +30,27 @@ const dataChanged = computed(
 // TODO implement rules and add validation
 // TODO implement color & icon selection
 
+const rules = {
+  required: (v: string) => !!v || "Field is required",
+  validURL: (v: string) => {
+    let url;
+    try {
+      url = new URL(v);
+    } catch (_) {
+      return "URL is not valid";
+    }
+    return (
+      ["http:", "https:"].includes(url.protocol) || "URL protocol not valid"
+    );
+  }
+};
+
 const dataValid = computed(() => {
-  // TODO implement checks
-  return editLink.value.text.length > 0;
+  return [
+    rules.required(editLink.value.text),
+    rules.required(editLink.value.url),
+    rules.validURL(editLink.value.url)
+  ].every((v) => v === true);
 });
 
 watchEffect(() => {
@@ -67,19 +85,30 @@ function save() {
       <v-card-title>Link</v-card-title>
       <v-card-text>
         <v-text-field
+          density="compact"
           variant="outlined"
           label="Link Name"
           v-model="editLink.text"
+          class="mb-3"
+          :rules="[rules.required]"
+          hide-details="auto"
         ></v-text-field>
         <v-text-field
+          density="compact"
           variant="outlined"
           placeholder="https://"
           v-model="editLink.url"
+          :rules="[rules.required, rules.validURL]"
           label="Link URL"
+          class="mb-3"
+          hide-details="auto"
         ></v-text-field>
         <v-select
+          density="compact"
           variant="outlined"
           label="Color"
+          hide-details
+          class="mb-3"
           v-model="editLink.color"
           :items="colorOptionsArray"
         >
@@ -97,10 +126,19 @@ function save() {
             </v-list-item>
           </template>
         </v-select>
-        <v-switch label="Outlined" v-model="editLink.outline"></v-switch>
+        <v-switch
+          label="Outlined"
+          v-model="editLink.outline"
+          hide-details
+          class="mb-3"
+          color="primary"
+          density="compact"
+        ></v-switch>
         <v-select
           variant="outlined"
           label="Icon"
+          class="mb-3"
+          density="compact"
           v-model="editLink.icon"
           :items="iconOptionsArray"
           :prepend-inner-icon="editLink.icon ? editLink.icon : undefined"
