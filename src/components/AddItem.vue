@@ -88,17 +88,20 @@ function deleteItem() {
           :label="`${typeName} Name`"
           v-model="editName"
           :rules="[rules.required, rules.noCollision]"
+          hide-details="auto"
+          class="mb-3"
         ></v-text-field>
-        <v-select
+        <v-autocomplete
           label="Color"
           variant="outlined"
           v-model="editColor"
           :items="colorOptionsArray"
+          hide-details
+          class="mb-3"
         >
           <template v-slot:prepend-inner v-if="editColor">
             <v-avatar size="24" :color="editColor"></v-avatar>
           </template>
-
           <template v-slot:item="{ props, item }">
             <v-list-item v-bind="props" :title="item.raw.title">
               <template v-slot:prepend>
@@ -106,13 +109,15 @@ function deleteItem() {
               </template>
             </v-list-item>
           </template>
-        </v-select>
-        <v-select
+        </v-autocomplete>
+        <v-autocomplete
           variant="outlined"
           label="Icon"
           v-model="editIcon"
           :prepend-inner-icon="editIcon"
           :items="iconOptionsArray"
+          hide-details
+          class="mb-3"
         >
           <template v-slot:item="{ props, item }">
             <v-list-item v-bind="props" :title="item.raw.title">
@@ -120,7 +125,7 @@ function deleteItem() {
                 <v-icon :icon="item.raw.value"></v-icon>
               </template>
             </v-list-item>
-          </template> </v-select
+          </template> </v-autocomplete
       ></v-card-text>
 
       <v-card-actions class="mb-3 mx-3 justify-space-between d-flex"

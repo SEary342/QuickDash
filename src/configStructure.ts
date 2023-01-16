@@ -1,6 +1,15 @@
 export const colorOptions = {
   "Light-Grey": "grey-lighten-4",
   Green: "green",
+  "Light-Green": "light-green",
+  Lime: "lime",
+  Amber: "amber",
+  Orange: "orange",
+  "Deep Orange": "deep-orange",
+  Brown: "brown",
+  "Blue-Grey": "blue-grey",
+  White: "white",
+  Black: "black",
   Blue: "blue",
   Grey: "grey",
   Yellow: "yellow",
@@ -14,14 +23,14 @@ export const colorOptions = {
   Teal: "teal"
 };
 
-export const colorConversions = {
-  Danger: 'red',
+export const colorConversions: { [key: string]: string } = {
+  Danger: "red",
   Info: "teal",
   Warning: "yellow",
   Secondary: "grey",
   Primary: "blue",
-  Success: "green",
-}
+  Success: "green"
+};
 
 export const colorOptionsArray = Object.entries(colorOptions).map((x) => ({
   title: x[0],
@@ -40,7 +49,19 @@ export const iconOptions = {
   Ideas: "mdi-lightbulb-group-outline",
   Food: "mdi-baguette",
   Drink: "mdi-coffee-outline",
-  Earth: "mdi-earth"
+  Earth: "mdi-earth",
+  Python: "mdi-language-python",
+  JavaScript: "mdi-language-javascript",
+  TypeScript: "mdi-language-typescript",
+  Document: "mdi-file-document-outline",
+  Help: "mdi-help",
+  Code: "mdi-code-braces-box",
+  Learn: "mdi-school-outline",
+  Application: "mdi-application-outline",
+  Vue: "mdi-vuejs",
+  GitHub: "mdi-github",
+  Bitbucket: "mdi-bitbucket",
+  StackOverflow: "mdi-stack-overflow"
 };
 
 export const iconOptionsArray = Object.entries(iconOptions).map((x) => ({

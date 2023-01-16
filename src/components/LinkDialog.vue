@@ -100,7 +100,7 @@ function save() {
           class="mb-3"
           hide-details="auto"
         ></v-text-field>
-        <v-select
+        <v-autocomplete
           density="compact"
           variant="outlined"
           label="Color"
@@ -122,7 +122,7 @@ function save() {
               </template>
             </v-list-item>
           </template>
-        </v-select>
+        </v-autocomplete>
         <v-switch
           label="Outlined"
           v-model="editLink.outline"
@@ -131,7 +131,7 @@ function save() {
           color="primary"
           density="compact"
         ></v-switch>
-        <v-select
+        <v-autocomplete
           variant="outlined"
           label="Icon"
           class="mb-3"
@@ -147,7 +147,7 @@ function save() {
               </template>
             </v-list-item>
           </template>
-        </v-select>
+        </v-autocomplete>
         <v-expand-transition>
           <v-container class="text-overline" v-show="dataValid">
             <v-divider></v-divider>Preview
