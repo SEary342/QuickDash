@@ -13,24 +13,35 @@ const { numberOfColumns, selectedDash, quickDashConfig } =
 const tab = computed({
   get: () =>
     selectedDash.value == undefined
-      ? renderTabs.value[0]
+      ? renderTabs.value[0].name
       : selectedDash.value,
   set: (value) => (selectedDash.value = value)
 });
 
 const colCt = computed(() => Math.floor(12 / numberOfColumns.value));
 
-const renderTabs = computed(() => quickDashConfig.value.map((x) => x.name));
+const renderTabs = computed(() =>
+  quickDashConfig.value.map((x) => ({
+    name: x.name,
+    color: x.color,
+    icon: x.icon
+  }))
+);
 
 function addDash(name: string) {
   quickDashConfig.value.push({ name: name, groupList: [] });
   selectedDash.value = name;
 }
 
-function updateDash(name: string, oldName: string) {
+function updateDash(
+  item: { name: string; icon?: string; color?: string },
+  oldName: string
+) {
   const dashData = quickDashConfig.value.find((x) => x.name == oldName);
   if (dashData) {
-    dashData.name = name;
+    dashData.name = item.name;
+    dashData.icon = item.icon;
+    dashData.color = item.color;
   }
 }
 
@@ -43,7 +54,7 @@ function deleteDash(name: string) {
       if (newSelIdx < 0) {
         newSelIdx = 1;
       }
-      selectedDash.value = renderTabs.value[newSelIdx];
+      selectedDash.value = renderTabs.value[newSelIdx].name;
     }
     quickDashConfig.value.splice(idx, 1);
   }
@@ -84,12 +95,17 @@ function addGroup(name: string) {
   }
 }
 
-function updateGroup(name: string, oldName: string) {
+function updateGroup(
+  item: { name: string; icon?: string; color?: string },
+  oldName: string
+) {
   const data = getCurrentDash();
   if (data) {
     const grpRec = data.groupList.find((x) => x.name == oldName);
     if (grpRec) {
-      grpRec.name = name;
+      grpRec.name = item.name;
+      grpRec.icon = item.icon;
+      grpRec.color = item.color;
     }
   }
 }
@@ -167,17 +183,43 @@ function moveDash(direction: number) {
 </script>
 <template>
   <v-tabs v-model="tab"
-    ><v-tab v-for="(t, i) in renderTabs" :key="t" :value="t"
-      >{{ t }}
+    ><v-tab
+      :prepend-icon="t.icon"
+      v-for="(t, i) in renderTabs"
+      class="rounded-b-lg"
+      :key="t.name"
+      :value="t.name"
+      :class="t.color ? `bg-${t.color}` : ''"
+      >{{ t.name }}
       <v-expand-x-transition>
         <div
           class="ml-3 rounded-xl px-1 d-flex"
           style="border: 1px solid grey"
-          v-if="t == selectedDash"
+          v-if="t.name == selectedDash"
         >
           <v-expand-x-transition
             ><div v-show="tabEdit">
-              <v-btn size="30" variant="text" rounded="pill" v-if="i != 0" @click="moveDash(-1)"
+              <v-btn size="30" variant="text" rounded="pill"
+                ><v-icon icon="mdi-pencil"></v-icon
+                ><AddItem
+                  :current-name="t.name"
+                  type-name="Dash"
+                  :current-color="t.color"
+                  :current-icon="t.icon"
+                  @update:item="(v) => updateDash(v, t.name)"
+                  @delete:name="() => deleteDash(t.name)"
+                  :existing-items="
+                    renderTabs
+                      .filter((x) => x.name != t.name)
+                      .map((x) => x.name)
+                  "
+                /><v-tooltip activator="parent">Edit Dash</v-tooltip></v-btn
+              ><v-btn
+                size="30"
+                variant="text"
+                rounded="pill"
+                v-if="i != 0"
+                @click="moveDash(-1)"
                 ><v-icon icon="mdi-chevron-left"></v-icon
                 ><v-tooltip activator="parent"
                   >Move Dash Left</v-tooltip
@@ -193,16 +235,6 @@ function moveDash(direction: number) {
                 ><v-tooltip activator="parent"
                   >Move Dash Right</v-tooltip
                 ></v-btn
-              >
-              <v-btn size="30" variant="text" rounded="pill"
-                ><v-icon icon="mdi-pencil"></v-icon
-                ><AddItem
-                  :current-name="t"
-                  type-name="Dash"
-                  @update:name="(v) => updateDash(v, t)"
-                  @delete:name="() => deleteDash(t)"
-                  :existing-items="renderTabs.filter((x) => x != t)"
-                /><v-tooltip activator="parent">Edit Dash</v-tooltip></v-btn
               >
             </div>
           </v-expand-x-transition>
@@ -223,7 +255,7 @@ function moveDash(direction: number) {
       ><AddItem
         @update:name="addDash"
         type-name="Dash"
-        :existing-items="renderTabs" /></v-btn
+        :existing-items="renderTabs.map((x) => x.name)" /></v-btn
   ></v-tabs>
   <v-container
     ><v-row v-for="(row, idx) in displayPage" :key="`row-${idx}`">
@@ -233,6 +265,8 @@ function moveDash(direction: number) {
         :cols="colCt"
         ><LinkCard
           :name="col.name"
+          :icon="col.icon"
+          :color="col.color"
           :link-list="col.linkList"
           :move-left="idx + idc != 0"
           :move-right="
@@ -242,7 +276,7 @@ function moveDash(direction: number) {
             )
           "
           :dash-group-names="groupNames"
-          @update:name="(v) => updateGroup(v, col.name)"
+          @update:item="(v) => updateGroup(v, col.name)"
           @delete:name="deleteGroup"
           @move:group="(v) => moveGroup(col.name, v)"
           @move:link="(v) => moveLink(col.name, v.index, v.direction)"

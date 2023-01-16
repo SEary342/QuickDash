@@ -9,6 +9,8 @@ import AddItem from "./AddItem.vue";
 const props = defineProps({
   name: { type: String, required: true },
   linkList: { type: Array as PropType<LinkData[]>, required: true },
+  icon: { type: String },
+  color: { type: String, default: "grey-lighten-4" },
   moveLeft: { type: Boolean, default: false },
   moveRight: { type: Boolean, default: false },
   addMode: { type: Boolean, default: false },
@@ -16,16 +18,20 @@ const props = defineProps({
 });
 
 const emits = defineEmits<{
-  (e: "add:name", value: string): void;
-  (e: "update:name", value: string): void;
+  (
+    e: "add:item",
+    value: { name: string; icon?: string; color?: string }
+  ): void;
+  (
+    e: "update:item",
+    value: { name: string; icon?: string; color?: string }
+  ): void;
   (e: "delete:name", value: string): void;
   (e: "move:group", value: number): void;
   (e: "move:link", value: { index: number; direction: number }): void;
 }>();
 
-const editMode = ref<number>();
-
-const editActive = computed(() => editMode.value != undefined);
+const editMode = ref<boolean>(false);
 
 function moveUp(index: number) {
   emits("move:link", { index: index, direction: -1 });
@@ -38,19 +44,25 @@ function moveDown(index: number) {
 <template>
   <v-card variant="outlined" class="mx-6 my-3"
     ><v-card-title
-      class="bg-grey-lighten-4 justify-space-between d-flex align-center"
+      class="justify-space-between d-flex align-center"
+      :class="`bg-${color}`"
       ><div class="d-flex align-center" :class="addMode ? 'font-italic' : ''">
-        {{ name
-        }}<v-expand-x-transition
-          ><div v-show="editActive">
+        <div>
+          <v-icon v-if="icon" :icon="icon" class="pl-3 pr-5"></v-icon>
+          {{ name }}
+        </div>
+        <v-expand-x-transition
+          ><div v-show="editMode">
             <v-btn variant="text" size="35" rounded="pill" class="ml-2"
               ><v-icon icon="mdi-pencil"></v-icon
               ><v-tooltip activator="parent">Edit Group</v-tooltip>
               <AddItem
                 :current-name="name"
+                :current-color="color"
+                :current-icon="icon"
                 type-name="Group"
                 :existing-items="dashGroupNames.filter((x) => x != name)"
-                @update:name="(v) => emits('update:name', v)"
+                @update:item="(v) => emits('update:item', v)"
                 @delete:name="(v) => emits('delete:name', v)"
               />
             </v-btn>
@@ -76,30 +88,30 @@ function moveDown(index: number) {
           </div></v-expand-x-transition
         >
       </div>
-
-      <v-btn-toggle
-        v-model="editMode"
-        class="d-flex align-center"
+      <v-btn
         v-if="!addMode"
-        ><v-btn variant="text" size="35" rounded="pill"
-          ><v-icon icon="mdi-playlist-edit"></v-icon
-          ><v-tooltip location="top" activator="parent"
-            >Toggle Group Controls</v-tooltip
-          ></v-btn
-        ></v-btn-toggle
-      ><v-btn v-else variant="outlined" width="300"
+        :variant="editMode ? 'outlined' : 'text'"
+        @click="editMode = !editMode"
+        size="35"
+        rounded="pill"
+        ><v-icon icon="mdi-playlist-edit"></v-icon
+        ><v-tooltip location="top" activator="parent"
+          >Toggle Group Controls</v-tooltip
+        ></v-btn
+      >
+      <v-btn v-else variant="outlined" width="300"
         ><v-tooltip activator="parent">Add Group</v-tooltip
         ><v-icon icon="mdi-plus"></v-icon>
         <AddItem
           type-name="Group"
           :existing-items="dashGroupNames"
-          @update:name="(v) => emits('add:name', v)" /></v-btn></v-card-title
+          @update:item="(v) => emits('add:item', v)" /></v-btn></v-card-title
     ><v-card-text>
       <LinkDisplay
         v-for="(btn, i) in linkList"
         :key="`link-${name}-${i}`"
         :btn="btn"
-        :edit-mode="editActive"
+        :edit-mode="editMode"
         :index="i"
         :move-up="i != 0 ? moveUp : undefined"
         :move-down="i != linkList?.length - 1 ? moveDown : undefined"
@@ -107,7 +119,7 @@ function moveDown(index: number) {
         @delete:link="(v) => linkList.splice(v, 1)"
       ></LinkDisplay
       ><v-expand-transition>
-        <div v-show="editActive">
+        <div v-show="editMode">
           <v-hover>
             <template v-slot:default="{ isHovering, props }">
               <LinkDisplay

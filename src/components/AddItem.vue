@@ -1,15 +1,21 @@
 <script setup lang="ts">
+import { colorOptionsArray, iconOptionsArray } from "@/configStructure";
 import { ref, watchEffect, computed, type PropType } from "vue";
 import ConfirmationDialog from "./ConfirmationDialog.vue";
 
 const props = defineProps({
   currentName: { type: String, default: "" },
+  currentIcon: { type: String },
+  currentColor: { type: String },
   typeName: { type: String, required: true },
   existingItems: { type: Array as PropType<string[]>, required: true }
 });
 
 const emits = defineEmits<{
-  (e: "update:name", value: string): void;
+  (
+    e: "update:item",
+    value: { name: string; icon?: string; color?: string }
+  ): void;
   (e: "delete:name", value: string): void;
 }>();
 
@@ -18,11 +24,15 @@ const lowerItems = computed(() =>
 );
 
 const editName = ref<string>("");
+const editColor = ref<string>();
+const editIcon = ref<string>();
 const dialog = ref(false);
 
 watchEffect(() => {
   if (dialog.value) {
     editName.value = props.currentName;
+    editColor.value = props.currentColor;
+    editIcon.value = props.currentIcon;
   }
 });
 
@@ -34,12 +44,28 @@ const rules = {
 };
 
 function save() {
-  emits("update:name", editName.value);
+  emits("update:item", {
+    name: editName.value,
+    icon: editIcon.value,
+    color: editColor.value
+  });
   reset();
 }
 
+const saveEnabled = computed(() => {
+  return (
+    editName.value.length != 0 &&
+    rules.noCollision(editName.value) == true &&
+    (editName.value != props.currentName ||
+      editIcon.value != props.currentIcon ||
+      editColor.value != props.currentColor)
+  );
+});
+
 function reset() {
   editName.value = "";
+  editColor.value = undefined;
+  editIcon.value = undefined;
   dialog.value = false;
 }
 
@@ -58,25 +84,52 @@ function deleteItem() {
     >
       <v-card-text
         ><v-text-field
-          label="Group Name"
+          variant="outlined"
+          :label="`${typeName} Name`"
           v-model="editName"
           :rules="[rules.required, rules.noCollision]"
-        ></v-text-field
+        ></v-text-field>
+        <v-select
+          label="Color"
+          variant="outlined"
+          v-model="editColor"
+          :items="colorOptionsArray"
+        >
+          <template v-slot:prepend-inner v-if="editColor">
+            <v-avatar size="24" :color="editColor"></v-avatar>
+          </template>
+
+          <template v-slot:item="{ props, item }">
+            <v-list-item v-bind="props" :title="item.raw.title">
+              <template v-slot:prepend>
+                <v-avatar :color="item.raw.value" size="24"></v-avatar>
+              </template>
+            </v-list-item>
+          </template>
+        </v-select>
+        <v-select
+          variant="outlined"
+          label="Icon"
+          v-model="editIcon"
+          :prepend-inner-icon="editIcon"
+          :items="iconOptionsArray"
+        >
+          <template v-slot:item="{ props, item }">
+            <v-list-item v-bind="props" :title="item.raw.title">
+              <template v-slot:prepend>
+                <v-icon :icon="item.raw.value"></v-icon>
+              </template>
+            </v-list-item>
+          </template> </v-select
       ></v-card-text>
+
       <v-card-actions class="mb-3 mx-3 justify-space-between d-flex"
         ><v-btn color="grey" @click="reset">Cancel</v-btn>
         <v-btn class="bg-error" v-if="props.currentName.length != 0"
           >Delete<ConfirmationDialog
             :text="`Are you sure you want to delete ${typeName}: ${props.currentName}`"
             @confirm="deleteItem" /></v-btn
-        ><v-btn
-          class="bg-primary"
-          :disabled="
-            editName.length == 0 ||
-            editName == props.currentName ||
-            rules.noCollision(editName) != true
-          "
-          @click="save"
+        ><v-btn class="bg-primary" :disabled="!saveEnabled" @click="save"
           >Save</v-btn
         ></v-card-actions
       >

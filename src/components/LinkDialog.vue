@@ -4,6 +4,7 @@ import { ref, watchEffect, computed, type PropType } from "vue";
 import { cloneDeep } from "lodash";
 import ConfirmationDialog from "./ConfirmationDialog.vue";
 import LinkDisplay from "./LinkDisplay.vue";
+import { colorOptionsArray, iconOptionsArray } from "@/configStructure";
 
 const props = defineProps({
   dataModel: { type: Object as PropType<LinkData> }
@@ -46,17 +47,16 @@ function reset() {
 }
 
 function deleteLink() {
-  emits("delete:link", editLink.value)
+  emits("delete:link", editLink.value);
   reset();
 }
 function save() {
-  if (props.dataModel == undefined){
-    emits("add:link", editLink.value)
+  if (props.dataModel == undefined) {
+    emits("add:link", editLink.value);
+  } else {
+    emits("update:link", editLink.value);
   }
-  else{
-    emits("update:link", editLink.value)
-  }
-  
+
   reset();
 }
 </script>
@@ -81,20 +81,42 @@ function save() {
           variant="outlined"
           label="Color"
           v-model="editLink.color"
-        ></v-select>
+          :items="colorOptionsArray"
+        >
+          <template v-slot:prepend-inner>
+            <v-avatar
+              size="24"
+              :color="editLink.color ? editLink.color : undefined"
+            ></v-avatar>
+          </template>
+          <template v-slot:item="{ props, item }">
+            <v-list-item v-bind="props" :title="item.raw.title">
+              <template v-slot:prepend>
+                <v-avatar size="24" :color="item.raw.value"></v-avatar>
+              </template>
+            </v-list-item>
+          </template>
+        </v-select>
         <v-switch label="Outlined" v-model="editLink.outline"></v-switch>
         <v-select
           variant="outlined"
           label="Icon"
           v-model="editLink.icon"
-        ></v-select>
+          :items="iconOptionsArray"
+          :prepend-inner-icon="editLink.icon ? editLink.icon : undefined"
+        >
+          <template v-slot:item="{ props, item }">
+            <v-list-item v-bind="props" :title="item.raw.title">
+              <template v-slot:prepend>
+                <v-icon :icon="item.raw.value"></v-icon>
+              </template>
+            </v-list-item>
+          </template>
+        </v-select>
         <v-expand-transition>
           <v-container class="text-overline" v-show="dataValid">
             <v-divider></v-divider>Preview
-            <LinkDisplay
-              :btn="editLink"
-              :index="-1"
-            /> </v-container
+            <LinkDisplay :btn="editLink" :index="-1" /> </v-container
         ></v-expand-transition>
       </v-card-text>
       <v-card-actions class="mb-3 mx-3 justify-space-between d-flex"
