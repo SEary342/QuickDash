@@ -27,9 +27,6 @@ const dataChanged = computed(
   () => JSON.stringify(props.dataModel) != JSON.stringify(editLink)
 );
 
-// TODO implement rules and add validation
-// TODO implement color & icon selection
-
 const rules = {
   required: (v: string) => !!v || "Field is required",
   validURL: (v: string) => {

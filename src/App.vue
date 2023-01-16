@@ -7,13 +7,10 @@ import { storeToRefs } from "pinia";
 import { useAppStore } from "@/store/app";
 
 const appStore = useAppStore();
-const {numberOfColumns} =storeToRefs(appStore)
+const { numberOfColumns, quickDashConfig } = storeToRefs(appStore);
 
-// TODO Link Dialog
-// TODO import/export functions
-// Make load compatible with the old 1.0.x versions
 function exportFullConfig() {
-  exportConfig("QuickDashConfig", ".QDconfig", []);
+  exportConfig("QuickDashConfig", ".QDconfig", quickDashConfig.value);
 }
 </script>
 

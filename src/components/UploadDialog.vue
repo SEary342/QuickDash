@@ -2,6 +2,11 @@
 import { readFile } from "@/utility";
 import { ref } from "vue";
 import ErrorDialog from "./ErrorDialog.vue";
+import { useAppStore } from "@/store/app";
+import { storeToRefs } from "pinia";
+import { LinkPage } from "@/configStructure";
+
+const { quickDashConfig } = storeToRefs(useAppStore());
 const fileInput = ref<File[]>();
 const display = ref(false);
 
@@ -15,6 +20,36 @@ async function save() {
   if (fileInput.value) {
     try {
       const data = await readFile(fileInput.value[0]);
+      const tempObj = JSON.parse(data);
+      let config = [];
+      if (Array.isArray(tempObj)) {
+        config = tempObj;
+      } else {
+        config = tempObj["QuickDashConfig"];
+      }
+      const tempConfig: LinkPage[] = [];
+      for (const page of config) {
+        const newPage: LinkPage = {
+          name: page["name"],
+          groupList: [],
+          icon: page["icon"],
+          color: page["color"]
+        };
+        for (const grp of page["groupList"]) {
+          newPage.groupList.push({
+            name: grp["name"],
+            linkList: [],
+            icon: grp["icon"],
+            color: grp["color"]
+          });
+          for (const lnk of grp["linkList"]) {
+            //TODO continue
+            //TODO make sure you implement the old file conversions here
+          }
+        }
+        tempConfig.push(newPage);
+      }
+
       //TODO write the file to the store
       reset();
     } catch (err) {
@@ -42,7 +77,8 @@ async function save() {
         ></v-file-input>
       </v-card-text>
       <v-card-actions class="mb-3 mx-3 justify-space-between"
-        ><v-btn color="grey" @click="reset">Cancel</v-btn><v-btn
+        ><v-btn color="grey" @click="reset">Cancel</v-btn
+        ><v-btn
           class="bg-primary"
           :disabled="fileInput == undefined"
           @click="save"

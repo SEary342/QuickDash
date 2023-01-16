@@ -14,6 +14,15 @@ export const colorOptions = {
   Teal: "teal"
 };
 
+export const colorConversions = {
+  Danger: 'red',
+  Info: "teal",
+  Warning: "yellow",
+  Secondary: "grey",
+  Primary: "blue",
+  Success: "green",
+}
+
 export const colorOptionsArray = Object.entries(colorOptions).map((x) => ({
   title: x[0],
   value: x[1]
