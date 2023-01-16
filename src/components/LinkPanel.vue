@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { LinkGroup } from "@/configStructure";
-import { ref, computed } from "vue";
+import { ref, computed, nextTick } from "vue";
 import AddItem from "./AddItem.vue";
 import LinkCard from "./LinkCard.vue";
 import { storeToRefs } from "pinia";
@@ -13,7 +13,7 @@ const { numberOfColumns, selectedDash, quickDashConfig } =
 const tab = computed({
   get: () =>
     selectedDash.value == undefined
-      ? renderTabs.value[0].name
+      ? renderTabs.value[0]?.name
       : selectedDash.value,
   set: (value) => (selectedDash.value = value)
 });
@@ -28,9 +28,14 @@ const renderTabs = computed(() =>
   }))
 );
 
-function addDash(name: string) {
-  quickDashConfig.value.push({ name: name, groupList: [] });
-  selectedDash.value = name;
+function addDash(item: { name: string; icon?: string; color?: string }) {
+  quickDashConfig.value.push({
+    name: item.name,
+    groupList: [],
+    icon: item.icon,
+    color: item.color
+  });
+  selectedDash.value = item.name;
 }
 
 function updateDash(
@@ -42,6 +47,7 @@ function updateDash(
     dashData.name = item.name;
     dashData.icon = item.icon;
     dashData.color = item.color;
+    nextTick(() => (selectedDash.value = item.name));
   }
 }
 
@@ -54,7 +60,11 @@ function deleteDash(name: string) {
       if (newSelIdx < 0) {
         newSelIdx = 1;
       }
-      selectedDash.value = renderTabs.value[newSelIdx].name;
+      if (newSelIdx < renderTabs.value.length) {
+        selectedDash.value = renderTabs.value[newSelIdx].name;
+      } else {
+        selectedDash.value = undefined;
+      }
     }
     quickDashConfig.value.splice(idx, 1);
   }
@@ -88,10 +98,15 @@ function getCurrentDash() {
   return quickDashConfig.value.find((x) => x.name == selectedDash.value);
 }
 
-function addGroup(name: string) {
+function addGroup(item: { name: string; icon?: string; color?: string }) {
   const data = getCurrentDash();
   if (data) {
-    data.groupList.push({ name: name, linkList: [] });
+    data.groupList.push({
+      name: item.name,
+      linkList: [],
+      icon: item.icon,
+      color: item.color
+    });
   }
 }
 
@@ -253,10 +268,12 @@ function moveDash(direction: number) {
     ><v-btn size="large" variant="text"
       ><v-icon icon="mdi-plus"></v-icon
       ><AddItem
-        @update:name="addDash"
+        @update:item="addDash"
         type-name="Dash"
-        :existing-items="renderTabs.map((x) => x.name)" /></v-btn
-  ></v-tabs>
+        :existing-items="renderTabs.map((x) => x.name)"
+      /><v-tooltip activator="parent">Add Dash</v-tooltip></v-btn
+    ></v-tabs
+  >
   <v-container
     ><v-row v-for="(row, idx) in displayPage" :key="`row-${idx}`">
       <v-col
@@ -288,18 +305,35 @@ function moveDash(direction: number) {
           :link-list="[]"
           :add-mode="true"
           :dash-group-names="groupNames"
-          @add:name="addGroup"
+          @add:item="addGroup"
       /></v-col>
     </v-row>
-    <v-row v-if="displayPage.length == 0"
+    <v-row v-if="displayPage.length == 0 && renderTabs.length != 0"
       ><v-col :cols="colCt"
         ><LinkCard
           name="Add Group"
           :link-list="[]"
           :add-mode="true"
           :dash-group-names="groupNames"
-          @add:name="addGroup"
+          @add:item="addGroup"
       /></v-col>
     </v-row>
+    <v-row v-if="renderTabs.length == 0"
+      ><v-col
+        ><v-card variant="outlined"
+          ><v-card-title>Welcome to QuickDash!</v-card-title
+          ><v-card-text class="d-flex align-center"
+            ><span
+              >There currently no dashboards to display. To start a new one,
+              use the add </span
+            ><v-icon icon="mdi-plus" class="mx-1" /><span>
+              button in the left right corner or use the settings menu </span
+            ><v-icon icon="mdi-cog" class="mx-1" /><span>
+              in the upper right corner to import an existing dashboard.</span
+            ></v-card-text
+          ></v-card
+        ></v-col
+      ></v-row
+    >
   </v-container>
 </template>
