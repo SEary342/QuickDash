@@ -36,6 +36,6 @@
 
 ## Page deployment
 
-To deploy your changes, run `npm run build` in the quickdash directroy and copy the quickdash/dist/QuickDash.html file to it's deployed destination.
+To deploy your changes, run `npm run build` in the quickdash directory and copy the quickdash/dist/index.html file to it's deployed destination (You are going to want to rename the output file).
 
 Please note that the build process is customized for a static (local) webpage deployment. This app does not require a server.
