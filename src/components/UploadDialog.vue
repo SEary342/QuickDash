@@ -4,9 +4,14 @@ import { ref } from "vue";
 import ErrorDialog from "./ErrorDialog.vue";
 import { useAppStore } from "@/store/app";
 import { storeToRefs } from "pinia";
-import { LinkPage } from "@/configStructure";
+import {
+  LinkData,
+  LinkGroup,
+  LinkPage,
+  colorConversions
+} from "@/configStructure";
 
-const { quickDashConfig } = storeToRefs(useAppStore());
+const { quickDashConfig, selectedDash } = storeToRefs(useAppStore());
 const fileInput = ref<File[]>();
 const display = ref(false);
 
@@ -29,28 +34,44 @@ async function save() {
       }
       const tempConfig: LinkPage[] = [];
       for (const page of config) {
-        const newPage: LinkPage = {
-          name: page["name"],
-          groupList: [],
-          icon: page["icon"],
-          color: page["color"]
-        };
+        const groupList: LinkGroup[] = [];
         for (const grp of page["groupList"]) {
-          newPage.groupList.push({
+          const linkList: LinkData[] = [];
+          for (const lnk of grp["linkList"]) {
+            let linkColor: string = lnk["color"];
+
+            let outline = Boolean(lnk["outline"]);
+            if (linkColor.includes("outline")) {
+              outline = true;
+              linkColor = linkColor.replace("outline-", "");
+            }
+            if (linkColor in colorConversions) {
+              linkColor = colorConversions[linkColor];
+            }
+            linkList.push({
+              text: lnk["text"],
+              url: lnk["text"],
+              color: linkColor,
+              outline: outline,
+              icon: lnk["icon"]
+            });
+          }
+          groupList.push({
             name: grp["name"],
-            linkList: [],
+            linkList: linkList,
             icon: grp["icon"],
             color: grp["color"]
           });
-          for (const lnk of grp["linkList"]) {
-            //TODO continue
-            //TODO make sure you implement the old file conversions here
-          }
         }
-        tempConfig.push(newPage);
+        tempConfig.push({
+          name: page["name"],
+          groupList: groupList,
+          icon: page["icon"],
+          color: page["color"]
+        });
       }
-
-      //TODO write the file to the store
+      quickDashConfig.value = tempConfig;
+      selectedDash.value = quickDashConfig.value[0].name
       reset();
     } catch (err) {
       importError.value = true;
