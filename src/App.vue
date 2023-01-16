@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import QdLogo from "./assets/qdLogo.svg?component";
 import UploadDialog from "./components/UploadDialog.vue";
 import { exportConfig } from "./utility";
@@ -10,7 +9,6 @@ import { useAppStore } from "@/store/app";
 const appStore = useAppStore();
 const {numberOfColumns} =storeToRefs(appStore)
 
-// TODO Dash move
 // TODO Link Dialog
 // TODO import/export functions
 // Make load compatible with the old 1.0.x versions

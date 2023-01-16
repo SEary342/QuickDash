@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { LinkGroup } from "@/configStructure";
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import AddItem from "./AddItem.vue";
 import LinkCard from "./LinkCard.vue";
 import { storeToRefs } from "pinia";
@@ -21,8 +21,6 @@ const tab = computed({
 const colCt = computed(() => Math.floor(12 / numberOfColumns.value));
 
 const renderTabs = computed(() => quickDashConfig.value.map((x) => x.name));
-
-// TODO add dash move systems
 
 function addDash(name: string) {
   quickDashConfig.value.push({ name: name, groupList: [] });
@@ -146,19 +144,80 @@ function moveLink(groupName: string, index: number, direction: number) {
     }
   }
 }
+const tabEdit = ref(false);
+function moveDash(direction: number) {
+  const index = quickDashConfig.value.findIndex(
+    (x) => x.name == selectedDash.value
+  );
+  if (index != -1) {
+    const newIndex = index + direction;
+    if (newIndex >= quickDashConfig.value.length) {
+      var k = newIndex - quickDashConfig.value.length + 1;
+      while (k--) {
+        quickDashConfig.value.push({ name: "", groupList: [] });
+      }
+    }
+    quickDashConfig.value.splice(
+      newIndex,
+      0,
+      quickDashConfig.value.splice(index, 1)[0]
+    );
+  }
+}
 </script>
 <template>
   <v-tabs v-model="tab"
-    ><v-tab v-for="t in renderTabs" :key="t" :value="t"
-      >{{ t
-      }}<v-btn size="35" variant="text" class="ml-3" rounded="pill"
-        ><v-icon icon="mdi-pencil"></v-icon
-        ><AddItem
-          :current-name="t"
-          type-name="Dash"
-          @update:name="(v) => updateDash(v, t)"
-          @delete:name="() => deleteDash(t)"
-          :existing-items="renderTabs.filter((x) => x != t)" /></v-btn></v-tab
+    ><v-tab v-for="(t, i) in renderTabs" :key="t" :value="t"
+      >{{ t }}
+      <v-expand-x-transition>
+        <div
+          class="ml-3 rounded-xl px-1 d-flex"
+          style="border: 1px solid grey"
+          v-if="t == selectedDash"
+        >
+          <v-expand-x-transition
+            ><div v-show="tabEdit">
+              <v-btn size="30" variant="text" rounded="pill" v-if="i != 0" @click="moveDash(-1)"
+                ><v-icon icon="mdi-chevron-left"></v-icon
+                ><v-tooltip activator="parent"
+                  >Move Dash Left</v-tooltip
+                ></v-btn
+              >
+              <v-btn
+                size="30"
+                variant="text"
+                rounded="pill"
+                v-if="i != renderTabs.length - 1"
+                @click="moveDash(1)"
+                ><v-icon icon="mdi-chevron-right"></v-icon
+                ><v-tooltip activator="parent"
+                  >Move Dash Right</v-tooltip
+                ></v-btn
+              >
+              <v-btn size="30" variant="text" rounded="pill"
+                ><v-icon icon="mdi-pencil"></v-icon
+                ><AddItem
+                  :current-name="t"
+                  type-name="Dash"
+                  @update:name="(v) => updateDash(v, t)"
+                  @delete:name="() => deleteDash(t)"
+                  :existing-items="renderTabs.filter((x) => x != t)"
+                /><v-tooltip activator="parent">Edit Dash</v-tooltip></v-btn
+              >
+            </div>
+          </v-expand-x-transition>
+          <v-btn
+            variant="text"
+            size="30"
+            rounded="pill"
+            @click="tabEdit = !tabEdit"
+            ><v-icon icon="mdi-playlist-edit" /><v-tooltip
+              activator="parent"
+              >{{ tabEdit ? "Hide Controls" : "Show Controls" }}</v-tooltip
+            ></v-btn
+          >
+        </div></v-expand-x-transition
+      ></v-tab
     ><v-btn size="large" variant="text"
       ><v-icon icon="mdi-plus"></v-icon
       ><AddItem
