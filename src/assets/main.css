@@ -1,0 +1,12 @@
+html {
+  overflow-y: hidden !important;
+}
+
+.small-btn {
+  min-width: 30px;
+}
+
+.scroll-lock {
+  overflow-y: auto;
+  height: calc(100vh-112px);
+}

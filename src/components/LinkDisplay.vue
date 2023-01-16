@@ -12,19 +12,22 @@ const props = defineProps({
   moveDown: { type: Function as PropType<(index: number) => void> }
 });
 
+const emits = defineEmits<{
+  (e: "update:link", value: { index: number; data: LinkData }): void;
+  (e: "delete:link", value: number): void;
+}>();
 
-function moveItemUp(){
-    if (props.moveUp){
-        props.moveUp(props.index);
-    }
+function moveItemUp() {
+  if (props.moveUp) {
+    props.moveUp(props.index);
+  }
 }
 
-function moveItemDown(){
-    if (props.moveDown){
-        props.moveDown(props.index);
-    }
+function moveItemDown() {
+  if (props.moveDown) {
+    props.moveDown(props.index);
+  }
 }
-
 </script>
 <template>
   <v-card
@@ -63,9 +66,13 @@ function moveItemDown(){
           >
           <v-btn size="30" variant="text" @click.prevent
             ><v-icon icon="mdi-pencil"></v-icon
-            ><LinkDialog :data-model="btn" /><v-tooltip activator="parent"
-              >Edit Link</v-tooltip
-            ></v-btn
+            ><LinkDialog
+              :data-model="btn"
+              @update:link="
+                (v) => emits('update:link', { index: index, data: v })
+              "
+              @delete:link="(v) => emits('delete:link', index)"
+            /><v-tooltip activator="parent">Edit Link</v-tooltip></v-btn
           >
         </div></v-expand-x-transition
       >

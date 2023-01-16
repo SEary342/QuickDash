@@ -1,4 +1,4 @@
-import { LinkGroup, LinkPage } from "./configStructure";
+import { LinkPage } from "./configStructure";
 
 declare global {
   interface Navigator {
@@ -6,13 +6,11 @@ declare global {
   }
 }
 
-interface QDConfig {
-  QuickDashConfig: LinkPage[];
-  NumberOfColumns: number;
-  QuickDashSelected: number;
-}
-
-export function exportConfig(exportFileName: string, fileExtension: string, exportData: LinkPage[] | LinkGroup[]) {
+export function exportConfig(
+  exportFileName: string,
+  fileExtension: string,
+  exportData: LinkPage[]
+) {
   const jsonFile = JSON.stringify(exportData);
   const blob = new Blob([jsonFile], { type: "application/json" });
   if (navigator.msSaveBlob) {
@@ -34,12 +32,12 @@ export function exportConfig(exportFileName: string, fileExtension: string, expo
   }
 }
 
-export function readFile(uploadFile: File): Promise<LinkGroup[] | QDConfig> {
+export function readFile(uploadFile: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
     reader.onload = () => {
-      resolve(JSON.parse(String(reader.result)));
+      resolve(String(reader.result));
     };
     reader.onerror = reject;
     reader.readAsText(uploadFile);

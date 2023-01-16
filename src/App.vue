@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import QdLogo from "./assets/qdLogo.svg?component";
 import UploadDialog from "./components/UploadDialog.vue";
 import { exportConfig } from "./utility";
@@ -8,17 +7,16 @@ import { storeToRefs } from "pinia";
 import { useAppStore } from "@/store/app";
 
 const appStore = useAppStore();
-const {numberOfColumns} =storeToRefs(appStore)
+const { numberOfColumns, quickDashConfig } = storeToRefs(appStore);
 
-// TODO implement full export function (tied to the store )
 function exportFullConfig() {
-  exportConfig("QuickDashConfig", ".QDconfig", []);
+  exportConfig("QuickDashConfig", ".QDconfig", quickDashConfig.value);
 }
 </script>
 
 <template>
   <v-app>
-    <v-app-bar color="blue-grey-darken-2"
+    <v-app-bar color="blue-grey-darken-4"
       ><QdLogo class="ml-3" /><v-app-bar-title
         class="ml-2 text-h5 font-weight-bold"
         >QuickDash</v-app-bar-title
@@ -71,8 +69,6 @@ function exportFullConfig() {
     <v-main><LinkPanel /></v-main>
   </v-app>
 </template>
-<style scoped>
-.small-btn {
-  min-width: 30px;
-}
+<style>
+@import "@/assets/main.css";
 </style>
