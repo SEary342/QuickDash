@@ -85,7 +85,7 @@ const groupNames = computed(() => pageData.value.map((x) => x.name));
 
 const displayPage = computed(() => {
   return pageData.value.reduce((resultArray: LinkGroup[][], item, index) => {
-    const chunkIndex = Math.floor(index / numberOfColumns.value);
+    const chunkIndex = Math.ceil(index / numberOfColumns.value);
     if (!resultArray[chunkIndex]) {
       resultArray[chunkIndex] = []; // start a new chunk
     }
@@ -274,13 +274,14 @@ function moveDash(direction: number) {
       /><v-tooltip activator="parent">Add Dash</v-tooltip></v-btn
     ></v-tabs
   >
-  <v-container class="scroll-lock"
-    ><v-row v-for="(row, idx) in displayPage" :key="`row-${idx}`">
-      <v-col
-        v-for="(col, idc) in row"
-        :key="`col-${idx}-${idc}`"
-        :cols="colCt"
-        ><LinkCard
+  <v-container class="scroll-lock d-flex">
+    <div
+      v-for="(row, idx) in displayPage"
+      :key="`row-${idx}`"
+      :style="`min-width: ${100 / numberOfColumns}%`"
+    >
+      <v-col v-for="(col, idc) in row" :key="`col-${idx}-${idc}`">
+        <LinkCard
           :name="col.name"
           :icon="col.icon"
           :color="col.color"
@@ -299,15 +300,16 @@ function moveDash(direction: number) {
           @move:link="(v) => moveLink(col.name, v.index, v.direction)"
         />
       </v-col>
-      <v-col v-if="idx == displayPage.length - 1" :cols="colCt"
-        ><LinkCard
+      <v-col>
+        <LinkCard
+          v-if="displayPage.length != 0 && idx == displayPage.length - 1"
           name="Add Group"
           :link-list="[]"
           :add-mode="true"
           :dash-group-names="groupNames"
           @add:item="addGroup"
       /></v-col>
-    </v-row>
+    </div>
     <v-row v-if="displayPage.length == 0 && renderTabs.length != 0"
       ><v-col :cols="colCt"
         ><LinkCard
