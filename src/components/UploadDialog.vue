@@ -50,7 +50,7 @@ async function save() {
             }
             linkList.push({
               text: lnk["text"],
-              url: lnk["text"],
+              url: lnk["url"],
               color: linkColor,
               outline: outline,
               icon: lnk["icon"]
