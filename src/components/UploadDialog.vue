@@ -93,6 +93,7 @@ async function save() {
           v-model="fileInput"
           label="File Name"
           accept=".QDconfig"
+          variant="outlined"
           placeholder="Choose a file..."
           prepend-icon="mdi-file-code-outline"
         ></v-file-input>

@@ -73,8 +73,8 @@ function moveDown(index: number) {
               class="ml-2"
               v-if="moveLeft"
               @click="emits('move:group', -1)"
-              ><v-icon icon="mdi-chevron-left"></v-icon
-              ><v-tooltip activator="parent">Move Left</v-tooltip> </v-btn
+              ><v-icon icon="mdi-chevron-up"></v-icon
+              ><v-tooltip activator="parent">Move Up</v-tooltip> </v-btn
             ><v-btn
               variant="text"
               size="35"
@@ -82,8 +82,8 @@ function moveDown(index: number) {
               class="ml-2"
               v-if="moveRight"
               @click="emits('move:group', 1)"
-              ><v-icon icon="mdi-chevron-right"></v-icon
-              ><v-tooltip activator="parent">Move Right</v-tooltip>
+              ><v-icon icon="mdi-chevron-down"></v-icon
+              ><v-tooltip activator="parent">Move Down</v-tooltip>
             </v-btn>
           </div></v-expand-x-transition
         >
