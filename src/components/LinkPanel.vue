@@ -327,10 +327,8 @@ function moveDash(direction: number) {
           ><v-card-text class="d-flex align-center"
             ><span
               >There currently no dashboards to display. To start a new one,
-              use the add </span
-            ><v-icon icon="mdi-plus" class="mx-1" /><span>
-              button in the left right corner or use the settings menu </span
-            ><v-icon icon="mdi-cog" class="mx-1" /><span>
+              use the add <v-icon icon="mdi-plus" class="mx-1" />
+              button in the left right corner or use the settings menu <v-icon icon="mdi-cog" class="mx-1" />
               in the upper right corner to import an existing dashboard.</span
             ></v-card-text
           ></v-card

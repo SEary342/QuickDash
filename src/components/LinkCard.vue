@@ -99,7 +99,7 @@ function moveDown(index: number) {
           >Toggle Group Controls</v-tooltip
         ></v-btn
       >
-      <v-btn v-else variant="outlined" width="300"
+      <v-btn v-else variant="outlined" width="150"
         ><v-tooltip activator="parent">Add Group</v-tooltip
         ><v-icon icon="mdi-plus"></v-icon>
         <AddItem

@@ -21,7 +21,10 @@ export default defineConfig({
     viteSingleFile(),
     svgLoader(),
   ],
-  define: { "process.env": {} },
+  define: {
+    "process.env": {},
+    "import.meta.env.APP_VERSION": JSON.stringify(process.env.npm_package_version),
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -30,5 +33,8 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+  },
+  build: {
+    outDir: "docs"
   },
 });

@@ -8,6 +8,7 @@ import { useAppStore } from "@/store/app";
 
 const appStore = useAppStore();
 const { numberOfColumns, quickDashConfig } = storeToRefs(appStore);
+const version = import.meta.env.APP_VERSION;
 
 function exportFullConfig() {
   exportConfig("QuickDashConfig", ".QDconfig", quickDashConfig.value);
@@ -64,6 +65,7 @@ function exportFullConfig() {
               /></v-btn>
             </div>
           </v-list-item>
+          <v-list-item>Version {{ version }}</v-list-item>
         </v-list> </v-menu
     ></v-app-bar>
     <v-main><LinkPanel /></v-main>
