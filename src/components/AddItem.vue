@@ -76,7 +76,7 @@ function deleteItem() {
 </script>
 
 <template>
-  <v-dialog activator="parent" v-model="dialog" width="600">
+  <v-dialog activator="parent" v-model="dialog" width="600" persistent>
     <v-card
       :title="
         props.currentName.length == 0 ? `New ${typeName}` : `Edit ${typeName}`
