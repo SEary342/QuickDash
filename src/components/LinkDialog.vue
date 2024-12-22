@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import type { LinkData } from "@/configStructure";
-import { ref, watchEffect, computed, type PropType } from "vue";
-import { cloneDeep } from "lodash";
+import { ref, watchEffect, computed } from "vue";
 import ConfirmationDialog from "./ConfirmationDialog.vue";
 import LinkDisplay from "./LinkDisplay.vue";
 import { colorOptionsArray, iconOptionsArray } from "@/configStructure";
 
-const props = defineProps({
-  dataModel: { type: Object as PropType<LinkData> }
-});
+const props = defineProps<{ dataModel?: LinkData }>();
+
 const emits = defineEmits<{
   (e: "add:link", value: LinkData): void;
   (e: "update:link", value: LinkData): void;
@@ -24,7 +22,7 @@ const editLink = ref<LinkData>(getLink());
 const dialog = ref(false);
 
 const dataChanged = computed(
-  () => JSON.stringify(props.dataModel) != JSON.stringify(editLink)
+  () => JSON.stringify(props.dataModel) != JSON.stringify(editLink.value)
 );
 
 const rules = {
@@ -52,7 +50,7 @@ const dataValid = computed(() => {
 
 watchEffect(() => {
   if (dialog.value && props.dataModel) {
-    editLink.value = cloneDeep(props.dataModel);
+    editLink.value = {...props.dataModel};
   }
 });
 
@@ -151,7 +149,7 @@ function save() {
         <v-expand-transition>
           <v-container class="text-overline" v-show="dataValid">
             <v-divider></v-divider>Preview
-            <LinkDisplay :btn="editLink" :index="-1" /> </v-container
+            <LinkDisplay :btn="editLink" :index="-1" /></v-container
         ></v-expand-transition>
       </v-card-text>
       <v-card-actions class="mb-3 mx-3 justify-space-between d-flex"

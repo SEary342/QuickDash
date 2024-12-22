@@ -9,4 +9,7 @@ html {
 .scroll-lock {
   overflow-y: auto;
   height: calc(100vh - 112px);
+  margin-left: 50px;
+  margin-right: 50px;
+  min-width: calc(100vw - 100px);
 }
