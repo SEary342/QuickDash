@@ -84,15 +84,37 @@ const pageData = computed(() => {
 const groupNames = computed(() => pageData.value.map((x) => x.name));
 
 const displayPage = computed(() => {
-  return pageData.value.reduce((resultArray: LinkGroup[][], item, index) => {
-    const chunkIndex = Math.ceil(index / numberOfColumns.value);
-    if (!resultArray[chunkIndex]) {
-      resultArray[chunkIndex] = []; // start a new chunk
+  const items = pageData.value;
+  const columns = numberOfColumns.value;
+
+  // Calculate the total number of links, plus one for each item itself
+  const totalLinks = items.reduce((sum, item) => sum + item.linkList.length + 1, 0);
+
+  // Calculate the target number of links per column
+  const targetLinksPerColumn = Math.floor((totalLinks + items.length) / columns);
+
+  const resultArray: LinkGroup[][] = Array.from({ length: columns }, () => []);
+  let currentColumn = 0;
+  let currentLinkCount = 0;
+
+  // Distribute the cards across columns
+  items.forEach(item => {
+    const cardLinkCount = item.linkList.length + 1; // +1 for the item itself
+
+    // If adding this card would exceed the target, move to the next column
+    if (currentLinkCount + cardLinkCount > targetLinksPerColumn && currentColumn < columns - 1) {
+      currentColumn++;
+      currentLinkCount = 0; // Reset the count when switching columns
     }
-    resultArray[chunkIndex].push(item);
-    return resultArray;
-  }, []);
+
+    // Add the item to the current column
+    resultArray[currentColumn].push(item);
+    currentLinkCount += cardLinkCount;
+  });
+
+  return resultArray;
 });
+
 
 function getCurrentDash() {
   return quickDashConfig.value.find((x) => x.name == selectedDash.value);

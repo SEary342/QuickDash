@@ -22,7 +22,7 @@ export const useAppStore = defineStore(
   {
     persist: {
       storage: localStorage,
-      paths: ["selectedDash", "quickDashConfig", "numberOfColumns"]
+      pick: ["selectedDash", "quickDashConfig", "numberOfColumns"]
     }
   }
 );

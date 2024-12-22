@@ -12,17 +12,17 @@ import {
 } from "@/configStructure";
 
 const { quickDashConfig, selectedDash } = storeToRefs(useAppStore());
-const fileInput = ref<File[]>();
+const fileInput = ref<File[]>([]); // Initialize as an empty array
 const display = ref(false);
 
 function reset() {
-  fileInput.value = undefined;
+  fileInput.value = []; // Use an empty array instead of undefined
   display.value = false;
 }
 
 const importError = ref(false);
 async function save() {
-  if (fileInput.value) {
+  if (fileInput.value) { // Ensure fileInput is not empty
     try {
       const data = await readFile(fileInput.value[0]);
       const tempObj = JSON.parse(data);
@@ -71,9 +71,10 @@ async function save() {
         });
       }
       quickDashConfig.value = tempConfig;
-      selectedDash.value = quickDashConfig.value[0].name
+      selectedDash.value = quickDashConfig.value[0].name;
       reset();
     } catch (err) {
+      console.log(err);
       importError.value = true;
     }
   }
@@ -89,28 +90,20 @@ async function save() {
           Warning: Uploading a file will replace all content in QuickDash!
         </p>
         <v-divider class="pb-3"></v-divider>
-        <v-file-input
-          v-model="fileInput"
-          label="File Name"
-          accept=".QDconfig"
-          variant="outlined"
-          placeholder="Choose a file..."
-          prepend-icon="mdi-file-code-outline"
-        ></v-file-input>
+        <v-file-upload density="default" v-model="fileInput" accept=".QDconfig"></v-file-upload>
       </v-card-text>
-      <v-card-actions class="mb-3 mx-3 justify-space-between"
-        ><v-btn color="grey" @click="reset">Cancel</v-btn
-        ><v-btn
+      <v-card-actions class="mb-3 mx-3 justify-space-between">
+        <v-btn color="grey" @click="reset">Cancel</v-btn>
+        <v-btn
           class="bg-primary"
-          :disabled="fileInput == undefined"
+          :disabled="fileInput.length === 0"
           @click="save"
-          >Upload</v-btn
-        ></v-card-actions
-      >
+        >Upload</v-btn>
+      </v-card-actions>
     </v-card>
     <ErrorDialog
       v-model="importError"
-      text="An import error occured."
+      text="An import error occurred."
       @update:model-value="
         (v) => {
           if (!v) {

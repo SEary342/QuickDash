@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { LinkData } from "@/configStructure";
 import type { PropType } from "vue";
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import LinkDialog from "./LinkDialog.vue";
-import LinkDisplay from "./LinkDisplay.vue";
 import AddItem from "./AddItem.vue";
+import LinkEditor from "./LinkEditor.vue";
+import LinkDisplay from "./LinkDisplay.vue";
 
-const props = defineProps({
+defineProps({
   name: { type: String, required: true },
   linkList: { type: Array as PropType<LinkData[]>, required: true },
   icon: { type: String },
@@ -107,7 +108,7 @@ function moveDown(index: number) {
           :existing-items="dashGroupNames"
           @update:item="(v) => emits('add:item', v)" /></v-btn></v-card-title
     ><v-card-text>
-      <LinkDisplay
+      <LinkEditor
         v-for="(btn, i) in linkList"
         :key="`link-${name}-${i}`"
         :btn="btn"
@@ -117,7 +118,7 @@ function moveDown(index: number) {
         :move-down="i != linkList?.length - 1 ? moveDown : undefined"
         @update:link="(v) => (linkList[v.index] = v.data)"
         @delete:link="(v) => linkList.splice(v, 1)"
-      ></LinkDisplay
+      ></LinkEditor
       ><v-expand-transition>
         <div v-show="editMode">
           <v-hover>
