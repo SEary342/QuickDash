@@ -2,7 +2,12 @@
 
 ![QuickDash Preview](/media/preview.png)
 
-## Installation
+## Installation (Automatic Updates)
+1. Set your home/new tab page in your browser to https://seary342.github.io/QuickDash/ or save it as a bookmark
+2. Navigate to the page
+3. Add links & enjoy!
+
+## Local Installation (Manual Updates)
 
 1. Download QuickDash.html from the most recent Github release: https://github.com/SEary342/QuickDash/releases/latest
 2. Open the html file as save it as a bookmark
