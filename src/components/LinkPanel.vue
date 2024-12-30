@@ -83,26 +83,41 @@ const pageData = computed(() => {
 
 const groupNames = computed(() => pageData.value.map((x) => x.name));
 
+const displayPageEmpty = computed(() => {
+  return !displayPage.value.some((innerArray) => innerArray.length > 0);
+});
+
 const displayPage = computed(() => {
   const items = pageData.value;
   const columns = numberOfColumns.value;
 
   // Calculate the total number of links, plus one for each item itself
-  const totalLinks = items.reduce((sum, item) => sum + item.linkList.length + 1, 0);
+  const totalLinks = items.reduce(
+    (sum, item) => sum + item.linkList.length + 1,
+    0
+  );
 
   // Calculate the target number of links per column
-  const targetLinksPerColumn = Math.floor((totalLinks + items.length) / columns);
+  const targetLinksPerColumn = Math.floor(
+    (totalLinks + items.length) / columns
+  );
 
-  const resultArray: LinkGroup[][] = Array.from({ length: columns }, () => []);
+  const resultArray: LinkGroup[][] = Array.from(
+    { length: columns },
+    () => []
+  );
   let currentColumn = 0;
   let currentLinkCount = 0;
 
   // Distribute the cards across columns
-  items.forEach(item => {
+  items.forEach((item) => {
     const cardLinkCount = item.linkList.length + 1; // +1 for the item itself
 
     // If adding this card would exceed the target, move to the next column
-    if (currentLinkCount + cardLinkCount > targetLinksPerColumn && currentColumn < columns - 1) {
+    if (
+      currentLinkCount + cardLinkCount > targetLinksPerColumn &&
+      currentColumn < columns - 1
+    ) {
       currentColumn++;
       currentLinkCount = 0; // Reset the count when switching columns
     }
@@ -114,7 +129,6 @@ const displayPage = computed(() => {
 
   return resultArray;
 });
-
 
 function getCurrentDash() {
   return quickDashConfig.value.find((x) => x.name == selectedDash.value);
@@ -297,42 +311,44 @@ function moveDash(direction: number) {
     ></v-tabs
   >
   <v-container class="scroll-lock d-flex">
-    <div
-      v-for="(row, idx) in displayPage"
-      :key="`row-${idx}`"
-      :style="`min-width: ${100 / numberOfColumns}%`"
-    >
-      <v-col v-for="(col, idc) in row" :key="`col-${idx}-${idc}`">
-        <LinkCard
-          :name="col.name"
-          :icon="col.icon"
-          :color="col.color"
-          :link-list="col.linkList"
-          :move-left="idx + idc != 0"
-          :move-right="
-            !(
-              idx == displayPage.length - 1 &&
-              idc == displayPage[displayPage.length - 1].length - 1
-            )
-          "
-          :dash-group-names="groupNames"
-          @update:item="(v) => updateGroup(v, col.name)"
-          @delete:name="deleteGroup"
-          @move:group="(v) => moveGroup(col.name, v)"
-          @move:link="(v) => moveLink(col.name, v.index, v.direction)"
-        />
-      </v-col>
-      <v-col>
-        <LinkCard
-          v-if="displayPage.length != 0 && idx == displayPage.length - 1"
-          name="Add Group"
-          :link-list="[]"
-          :add-mode="true"
-          :dash-group-names="groupNames"
-          @add:item="addGroup"
-      /></v-col>
+    <div v-if="!displayPageEmpty">
+      <div
+        v-for="(row, idx) in displayPage"
+        :key="`row-${idx}`"
+        :style="`min-width: ${100 / numberOfColumns}%`"
+      >
+        <v-col v-for="(col, idc) in row" :key="`col-${idx}-${idc}`">
+          <LinkCard
+            :name="col.name"
+            :icon="col.icon"
+            :color="col.color"
+            :link-list="col.linkList"
+            :move-left="idx + idc != 0"
+            :move-right="
+              !(
+                idx == displayPage.length - 1 &&
+                idc == displayPage[displayPage.length - 1].length - 1
+              )
+            "
+            :dash-group-names="groupNames"
+            @update:item="(v) => updateGroup(v, col.name)"
+            @delete:name="deleteGroup"
+            @move:group="(v) => moveGroup(col.name, v)"
+            @move:link="(v) => moveLink(col.name, v.index, v.direction)"
+          />
+        </v-col>
+        <v-col>
+          <LinkCard
+            v-if="!displayPageEmpty && idx == displayPage.length - 1"
+            name="Add Group"
+            :link-list="[]"
+            :add-mode="true"
+            :dash-group-names="groupNames"
+            @add:item="addGroup"
+        /></v-col>
+      </div>
     </div>
-    <v-row v-if="displayPage.length == 0 && renderTabs.length != 0"
+    <v-row v-if="displayPageEmpty && renderTabs.length != 0"
       ><v-col :cols="colCt"
         ><LinkCard
           name="Add Group"
@@ -349,9 +365,10 @@ function moveDash(direction: number) {
           ><v-card-text class="d-flex align-center"
             ><span
               >There currently no dashboards to display. To start a new one,
-              use the add <v-icon icon="mdi-plus" class="mx-1" />
-              button in the left right corner or use the settings menu <v-icon icon="mdi-cog" class="mx-1" />
-              in the upper right corner to import an existing dashboard.</span
+              use the add <v-icon icon="mdi-plus" class="mx-1" /> button in
+              the left right corner or use the settings menu
+              <v-icon icon="mdi-cog" class="mx-1" /> in the upper right corner
+              to import an existing dashboard.</span
             ></v-card-text
           ></v-card
         ></v-col
