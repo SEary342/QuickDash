@@ -311,42 +311,41 @@ function moveDash(direction: number) {
     ></v-tabs
   >
   <v-container class="scroll-lock d-flex">
-    <div v-if="!displayPageEmpty">
-      <div
-        v-for="(row, idx) in displayPage"
-        :key="`row-${idx}`"
-        :style="`min-width: ${100 / numberOfColumns}%`"
-      >
-        <v-col v-for="(col, idc) in row" :key="`col-${idx}-${idc}`">
-          <LinkCard
-            :name="col.name"
-            :icon="col.icon"
-            :color="col.color"
-            :link-list="col.linkList"
-            :move-left="idx + idc != 0"
-            :move-right="
-              !(
-                idx == displayPage.length - 1 &&
-                idc == displayPage[displayPage.length - 1].length - 1
-              )
-            "
-            :dash-group-names="groupNames"
-            @update:item="(v) => updateGroup(v, col.name)"
-            @delete:name="deleteGroup"
-            @move:group="(v) => moveGroup(col.name, v)"
-            @move:link="(v) => moveLink(col.name, v.index, v.direction)"
-          />
-        </v-col>
-        <v-col>
-          <LinkCard
-            v-if="!displayPageEmpty && idx == displayPage.length - 1"
-            name="Add Group"
-            :link-list="[]"
-            :add-mode="true"
-            :dash-group-names="groupNames"
-            @add:item="addGroup"
-        /></v-col>
-      </div>
+    <div
+      v-if="!displayPageEmpty"
+      v-for="(row, idx) in displayPage"
+      :key="`row-${idx}`"
+      :style="`min-width: ${100 / numberOfColumns}%`"
+    >
+      <v-col v-for="(col, idc) in row" :key="`col-${idx}-${idc}`">
+        <LinkCard
+          :name="col.name"
+          :icon="col.icon"
+          :color="col.color"
+          :link-list="col.linkList"
+          :move-left="idx + idc != 0"
+          :move-right="
+            !(
+              idx == displayPage.length - 1 &&
+              idc == displayPage[displayPage.length - 1].length - 1
+            )
+          "
+          :dash-group-names="groupNames"
+          @update:item="(v) => updateGroup(v, col.name)"
+          @delete:name="deleteGroup"
+          @move:group="(v) => moveGroup(col.name, v)"
+          @move:link="(v) => moveLink(col.name, v.index, v.direction)"
+        />
+      </v-col>
+      <v-col>
+        <LinkCard
+          v-if="!displayPageEmpty && idx == displayPage.length - 1"
+          name="Add Group"
+          :link-list="[]"
+          :add-mode="true"
+          :dash-group-names="groupNames"
+          @add:item="addGroup"
+      /></v-col>
     </div>
     <v-row v-if="displayPageEmpty && renderTabs.length != 0"
       ><v-col :cols="colCt"
