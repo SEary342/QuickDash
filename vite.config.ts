@@ -1,40 +1,24 @@
-// Plugins
-import vue from "@vitejs/plugin-vue";
-import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
 import { viteSingleFile } from "vite-plugin-singlefile";
+import tailwindcss from "@tailwindcss/vite";
 import svgLoader from "vite-svg-loader";
 
-// Utilities
-import { defineConfig } from "vite";
-import { fileURLToPath, URL } from "node:url";
-
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    vue({
-      template: { transformAssetUrls },
-    }),
-    // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
-    vuetify({
-      autoImport: true,
-    }),
+    react(),
+    tailwindcss(),
     viteSingleFile(),
     svgLoader(),
   ],
   define: {
     "process.env": {},
-    "import.meta.env.APP_VERSION": JSON.stringify(process.env.npm_package_version),
-  },
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
-    },
-    extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
-  },
-  server: {
-    port: 3000,
+    "import.meta.env.APP_VERSION": JSON.stringify(
+      process.env.npm_package_version
+    ),
   },
   build: {
-    outDir: "docs"
+    outDir: "docs",
   },
 });
