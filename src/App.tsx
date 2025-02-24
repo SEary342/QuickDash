@@ -11,10 +11,19 @@ const testItem: LinkData = {
   icon: "mdi-death-star",
 };
 
+const testItem2: LinkData = {
+  text: "Github",
+  url: "https://github.com",
+  color: "red",
+  outline: true,
+  icon: "mdi-death-star",
+};
+
 function App() {
   return (
-    <div className="m-5 w-[200px] h-[200px] border">
-      <Link item={testItem} />
+    <div className="m-5 w-[300px] h-[200px] border">
+      <Link item={testItem} upArrow downArrow editMode/>
+      <Link item={testItem2} />
     </div>
   );
 }

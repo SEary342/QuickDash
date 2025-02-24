@@ -1,5 +1,6 @@
 interface colorStruct {
   background: string;
+  hoverColor: string;
   border: string;
   text: string;
   icon: string;
@@ -8,6 +9,7 @@ interface colorStruct {
 export const colorMap: { [key: string]: colorStruct } = {
   red: {
     background: "bg-red-600",
+    hoverColor: "bg-red-700",
     border: "border-red-600",
     text: "text-red-600",
     icon: "red",
