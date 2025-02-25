@@ -19,7 +19,7 @@ const Link = ({ item, upArrow, downArrow, editMode }: LinkProps) => {
     ? "hover:bg-gray-100"
     : colorLookup.hoverColor;
   const handleClick = () => {
-    //window.open(item.url, "_blank", "noopener noreferrer");
+    window.open(item.url, "_blank", "noopener noreferrer");
   };
 
   const handleIconClick = (e: React.MouseEvent, action: () => void) => {
