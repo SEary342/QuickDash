@@ -16,57 +16,79 @@ const Link = ({ item, upArrow, downArrow, editMode }: LinkProps) => {
   const colorLookup = colorMap[item.color];
   const iconColor = item.outline ? colorLookup.icon : "white";
   const hoverColor = item.outline
-    ? "bg-gray-100"
+    ? "hover:bg-gray-100"
     : colorLookup.hoverColor;
   const handleClick = () => {
-    window.open(item.url, "_blank", "noopener noreferrer");
+    //window.open(item.url, "_blank", "noopener noreferrer");
   };
+
+  const handleIconClick = (e: React.MouseEvent, action: () => void) => {
+    e.stopPropagation();
+    action();
+  };
+
   return (
     <div
-      className={`${
+      className={`relative flex items-center gap-3 m-3 hover:shadow-md rounded-xl ${
         item.outline ? `border-3 ${colorLookup.border}` : colorLookup.background
-      }
-      hover:${hoverColor}
-      hover:shadow-md py-5 rounded-xl flex flex-row px-3 m-3 cursor-pointer`}
-      onClick={handleClick}
+      }`}
     >
-      <Icon
-        path={item.icon ? iconTranslation[item.icon] : mdiLink}
-        size={1}
-        color={iconColor}
-      />
-      <span
-        className={`${
-          item.outline ? colorLookup.text : "text-white"
-        } font-bold ms-3`}
+      <div
+        className={`${hoverColor} flex cursor-pointer w-full pl-3 py-3 rounded-s-xl ${
+          editMode ? "" : "rounded-e-xl"
+        }`}
+        onClick={() => {
+          handleClick();
+        }}
       >
-        {item.text}
-      </span>
+        <Icon
+          path={item.icon ? iconTranslation[item.icon] : mdiLink}
+          size={1}
+          color={iconColor}
+        />
+        <span
+          className={`${
+            item.outline ? colorLookup.text : "text-white"
+          } font-bold ms-3`}
+        >
+          {item.text}
+        </span>
+      </div>
+
       {editMode && (
-        <span className="flex flex-row ml-auto">
+        <div className="flex flex-row ml-auto pr-3">
           {upArrow && (
             <IconBtn
+              className={hoverColor}
               path={mdiChevronUp}
               tooltipText="Move Up"
               color={iconColor}
-              hoverColor={hoverColor}
+              onClick={(e) =>
+                handleIconClick(e, () => console.log("up clicked"))
+              }
             />
           )}
           {downArrow && (
             <IconBtn
+              className={hoverColor}
               path={mdiChevronDown}
               tooltipText="Move Down"
               color={iconColor}
-              hoverColor={hoverColor}
+              onClick={(e) =>
+                handleIconClick(e, () => console.log("down clicked"))
+              }
             />
           )}
           <IconBtn
+            className={hoverColor}
             path={mdiPencil}
             tooltipText="Edit Link"
             color={iconColor}
-            hoverColor={hoverColor}
+            onClick={(e) =>
+              handleIconClick(e, () => console.log("edit clicked"))
+            }
           />
-        </span>
+        </div>
       )}
     </div>
   );
