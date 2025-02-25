@@ -6,15 +6,18 @@ const IconBtn = ({
   path,
   tooltipText,
   color,
-  onClick, // New prop for custom button action
+  onClick,
+  size
 }: {
-  className: string;
+  className?: string;
   path: string;
   tooltipText: string;
   color: string;
   onClick?: (e: React.MouseEvent) => void;
+  size?: number
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
+  const iconSize = size != undefined ? size : 0.9
 
   return (
     <button
@@ -23,7 +26,7 @@ const IconBtn = ({
       onMouseLeave={() => setShowTooltip(false)}
       onClick={onClick}
     >
-      <Icon path={path} size={0.9} color={color} />
+      <Icon path={path} size={iconSize} color={color} />
       {showTooltip && (
         <div className="absolute bottom-full mb-2 px-2 py-1 bg-gray-800 text-white text-sm shadow-md text-nowrap rounded-md">
           {tooltipText}

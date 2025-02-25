@@ -3,7 +3,10 @@ interface colorStruct {
   hoverColor: string;
   border: string;
   text: string;
+  outlineText: string;
   icon: string;
+  outlineIcon: string;
+  focus: string;
 }
 // TODO fill in the lookup
 export const colorMap: { [key: string]: colorStruct } = {
@@ -11,7 +14,20 @@ export const colorMap: { [key: string]: colorStruct } = {
     background: "bg-red-600",
     hoverColor: "hover:bg-red-700",
     border: "border-red-600",
-    text: "text-red-600",
-    icon: "red",
+    text: "text-white",
+    outlineText: "text-red-600",
+    icon: "white",
+    outlineIcon: "red",
+    focus: "focus:outline-white",
+  },
+  unknown: {
+    background: "bg-gray-200",
+    hoverColor: "bg-gray-300",
+    border: "border-black",
+    text: "text-black",
+    outlineText: "text-black",
+    icon: "black",
+    outlineIcon: "black",
+    focus: "focus:outline-black",
   },
 };

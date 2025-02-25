@@ -14,7 +14,7 @@ type LinkProps = {
 
 const Link = ({ item, upArrow, downArrow, editMode }: LinkProps) => {
   const colorLookup = colorMap[item.color];
-  const iconColor = item.outline ? colorLookup.icon : "white";
+  const iconColor = item.outline ? colorLookup.outlineIcon : colorLookup.icon;
   const hoverColor = item.outline
     ? "hover:bg-gray-100"
     : colorLookup.hoverColor;
@@ -48,7 +48,7 @@ const Link = ({ item, upArrow, downArrow, editMode }: LinkProps) => {
         />
         <span
           className={`${
-            item.outline ? colorLookup.text : "text-white"
+            item.outline ? colorLookup.outlineText : colorLookup.text
           } font-bold ms-3`}
         >
           {item.text}

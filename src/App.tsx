@@ -1,7 +1,8 @@
-import Link from "./components/Link";
 //import QdLogo from "./assets/qdLogo.svg?component";
 import { LinkData } from "./types/linkData";
 import "./App.css";
+import LinkPanel from "./components/LinkPanel";
+import { LinkGroup } from "./types/linkGroup";
 
 const testItem: LinkData = {
   text: "Github",
@@ -19,13 +20,15 @@ const testItem2: LinkData = {
   icon: "mdi-death-star",
 };
 
+const linkGroup: LinkGroup = {
+  name: "test",
+  linkList: [testItem, testItem2],
+  color: "red",
+  icon: "mdi-chip",
+};
+
 function App() {
-  return (
-    <div className="m-5 w-[300px] h-[200px] border">
-      <Link item={testItem} upArrow downArrow editMode/>
-      <Link item={testItem2} />
-    </div>
-  );
+  return <LinkPanel linkGroup={linkGroup} moveDown moveUp />;
 }
 
 export default App;
