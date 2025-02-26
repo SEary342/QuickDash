@@ -22,6 +22,17 @@ export const colorMap: { [key: string]: colorStruct } = {
     outlineIcon: "red",
     focus: "focus:outline-white",
   },
+  green: {
+    background: "bg-green-600",
+    hoverColor: "hover:bg-green-700",
+    border: "border-white",
+    outlineBorder: "border-green-600",
+    text: "text-white",
+    outlineText: "text-green-600",
+    icon: "white",
+    outlineIcon: "green",
+    focus: "focus:outline-white",
+  },
   unknown: {
     background: "bg-gray-200",
     hoverColor: "bg-gray-300",

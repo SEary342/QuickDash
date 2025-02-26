@@ -10,15 +10,20 @@ import {
   mdiPlaylistEdit,
 } from "@mdi/js";
 import { useState } from "react";
+import LinkPanel from "./LinkPanel";
 
 const TabBtn = ({
+  id,
   linkPage,
   chevronLeft,
   chevronRight,
+  tabSelectFunc,
 }: {
+  id: number;
   linkPage: LinkPage;
   chevronLeft: boolean;
   chevronRight: boolean;
+  tabSelectFunc: (id: number) => void;
 }) => {
   const [tabEdit, setTabEdit] = useState(false);
   const colorLookup = linkPage.color
@@ -31,6 +36,7 @@ const TabBtn = ({
     >
       <button
         className={`inline-flex items-center justify-center p-3 border-b-2 text-lg font-bold border-transparent rounded-t-lg group cursor-pointer ${colorLookup.text} ${colorLookup.hoverColor}`}
+        onClick={() => tabSelectFunc(id)}
       >
         {linkPage.icon && (
           <Icon
@@ -88,6 +94,8 @@ const TabBtn = ({
 };
 
 const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
+  const [pageIndex, setPageIndex] = useState(0); // TODO this will need to come out of local storage
+  const renderedPage = linkPages[pageIndex];
   return (
     <>
       <div className="border-b border-gray-200 dark:border-gray-700">
@@ -95,14 +103,25 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
           {linkPages.map((pg, idx) => (
             <TabBtn
               key={`${pg.name}-${idx}`}
+              id={idx}
               linkPage={pg}
               chevronLeft={idx != 0}
               chevronRight={idx < linkPages.length - 1}
+              tabSelectFunc={(id) => setPageIndex(id)}
             />
           ))}
         </ul>
       </div>
-      <div>content panel // todo render link panels</div>
+      <div>
+        {renderedPage.groupList.map((gp, idx) => (
+          <LinkPanel
+            key={`${gp.name}-${idx}`}
+            linkGroup={gp}
+            moveUp={idx > 0}
+            moveDown={idx < renderedPage.groupList.length - 1}
+          />
+        ))}
+      </div>
     </>
   );
 };

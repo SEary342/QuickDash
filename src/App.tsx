@@ -28,6 +28,13 @@ const linkGroup: LinkGroup = {
   icon: "mdi-chip",
 };
 
+const linkGroupGreen: LinkGroup = {
+  name: "test",
+  linkList: [testItem, testItem2],
+  color: "green",
+  icon: "mdi-chip",
+};
+
 const linkPage: LinkPage = {
   name: "Test",
   groupList: [linkGroup, linkGroup],
@@ -37,8 +44,8 @@ const linkPage: LinkPage = {
 
 const linkPage2: LinkPage = {
   name: "Test2",
-  groupList: [linkGroup, linkGroup],
-  color: "red",
+  groupList: [linkGroupGreen, linkGroupGreen],
+  color: "green",
   icon: "mdi-death-star",
 };
 

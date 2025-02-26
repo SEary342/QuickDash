@@ -40,7 +40,7 @@ const AppBar = () => {
         />
       </svg>
       <span className="ml-3 text-2xl font-bold text-white">QuickDash</span>
-      <IconBtn path={mdiCog} auxPath={mdiChevronDown} tooltipText="Settings" color="white" className="ml-auto"/>
+      <IconBtn path={mdiCog} auxPath={mdiChevronDown} tooltipText="Settings" color="white" className="ml-auto" tooltipPosition="left"/>
     </div>
   );
 };

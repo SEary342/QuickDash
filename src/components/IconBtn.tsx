@@ -30,7 +30,7 @@ const IconBtn = ({
     if (!showTooltip || !buttonRef.current) return;
 
     const buttonRect = buttonRef.current.getBoundingClientRect();
-    const tooltipPadding = 8; // Space between button and tooltip
+    const tooltipPadding = 8;
 
     let top = buttonRect.top - tooltipPadding;
     let left = buttonRect.left + buttonRect.width / 2;
@@ -44,13 +44,15 @@ const IconBtn = ({
     } else if (tooltipPosition === "right") {
       left = buttonRect.right + tooltipPadding;
       transform = "translateX(0%)";
+    } else if (tooltipPosition === "top") {
+      top = buttonRect.top - 20 - tooltipPadding;
     }
 
     // Ensure tooltip is fully visible within viewport
     if (top < 0) top = buttonRect.bottom + tooltipPadding;
     if (top + 40 > window.innerHeight) top = buttonRect.top - 40;
     if (left < 0) left = 8;
-    if (left + 100 > window.innerWidth) left = window.innerWidth - 108;
+    if (left + 50 > window.innerWidth) left = window.innerWidth - 58;
 
     setTooltipStyle({ top, left, transform });
   }, [showTooltip, tooltipPosition]);
