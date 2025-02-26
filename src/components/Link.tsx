@@ -30,7 +30,7 @@ const Link = ({ item, upArrow, downArrow, editMode }: LinkProps) => {
   return (
     <div
       className={`relative flex items-center gap-3 m-3 hover:shadow-md rounded-xl ${
-        item.outline ? `border-3 ${colorLookup.border}` : colorLookup.background
+        item.outline ? `border-3 ${colorLookup.outlineBorder}` : colorLookup.background
       }`}
     >
       <div

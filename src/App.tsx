@@ -1,8 +1,9 @@
 //import QdLogo from "./assets/qdLogo.svg?component";
 import { LinkData } from "./types/linkData";
 import "./App.css";
-import LinkPanel from "./components/LinkPanel";
 import { LinkGroup } from "./types/linkGroup";
+import Dash from "./components/Dash";
+import { LinkPage } from "./types/linkPage";
 
 const testItem: LinkData = {
   text: "Github",
@@ -27,8 +28,23 @@ const linkGroup: LinkGroup = {
   icon: "mdi-chip",
 };
 
+const linkPage: LinkPage = {
+  name: "Test",
+  groupList: [linkGroup, linkGroup],
+  color: "red",
+  icon: "mdi-death-star",
+};
+
+const linkPage2: LinkPage = {
+  name: "Test2",
+  groupList: [linkGroup, linkGroup],
+  color: "red",
+  icon: "mdi-death-star",
+};
+
 function App() {
-  return <LinkPanel linkGroup={linkGroup} moveDown moveUp />;
+  //return <LinkPanel linkGroup={linkGroup} moveDown moveUp />;
+  return <Dash linkPages={[linkPage, linkPage2]} />;
 }
 
 export default App;
