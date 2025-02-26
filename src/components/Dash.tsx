@@ -90,11 +90,11 @@ const TabBtn = ({
 const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
   return (
     <>
-    <div>top panel</div>
       <div className="border-b border-gray-200 dark:border-gray-700">
         <ul className="flex flex-wrap -mb-px text-sm font-medium text-center">
           {linkPages.map((pg, idx) => (
             <TabBtn
+              key={`${pg.name}-${idx}`}
               linkPage={pg}
               chevronLeft={idx != 0}
               chevronRight={idx < linkPages.length - 1}
@@ -102,7 +102,7 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
           ))}
         </ul>
       </div>
-      <div>content panel</div>
+      <div>content panel // todo render link panels</div>
     </>
   );
 };

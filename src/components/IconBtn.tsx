@@ -5,6 +5,7 @@ import { Icon } from "@mdi/react";
 const IconBtn = ({
   className,
   path,
+  auxPath,
   tooltipText,
   color,
   onClick,
@@ -13,6 +14,7 @@ const IconBtn = ({
 }: {
   className?: string;
   path: string;
+  auxPath?: string;
   tooltipText: string;
   color: string;
   onClick?: (e: React.MouseEvent) => void;
@@ -57,12 +59,13 @@ const IconBtn = ({
     <>
       <button
         ref={buttonRef}
-        className={`relative p-[2px] rounded-full cursor-pointer ${className}`}
+        className={`relative p-[2px] rounded-full cursor-pointer flex flex-row ${className}`}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
         onClick={onClick}
       >
         <Icon path={path} size={iconSize} color={color} />
+        {auxPath && <Icon path={auxPath} size={iconSize} color={color} />}
       </button>
 
       {showTooltip &&
@@ -73,7 +76,7 @@ const IconBtn = ({
           >
             {tooltipText}
           </div>,
-          document.body // Render outside of clipped container
+          document.body
         )}
     </>
   );

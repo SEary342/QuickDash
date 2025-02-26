@@ -1,9 +1,9 @@
-//import QdLogo from "./assets/qdLogo.svg?component";
 import { LinkData } from "./types/linkData";
 import "./App.css";
 import { LinkGroup } from "./types/linkGroup";
 import Dash from "./components/Dash";
 import { LinkPage } from "./types/linkPage";
+import AppBar from "./components/AppBar";
 
 const testItem: LinkData = {
   text: "Github",
@@ -44,7 +44,12 @@ const linkPage2: LinkPage = {
 
 function App() {
   //return <LinkPanel linkGroup={linkGroup} moveDown moveUp />;
-  return <Dash linkPages={[linkPage, linkPage2]} />;
+  return (
+    <div>
+      <AppBar />
+      <Dash linkPages={[linkPage, linkPage2]} />
+    </div>
+  );
 }
 
 export default App;
