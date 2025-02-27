@@ -13,21 +13,23 @@ import { motion, AnimatePresence } from "motion/react";
 import { colorMap } from "../types/colors";
 import Link from "./Link";
 import { iconTranslation } from "../types/icons";
-
-const handleIconClick = (e: React.MouseEvent, action: () => void) => {
-  e.stopPropagation();
-  action();
-};
+import { useDispatch } from "react-redux";
+import { reorderLinkGroups } from "../store/store";
 
 const LinkPanel = ({
+  pageId,
+  panelId,
   linkGroup,
   moveUp,
   moveDown,
 }: {
+  pageId: number;
+  panelId: number;
   linkGroup: LinkGroup;
   moveUp: boolean;
   moveDown: boolean;
 }) => {
+  const dispatch = useDispatch();
   const [tabEdit, setTabEdit] = useState(false);
   const iconLookup = linkGroup.icon
     ? iconTranslation[linkGroup.icon]
@@ -60,9 +62,7 @@ const LinkPanel = ({
                 tooltipText="Edit Group"
                 color={colorLookup.icon}
                 size={1}
-                onClick={(e) =>
-                  handleIconClick(e, () => console.log("edit group"))
-                }
+                onClick={() => console.log("edit group")}
               />
               {moveUp && (
                 <IconBtn
@@ -70,9 +70,7 @@ const LinkPanel = ({
                   tooltipText="Move Up"
                   color={colorLookup.icon}
                   size={1}
-                  onClick={(e) =>
-                    handleIconClick(e, () => console.log("move up"))
-                  }
+                  onClick={()=>dispatch(reorderLinkGroups({pageIndex: pageId, fromIndex: panelId, toIndex: panelId - 1}))}
                 />
               )}
               {moveDown && (
@@ -81,9 +79,7 @@ const LinkPanel = ({
                   tooltipText="Move Down"
                   color={colorLookup.icon}
                   size={1}
-                  onClick={(e) =>
-                    handleIconClick(e, () => console.log("move down"))
-                  }
+                  onClick={()=>dispatch(reorderLinkGroups({pageIndex: pageId, fromIndex: panelId, toIndex: panelId + 1}))}
                 />
               )}
             </motion.div>
@@ -98,7 +94,7 @@ const LinkPanel = ({
             tooltipText={tabEdit ? "Hide Controls" : "Show Controls"}
             color={colorLookup.icon}
             size={1}
-            onClick={(e) => handleIconClick(e, () => setTabEdit(!tabEdit))}
+            onClick={() => setTabEdit(!tabEdit)}
           />
         </div>
       </div>

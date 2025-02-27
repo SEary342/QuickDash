@@ -124,7 +124,7 @@ const Dash = ({
   const [pageIndex, setPageIndex] = useState(0); // TODO: This will need to come out of local storage
   const renderedPage = linkPages[pageIndex];
 
-  const groupList = renderedPage.groupList;
+  const groupList = renderedPage ? renderedPage.groupList : [];
 
   // Compute total links across all groups
   const totalLinks = groupList.reduce((sum, gp) => sum + gp.linkList.length, 0);
@@ -184,6 +184,8 @@ const Dash = ({
 
                 return (
                   <LinkPanel
+                    pageId={pageIndex}
+                    panelId={globalIndex}
                     key={`${gp.name}-${idx}`}
                     linkGroup={gp}
                     moveUp={globalIndex > 0}
