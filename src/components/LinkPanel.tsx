@@ -36,7 +36,7 @@ const LinkPanel = ({
     : colorMap["unknown"];
 
   return (
-    <div className="rounded-md flex flex-col border border-black max-w-[33%] m-3">
+    <div className="rounded-md flex flex-col border border-black m-5">
       <div
         className={`flex flex-row w-full text-white rounded-t-md px-3 py-3 items-center font-bold ${colorLookup.background}`}
       >

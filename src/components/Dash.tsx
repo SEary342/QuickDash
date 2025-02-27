@@ -11,6 +11,7 @@ import {
 } from "@mdi/js";
 import { useState } from "react";
 import LinkPanel from "./LinkPanel";
+import { LinkGroup } from "../types/linkGroup";
 
 const TabBtn = ({
   id,
@@ -93,9 +94,34 @@ const TabBtn = ({
   );
 };
 
-const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
-  const [pageIndex, setPageIndex] = useState(0); // TODO this will need to come out of local storage
+const Dash = ({ linkPages, columns = 3 }: { linkPages: LinkPage[]; columns?: number }) => {
+  const [pageIndex, setPageIndex] = useState(0); // TODO: This will need to come out of local storage
   const renderedPage = linkPages[pageIndex];
+
+  const groupList = renderedPage.groupList;
+
+  // Compute total links across all groups
+  const totalLinks = groupList.reduce((sum, gp) => sum + gp.linkList.length, 0);
+  const avgLinksPerColumn = Math.ceil(totalLinks / columns);
+
+  // Distribute groups into columns while maintaining balanced link count
+  const columnGroups: LinkGroup[][] = Array.from({ length: columns }, () => []);
+  let currentColumn = 0;
+  const linksInColumn = Array(columns).fill(0);
+
+  for (const group of groupList) {
+    // If adding this group exceeds the avg links per column, shift to the next column (if possible)
+    if (currentColumn < columns - 1 && linksInColumn[currentColumn] + group.linkList.length > avgLinksPerColumn) {
+      currentColumn++;
+    }
+    columnGroups[currentColumn].push(group);
+    linksInColumn[currentColumn] += group.linkList.length;
+  }
+
+  // Flatten columnGroups to determine global index positions
+  const flattenedGroups = columnGroups.flat();
+  const totalGroups = flattenedGroups.length;
+
   return (
     <>
       <div className="border-b border-gray-200 dark:border-gray-700">
@@ -105,25 +131,34 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
               key={`${pg.name}-${idx}`}
               id={idx}
               linkPage={pg}
-              chevronLeft={idx != 0}
+              chevronLeft={idx !== 0}
               chevronRight={idx < linkPages.length - 1}
-              tabSelectFunc={(id) => setPageIndex(id)}
+              tabSelectFunc={setPageIndex}
             />
           ))}
         </ul>
       </div>
-      <div>
-        {renderedPage.groupList.map((gp, idx) => (
-          <LinkPanel
-            key={`${gp.name}-${idx}`}
-            linkGroup={gp}
-            moveUp={idx > 0}
-            moveDown={idx < renderedPage.groupList.length - 1}
-          />
+      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
+        {columnGroups.map((groupColumn, colIdx) => (
+          <div key={`column-${colIdx}`} className="flex flex-col gap-4">
+            {groupColumn.map((gp, idx) => {
+              const globalIndex = flattenedGroups.indexOf(gp);
+
+              return (
+                <LinkPanel
+                  key={`${gp.name}-${idx}`}
+                  linkGroup={gp}
+                  moveUp={globalIndex > 0}
+                  moveDown={globalIndex < totalGroups - 1}
+                />
+              );
+            })}
+          </div>
         ))}
       </div>
     </>
   );
 };
+
 
 export default Dash;
