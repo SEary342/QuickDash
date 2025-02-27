@@ -154,4 +154,15 @@ export const colorMap: { [key: string]: colorStruct } = {
     outlineIcon: "blue",
     focus: "focus:outline-white",
   },
+  unknown: {
+    background: "bg-gray-200",
+    hoverColor: "bg-gray-300",
+    border: "border-black",
+    outlineBorder: "border-black",
+    text: "text-black",
+    outlineText: "text-black",
+    icon: "black",
+    outlineIcon: "black",
+    focus: "focus:outline-black",
+  },
 };
