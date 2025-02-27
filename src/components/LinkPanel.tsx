@@ -9,6 +9,7 @@ import {
   mdiPlaylistEdit,
 } from "@mdi/js";
 import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { colorMap } from "../types/colors";
 import Link from "./Link";
 import { iconTranslation } from "../types/icons";
@@ -37,46 +38,59 @@ const LinkPanel = ({
 
   return (
     <div className="rounded-md flex flex-col border border-black m-5">
+      {/* Header Section */}
       <div
         className={`flex flex-row w-full text-white rounded-t-md px-3 py-3 items-center font-bold ${colorLookup.background}`}
       >
         {linkGroup.icon && <Icon path={iconLookup} size={1} />}
         <span className="ml-3 text-xl">{linkGroup.name}</span>
-        {tabEdit && (
-          <div className="flex flex-row ml-3">
-            <IconBtn
-              path={mdiPencil}
-              tooltipText="Edit Group"
-              color={colorLookup.icon}
-              size={1}
-              onClick={(e) =>
-                handleIconClick(e, () => console.log("edit group"))
-              }
-            />
-            {moveUp && (
+
+        {/* Edit Buttons - Animated */}
+        <AnimatePresence>
+          {tabEdit && (
+            <motion.div
+              className="flex flex-row ml-3"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
               <IconBtn
-                path={mdiChevronUp}
-                tooltipText="Move Up"
+                path={mdiPencil}
+                tooltipText="Edit Group"
                 color={colorLookup.icon}
                 size={1}
                 onClick={(e) =>
-                  handleIconClick(e, () => console.log("move up"))
+                  handleIconClick(e, () => console.log("edit group"))
                 }
               />
-            )}
-            {moveDown && (
-              <IconBtn
-                path={mdiChevronDown}
-                tooltipText="Move Down"
-                color={colorLookup.icon}
-                size={1}
-                onClick={(e) =>
-                  handleIconClick(e, () => console.log("move down"))
-                }
-              />
-            )}
-          </div>
-        )}
+              {moveUp && (
+                <IconBtn
+                  path={mdiChevronUp}
+                  tooltipText="Move Up"
+                  color={colorLookup.icon}
+                  size={1}
+                  onClick={(e) =>
+                    handleIconClick(e, () => console.log("move up"))
+                  }
+                />
+              )}
+              {moveDown && (
+                <IconBtn
+                  path={mdiChevronDown}
+                  tooltipText="Move Down"
+                  color={colorLookup.icon}
+                  size={1}
+                  onClick={(e) =>
+                    handleIconClick(e, () => console.log("move down"))
+                  }
+                />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Edit Toggle Button */}
         <div className="ml-auto">
           <IconBtn
             className={`focus:outline-2 focus:outline-offset-2 ${colorLookup.focus}`}
@@ -88,13 +102,15 @@ const LinkPanel = ({
           />
         </div>
       </div>
+
+      {/* Link List */}
       <div className="pt-1 pb-3">
         {linkGroup.linkList.map((item, index) => (
           <Link
             key={`${linkGroup.name}-${index}`}
             item={item}
-            upArrow={index != 0}
-            downArrow={index != linkGroup.linkList.length - 1}
+            upArrow={index !== 0}
+            downArrow={index !== linkGroup.linkList.length - 1}
             editMode={tabEdit}
           />
         ))}

@@ -14,9 +14,9 @@ const testItem: LinkData = {
 };
 
 const testItem2: LinkData = {
-  text: "Github",
+  text: "Github2",
   url: "https://github.com",
-  color: "red",
+  color: "blue",
   outline: true,
   icon: "mdi-death-star",
 };
@@ -37,14 +37,14 @@ const linkGroupGreen: LinkGroup = {
 
 const linkPage: LinkPage = {
   name: "Test",
-  groupList: [linkGroup, linkGroup],
+  groupList: [linkGroup, linkGroupGreen],
   color: "red",
   icon: "mdi-death-star",
 };
 
 const linkPage2: LinkPage = {
   name: "Test2",
-  groupList: [linkGroupGreen, linkGroupGreen],
+  groupList: [linkGroupGreen, linkGroup],
   color: "green",
   icon: "mdi-death-star",
 };

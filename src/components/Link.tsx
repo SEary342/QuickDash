@@ -4,15 +4,19 @@ import { iconTranslation } from "../types/icons";
 import { LinkData } from "../types/linkData";
 import Icon from "@mdi/react";
 import IconBtn from "./IconBtn";
+import { motion, AnimatePresence } from "framer-motion";
 
-type LinkProps = {
+const Link = ({
+  item,
+  upArrow,
+  downArrow,
+  editMode,
+}: {
   item: LinkData;
   upArrow?: boolean;
   downArrow?: boolean;
   editMode?: boolean;
-};
-
-const Link = ({ item, upArrow, downArrow, editMode }: LinkProps) => {
+}) => {
   const colorLookup = colorMap[item.color];
   const iconColor = item.outline ? colorLookup.outlineIcon : colorLookup.icon;
   const hoverColor = item.outline
@@ -30,7 +34,9 @@ const Link = ({ item, upArrow, downArrow, editMode }: LinkProps) => {
   return (
     <div
       className={`relative flex items-center gap-3 m-3 hover:shadow-md rounded-xl ${
-        item.outline ? `border-3 ${colorLookup.outlineBorder}` : colorLookup.background
+        item.outline
+          ? `border-3 ${colorLookup.outlineBorder}`
+          : colorLookup.background
       }`}
     >
       <div
@@ -55,41 +61,50 @@ const Link = ({ item, upArrow, downArrow, editMode }: LinkProps) => {
         </span>
       </div>
 
-      {editMode && (
-        <div className="flex flex-row ml-auto pr-3">
-          {upArrow && (
+      {/* Conditionally Rendered Edit Buttons with Framer Motion */}
+      <AnimatePresence>
+        {editMode && (
+          <motion.div
+            className="flex flex-row ml-auto pr-3"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            {upArrow && (
+              <IconBtn
+                className={hoverColor}
+                path={mdiChevronUp}
+                tooltipText="Move Up"
+                color={iconColor}
+                onClick={(e) =>
+                  handleIconClick(e, () => console.log("up clicked"))
+                }
+              />
+            )}
+            {downArrow && (
+              <IconBtn
+                className={hoverColor}
+                path={mdiChevronDown}
+                tooltipText="Move Down"
+                color={iconColor}
+                onClick={(e) =>
+                  handleIconClick(e, () => console.log("down clicked"))
+                }
+              />
+            )}
             <IconBtn
               className={hoverColor}
-              path={mdiChevronUp}
-              tooltipText="Move Up"
+              path={mdiPencil}
+              tooltipText="Edit Link"
               color={iconColor}
               onClick={(e) =>
-                handleIconClick(e, () => console.log("up clicked"))
+                handleIconClick(e, () => console.log("edit clicked"))
               }
             />
-          )}
-          {downArrow && (
-            <IconBtn
-              className={hoverColor}
-              path={mdiChevronDown}
-              tooltipText="Move Down"
-              color={iconColor}
-              onClick={(e) =>
-                handleIconClick(e, () => console.log("down clicked"))
-              }
-            />
-          )}
-          <IconBtn
-            className={hoverColor}
-            path={mdiPencil}
-            tooltipText="Edit Link"
-            color={iconColor}
-            onClick={(e) =>
-              handleIconClick(e, () => console.log("edit clicked"))
-            }
-          />
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
