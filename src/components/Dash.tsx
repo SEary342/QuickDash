@@ -1,7 +1,7 @@
 import Icon from "@mdi/react";
 import { LinkPage } from "../types/linkPage";
 import { iconTranslation } from "../types/icons";
-import { colorMap } from "../types/colors";
+import { getColorLookup } from "../types/colors";
 import IconBtn from "./IconBtn";
 import {
   mdiChevronLeft,
@@ -13,6 +13,9 @@ import { useState } from "react";
 import LinkPanel from "./LinkPanel";
 import { LinkGroup } from "../types/linkGroup";
 import { motion, AnimatePresence } from "motion/react";
+import { LinkData } from "../types/linkData";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, setSelectedDash } from "../store/store";
 
 const TabBtn = ({
   id,
@@ -28,9 +31,7 @@ const TabBtn = ({
   tabSelectFunc: (id: number) => void;
 }) => {
   const [tabEdit, setTabEdit] = useState(false);
-  const colorLookup = linkPage.color
-    ? colorMap[linkPage.color]
-    : colorMap["unknown"];
+  const colorLookup = getColorLookup(linkPage.color);
 
   return (
     <motion.li
@@ -114,40 +115,69 @@ const TabBtn = ({
   );
 };
 
+function distributeLinkGroups(groups: LinkGroup[], numColumns: number): LinkGroup[][] {
+  // Flatten all LinkData into an array with references to their parent groups
+  const allLinks: { group: LinkGroup; data: LinkData }[] = [];
+  for (const group of groups) {
+    for (const link of group.linkList) {
+      allLinks.push({ group, data: link });
+    }
+  }
+
+  // Calculate how many items per column
+  const result: LinkGroup[][] = Array.from({ length: numColumns }, () => []);
+
+  // Track group placements to maintain structure
+  const groupMap = new Map<LinkGroup, LinkGroup>();
+  let columnIndex = 0;
+
+  // Ensure all groups are placed, even if empty
+  for (const group of groups) {
+    if (!groupMap.has(group)) {
+      const newGroup: LinkGroup = { ...group, linkList: [] };
+      groupMap.set(group, newGroup);
+      result[columnIndex].push(newGroup);
+      columnIndex = (columnIndex + 1) % numColumns;
+    }
+  }
+
+  columnIndex = 0;
+  for (const { group, data } of allLinks) {
+    // Add the link data to the correct group in the result set
+    groupMap.get(group)!.linkList.push(data);
+
+    // Move to the next column
+    columnIndex = (columnIndex + 1) % numColumns;
+  }
+
+  return result;
+}
+
 const Dash = ({
   linkPages,
-  columns = 3,
 }: {
   linkPages: LinkPage[];
   columns?: number;
 }) => {
-  const [pageIndex, setPageIndex] = useState(0); // TODO: This will need to come out of local storage
-  const renderedPage = linkPages[pageIndex];
+  const dispatch = useDispatch();
+  const selectedDash = useSelector((state: RootState) => state.app.selectedDash)
+  const pageIndex = linkPages.findIndex(page => page.name === selectedDash);
+  const resolvedPageIndex = pageIndex !== -1 ? pageIndex : 0;
+  
+  const columns = useSelector((state: RootState) => state.app.numberOfColumns);
+  const renderedPage = linkPages[resolvedPageIndex];
 
   const groupList = renderedPage ? renderedPage.groupList : [];
-
-  // Compute total links across all groups
-  const totalLinks = groupList.reduce((sum, gp) => sum + gp.linkList.length, 0);
-  const avgLinksPerColumn = Math.ceil(totalLinks / columns);
-
-  // Distribute groups into columns while maintaining balanced link count
-  const columnGroups: LinkGroup[][] = Array.from({ length: columns }, () => []);
-  let currentColumn = 0;
-  const linksInColumn = Array(columns).fill(0);
-
-  for (const group of groupList) {
-    if (
-      currentColumn < columns - 1 &&
-      linksInColumn[currentColumn] + group.linkList.length > avgLinksPerColumn
-    ) {
-      currentColumn++;
-    }
-    columnGroups[currentColumn].push(group);
-    linksInColumn[currentColumn] += group.linkList.length;
-  }
+  const columnGroups = distributeLinkGroups(groupList, columns)
 
   const flattenedGroups = columnGroups.flat();
   const totalGroups = flattenedGroups.length;
+
+  const handlePageIndexChange = (newIndex: number) => {
+    if (linkPages[newIndex]) {
+      dispatch(setSelectedDash(linkPages[newIndex].name));
+    }
+  };
 
   return (
     <>
@@ -160,7 +190,7 @@ const Dash = ({
               linkPage={pg}
               chevronLeft={idx !== 0}
               chevronRight={idx < linkPages.length - 1}
-              tabSelectFunc={setPageIndex}
+              tabSelectFunc={handlePageIndexChange}
             />
           ))}
         </ul>
