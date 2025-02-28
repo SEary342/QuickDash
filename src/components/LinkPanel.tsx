@@ -10,7 +10,7 @@ import {
 } from "@mdi/js";
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { colorMap } from "../types/colors";
+import { getColorLookup } from "../types/colors";
 import Link from "./Link";
 import { iconTranslation } from "../types/icons";
 import { useDispatch } from "react-redux";
@@ -34,9 +34,7 @@ const LinkPanel = ({
   const iconLookup = linkGroup.icon
     ? iconTranslation[linkGroup.icon]
     : mdiFormatListGroup;
-  const colorLookup = linkGroup.color
-    ? colorMap[linkGroup.color]
-    : colorMap["unknown"];
+  const colorLookup = getColorLookup(linkGroup.color);
 
   return (
     <div className="rounded-md flex flex-col border border-black m-5">
@@ -70,7 +68,15 @@ const LinkPanel = ({
                   tooltipText="Move Up"
                   color={colorLookup.icon}
                   size={1}
-                  onClick={()=>dispatch(reorderLinkGroups({pageIndex: pageId, fromIndex: panelId, toIndex: panelId - 1}))}
+                  onClick={() =>
+                    dispatch(
+                      reorderLinkGroups({
+                        pageIndex: pageId,
+                        fromIndex: panelId,
+                        toIndex: panelId - 1,
+                      })
+                    )
+                  }
                 />
               )}
               {moveDown && (
@@ -79,7 +85,15 @@ const LinkPanel = ({
                   tooltipText="Move Down"
                   color={colorLookup.icon}
                   size={1}
-                  onClick={()=>dispatch(reorderLinkGroups({pageIndex: pageId, fromIndex: panelId, toIndex: panelId + 1}))}
+                  onClick={() =>
+                    dispatch(
+                      reorderLinkGroups({
+                        pageIndex: pageId,
+                        fromIndex: panelId,
+                        toIndex: panelId + 1,
+                      })
+                    )
+                  }
                 />
               )}
             </motion.div>

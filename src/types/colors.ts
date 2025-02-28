@@ -10,7 +10,7 @@ interface colorStruct {
   focus: string;
 }
 
-export const colorMap: { [key: string]: colorStruct } = {
+const colorMap: { [key: string]: colorStruct } = {
   red: {
     background: "bg-red-600",
     hoverColor: "hover:bg-red-700",
@@ -165,4 +165,14 @@ export const colorMap: { [key: string]: colorStruct } = {
     outlineIcon: "black",
     focus: "focus:outline-black",
   },
+};
+
+export const getColorLookup = (color?: string) => {
+  if (color) {
+    const colorLookup = colorMap[color];
+    if (colorLookup) {
+      return colorLookup;
+    }
+  }
+  return colorMap["unknown"];
 };

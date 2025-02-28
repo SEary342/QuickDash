@@ -4,15 +4,56 @@ import { LinkGroup } from "../types/linkGroup";
 import { LinkData } from "../types/linkData";
 import { testLinkPages } from "./testData";
 
-// Initial state
-const initialState: LinkPage[] = testLinkPages;
+// Local Storage Key
+const LOCAL_STORAGE_KEY = "app";
 
-// Slice for managing link pages, link groups, and link data
+// Load State from Local Storage
+const loadState = (): {
+  selectedDash: string;
+  linkPages: LinkPage[];
+  numberOfColumns: number;
+} => {
+  try {
+    const storedState = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (storedState) {
+      const parsedState = JSON.parse(storedState);
+      return {
+        selectedDash: parsedState.selectedDash || "",
+        linkPages: parsedState.quickDashConfig || testLinkPages, // Use the legacy key
+        numberOfColumns: parsedState.numberOfColumns ?? 3,
+      };
+    }
+  } catch (error) {
+    console.error("Error loading state from localStorage:", error);
+  }
+  return { selectedDash: "", linkPages: testLinkPages, numberOfColumns: 3 };
+};
+
+// Initial state
+const initialState = loadState();
+
+// Slice for app state
+const appSlice = createSlice({
+  name: "app",
+  initialState: {
+    selectedDash: initialState.selectedDash,
+    numberOfColumns: initialState.numberOfColumns,
+  },
+  reducers: {
+    setSelectedDash(state, action: PayloadAction<string>) {
+      state.selectedDash = action.payload;
+    },
+    setNumberOfColumns(state, action: PayloadAction<number>) {
+      state.numberOfColumns = action.payload;
+    },
+  },
+});
+
+// Slice for managing link pages
 const linkPageSlice = createSlice({
   name: "linkPages",
-  initialState,
+  initialState: initialState.linkPages,
   reducers: {
-    // CRUD operations for LinkPage
     addLinkPage(state, action: PayloadAction<LinkPage>) {
       state.push(action.payload);
     },
@@ -34,8 +75,6 @@ const linkPageSlice = createSlice({
       const [movedItem] = state.splice(fromIndex, 1);
       state.splice(toIndex, 0, movedItem);
     },
-
-    // CRUD operations for LinkGroup within LinkPage
     addLinkGroup(
       state,
       action: PayloadAction<{ pageIndex: number; group: LinkGroup }>
@@ -73,8 +112,6 @@ const linkPageSlice = createSlice({
       const [movedItem] = state[pageIndex].groupList.splice(fromIndex, 1);
       state[pageIndex].groupList.splice(toIndex, 0, movedItem);
     },
-
-    // CRUD operations for LinkData within LinkGroup
     addLinkData(
       state,
       action: PayloadAction<{
@@ -131,6 +168,7 @@ const linkPageSlice = createSlice({
   },
 });
 
+export const { setSelectedDash, setNumberOfColumns } = appSlice.actions;
 export const {
   addLinkPage,
   updateLinkPage,
@@ -146,10 +184,27 @@ export const {
   reorderLinkData,
 } = linkPageSlice.actions;
 
+// Configure Store
 const store = configureStore({
   reducer: {
+    app: appSlice.reducer,
     linkPages: linkPageSlice.reducer,
   },
+});
+
+// Subscribe to store changes and update local storage
+store.subscribe(() => {
+  try {
+    const state = store.getState();
+    const persistedState = {
+      selectedDash: state.app.selectedDash,
+      quickDashConfig: state.linkPages, // Still using legacy key
+      numberOfColumns: state.app.numberOfColumns,
+    };
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedState));
+  } catch (error) {
+    console.error("Error saving state to localStorage:", error);
+  }
 });
 
 export type RootState = ReturnType<typeof store.getState>;

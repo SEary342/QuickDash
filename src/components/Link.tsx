@@ -1,5 +1,5 @@
 import { mdiChevronDown, mdiChevronUp, mdiLink, mdiPencil } from "@mdi/js";
-import { colorMap } from "../types/colors";
+import { getColorLookup } from "../types/colors";
 import { iconTranslation } from "../types/icons";
 import { LinkData } from "../types/linkData";
 import Icon from "@mdi/react";
@@ -17,7 +17,7 @@ const Link = ({
   downArrow?: boolean;
   editMode?: boolean;
 }) => {
-  const colorLookup = colorMap[item.color];
+  const colorLookup = getColorLookup(item.color);
   const iconColor = item.outline ? colorLookup.outlineIcon : colorLookup.icon;
   const hoverColor = item.outline
     ? "hover:bg-gray-100"
