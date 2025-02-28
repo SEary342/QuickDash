@@ -40,7 +40,7 @@ const LinkPanel = ({
     <div className="rounded-md flex flex-col border border-black m-5">
       {/* Header Section */}
       <div
-        className={`flex flex-row w-full text-white rounded-t-md px-3 py-3 items-center font-bold ${colorLookup.background}`}
+        className={`flex flex-row w-full ${colorLookup.text} rounded-t-md px-3 py-3 items-center font-bold ${colorLookup.background}`}
       >
         {linkGroup.icon && <Icon path={iconLookup} size={1} />}
         <span className="ml-3 text-xl">{linkGroup.name}</span>
@@ -57,6 +57,7 @@ const LinkPanel = ({
             >
               <IconBtn
                 path={mdiPencil}
+                className={`${colorLookup.hoverColor}`}
                 tooltipText="Edit Group"
                 color={colorLookup.icon}
                 size={1}
@@ -67,6 +68,7 @@ const LinkPanel = ({
                   path={mdiChevronUp}
                   tooltipText="Move Up"
                   color={colorLookup.icon}
+                  className={`${colorLookup.hoverColor}`}
                   size={1}
                   onClick={() =>
                     dispatch(
@@ -84,6 +86,7 @@ const LinkPanel = ({
                   path={mdiChevronDown}
                   tooltipText="Move Down"
                   color={colorLookup.icon}
+                  className={`${colorLookup.hoverColor}`}
                   size={1}
                   onClick={() =>
                     dispatch(
@@ -103,7 +106,7 @@ const LinkPanel = ({
         {/* Edit Toggle Button */}
         <div className="ml-auto">
           <IconBtn
-            className={`focus:outline-2 focus:outline-offset-2 ${colorLookup.focus}`}
+            className={`focus:outline-2 focus:outline-offset-2 ${colorLookup.focus} ${colorLookup.hoverColor}`}
             path={mdiPlaylistEdit}
             tooltipText={tabEdit ? "Hide Controls" : "Show Controls"}
             color={colorLookup.icon}

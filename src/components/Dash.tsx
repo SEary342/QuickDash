@@ -79,6 +79,7 @@ const TabBtn = ({
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
               <IconBtn
+                className={`${colorLookup.hoverColor}`}
                 path={mdiPencil}
                 color={colorLookup.icon}
                 tooltipText="Edit Dash"
@@ -86,6 +87,7 @@ const TabBtn = ({
               />
               {chevronLeft && (
                 <IconBtn
+                  className={`${colorLookup.hoverColor}`}
                   path={mdiChevronLeft}
                   color={colorLookup.icon}
                   tooltipText="Move Dash Left"
@@ -94,6 +96,7 @@ const TabBtn = ({
               )}
               {chevronRight && (
                 <IconBtn
+                  className={`${colorLookup.hoverColor}`}
                   path={mdiChevronRight}
                   color={colorLookup.icon}
                   tooltipText="Move Dash Right"
@@ -104,6 +107,7 @@ const TabBtn = ({
           )}
         </AnimatePresence>
         <IconBtn
+          className={`${colorLookup.hoverColor}`}
           path={mdiPlaylistEdit}
           color={colorLookup.icon}
           tooltipText={tabEdit ? "Hide Controls" : "Show Controls"}
@@ -115,7 +119,10 @@ const TabBtn = ({
   );
 };
 
-function distributeLinkGroups(groups: LinkGroup[], numColumns: number): LinkGroup[][] {
+function distributeLinkGroups(
+  groups: LinkGroup[],
+  numColumns: number
+): LinkGroup[][] {
   // Flatten all LinkData into an array with references to their parent groups
   const allLinks: { group: LinkGroup; data: LinkData }[] = [];
   for (const group of groups) {
@@ -153,22 +160,19 @@ function distributeLinkGroups(groups: LinkGroup[], numColumns: number): LinkGrou
   return result;
 }
 
-const Dash = ({
-  linkPages,
-}: {
-  linkPages: LinkPage[];
-  columns?: number;
-}) => {
+const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
   const dispatch = useDispatch();
-  const selectedDash = useSelector((state: RootState) => state.app.selectedDash)
-  const pageIndex = linkPages.findIndex(page => page.name === selectedDash);
+  const selectedDash = useSelector(
+    (state: RootState) => state.app.selectedDash
+  );
+  const pageIndex = linkPages.findIndex((page) => page.name === selectedDash);
   const resolvedPageIndex = pageIndex !== -1 ? pageIndex : 0;
-  
+
   const columns = useSelector((state: RootState) => state.app.numberOfColumns);
   const renderedPage = linkPages[resolvedPageIndex];
 
   const groupList = renderedPage ? renderedPage.groupList : [];
-  const columnGroups = distributeLinkGroups(groupList, columns)
+  const columnGroups = distributeLinkGroups(groupList, columns);
 
   const flattenedGroups = columnGroups.flat();
   const totalGroups = flattenedGroups.length;

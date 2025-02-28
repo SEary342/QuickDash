@@ -156,7 +156,7 @@ const colorMap: { [key: string]: colorStruct } = {
   },
   unknown: {
     background: "bg-gray-200",
-    hoverColor: "bg-gray-300",
+    hoverColor: "hover:bg-gray-300",
     border: "border-black",
     outlineBorder: "border-black",
     text: "text-black",
