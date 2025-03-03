@@ -66,12 +66,12 @@ const LinkPanel = ({
                 onClick={() => setEditDialog(true)}
               />
               <Dialog
-                  title="Edit Group"
-                  isOpen={editDialog}
-                  onClose={() => setEditDialog(false)}
-                >
-                  test
-                </Dialog>
+                title="Edit Group"
+                isOpen={editDialog}
+                onClose={() => setEditDialog(false)}
+              >
+                test
+              </Dialog>
               {moveUp && (
                 <IconBtn
                   path={mdiChevronUp}
@@ -130,6 +130,9 @@ const LinkPanel = ({
         {linkGroup.linkList.map((item, index) => (
           <Link
             key={`${linkGroup.name}-${index}`}
+            pageId={pageId}
+            panelId={panelId}
+            id={index}
             item={item}
             upArrow={index !== 0}
             downArrow={index !== linkGroup.linkList.length - 1}

@@ -14,7 +14,7 @@
     [ ] Panel Link Add Button
 
 ### Links
-    [ ] Reorder functionality & animation?
+    [x] Reorder functionality
     [ ] New Icons
     [ ] Link edit modal
     [ ] Link add modal

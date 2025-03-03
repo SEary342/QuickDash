@@ -7,18 +7,27 @@ import IconBtn from "./IconBtn";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog } from "./Dialog";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { reorderLinkData } from "../store/store";
 
 const Link = ({
+  pageId,
+  panelId,
+  id,
   item,
   upArrow,
   downArrow,
   editMode,
 }: {
+  pageId: number;
+  panelId: number;
+  id: number;
   item: LinkData;
   upArrow?: boolean;
   downArrow?: boolean;
   editMode?: boolean;
 }) => {
+  const dispatch = useDispatch();
   const colorLookup = getColorLookup(item.color);
   const iconColor = item.outline ? colorLookup.outlineIcon : colorLookup.icon;
   const hoverColor = item.outline
@@ -28,11 +37,6 @@ const Link = ({
     window.open(item.url, "_blank", "noopener noreferrer");
   };
   const [editDialog, setEditDialog] = useState(false);
-
-  const handleIconClick = (e: React.MouseEvent, action: () => void) => {
-    e.stopPropagation();
-    action();
-  };
 
   return (
     <div
@@ -64,7 +68,6 @@ const Link = ({
         </span>
       </div>
 
-      {/* Conditionally Rendered Edit Buttons with Framer Motion */}
       <AnimatePresence>
         {editMode && (
           <motion.div
@@ -80,8 +83,15 @@ const Link = ({
                 path={mdiChevronUp}
                 tooltipText="Move Up"
                 color={iconColor}
-                onClick={(e) =>
-                  handleIconClick(e, () => console.log("up clicked"))
+                onClick={() =>
+                  dispatch(
+                    reorderLinkData({
+                      pageIndex: pageId,
+                      groupIndex: panelId,
+                      fromIndex: id,
+                      toIndex: id - 1,
+                    })
+                  )
                 }
               />
             )}
@@ -91,8 +101,15 @@ const Link = ({
                 path={mdiChevronDown}
                 tooltipText="Move Down"
                 color={iconColor}
-                onClick={(e) =>
-                  handleIconClick(e, () => console.log("down clicked"))
+                onClick={() =>
+                  dispatch(
+                    reorderLinkData({
+                      pageIndex: pageId,
+                      groupIndex: panelId,
+                      fromIndex: id,
+                      toIndex: id + 1,
+                    })
+                  )
                 }
               />
             )}
@@ -101,9 +118,7 @@ const Link = ({
               path={mdiPencil}
               tooltipText="Edit Link"
               color={iconColor}
-              onClick={(e) =>
-                handleIconClick(e, () => setEditDialog(true))
-              }
+              onClick={() => setEditDialog(true)}
             />
             <Dialog
               title="Edit Group"
