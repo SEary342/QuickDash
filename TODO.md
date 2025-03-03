@@ -27,3 +27,4 @@
 ### General
     [ ] Testing
     [ ] Logo Work
+    [x] Generic dialog

@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { LinkData } from "../types/linkData";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, setSelectedDash } from "../store/store";
+import { Dialog } from "./Dialog";
 
 const TabBtn = ({
   id,
@@ -32,6 +33,7 @@ const TabBtn = ({
 }) => {
   const [tabEdit, setTabEdit] = useState(false);
   const colorLookup = getColorLookup(linkPage.color);
+  const [editDialog, setEditDialog] = useState(false);
 
   return (
     <motion.li
@@ -84,7 +86,15 @@ const TabBtn = ({
                 color={colorLookup.icon}
                 tooltipText="Edit Dash"
                 tooltipPosition="bottom"
+                onClick={() => setEditDialog(true)}
               />
+              <Dialog
+                title="Edit Group"
+                isOpen={editDialog}
+                onClose={() => setEditDialog(false)}
+              >
+                test
+              </Dialog>
               {chevronLeft && (
                 <IconBtn
                   className={`${colorLookup.hoverColor}`}

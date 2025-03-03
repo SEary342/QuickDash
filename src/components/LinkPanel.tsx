@@ -15,6 +15,7 @@ import Link from "./Link";
 import { iconTranslation } from "../types/icons";
 import { useDispatch } from "react-redux";
 import { reorderLinkGroups } from "../store/store";
+import { Dialog } from "./Dialog";
 
 const LinkPanel = ({
   pageId,
@@ -35,6 +36,7 @@ const LinkPanel = ({
     ? iconTranslation[linkGroup.icon]
     : mdiFormatListGroup;
   const colorLookup = getColorLookup(linkGroup.color);
+  const [editDialog, setEditDialog] = useState(false);
 
   return (
     <div className="rounded-md flex flex-col border border-black m-5">
@@ -61,8 +63,15 @@ const LinkPanel = ({
                 tooltipText="Edit Group"
                 color={colorLookup.icon}
                 size={1}
-                onClick={() => console.log("edit group")}
+                onClick={() => setEditDialog(true)}
               />
+              <Dialog
+                  title="Edit Group"
+                  isOpen={editDialog}
+                  onClose={() => setEditDialog(false)}
+                >
+                  test
+                </Dialog>
               {moveUp && (
                 <IconBtn
                   path={mdiChevronUp}

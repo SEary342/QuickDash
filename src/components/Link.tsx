@@ -5,6 +5,8 @@ import { LinkData } from "../types/linkData";
 import Icon from "@mdi/react";
 import IconBtn from "./IconBtn";
 import { motion, AnimatePresence } from "framer-motion";
+import { Dialog } from "./Dialog";
+import { useState } from "react";
 
 const Link = ({
   item,
@@ -25,6 +27,7 @@ const Link = ({
   const handleClick = () => {
     window.open(item.url, "_blank", "noopener noreferrer");
   };
+  const [editDialog, setEditDialog] = useState(false);
 
   const handleIconClick = (e: React.MouseEvent, action: () => void) => {
     e.stopPropagation();
@@ -99,9 +102,16 @@ const Link = ({
               tooltipText="Edit Link"
               color={iconColor}
               onClick={(e) =>
-                handleIconClick(e, () => console.log("edit clicked"))
+                handleIconClick(e, () => setEditDialog(true))
               }
             />
+            <Dialog
+              title="Edit Group"
+              isOpen={editDialog}
+              onClose={() => setEditDialog(false)}
+            >
+              test
+            </Dialog>
           </motion.div>
         )}
       </AnimatePresence>
