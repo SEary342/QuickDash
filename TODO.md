@@ -3,8 +3,8 @@
     [ ] Panel Add UI
 
     Tabs
-    [ ] Selected Tab indication
-    [ ] Tab Reorder Functionality
+    [x] Selected Tab indication
+    [x] Tab Reorder Functionality
     [ ] Tab Edit Modal & funcs
     [ ] New Tab Button and Modal & funcs
 

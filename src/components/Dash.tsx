@@ -15,7 +15,7 @@ import { LinkGroup } from "../types/linkGroup";
 import { motion, AnimatePresence } from "motion/react";
 import { LinkData } from "../types/linkData";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState, setSelectedDash } from "../store/store";
+import { reorderLinkPages, RootState, setSelectedDash } from "../store/store";
 import { Dialog } from "./Dialog";
 
 const TabBtn = ({
@@ -24,20 +24,27 @@ const TabBtn = ({
   chevronLeft,
   chevronRight,
   tabSelectFunc,
+  selected = false,
 }: {
   id: number;
   linkPage: LinkPage;
   chevronLeft: boolean;
   chevronRight: boolean;
   tabSelectFunc: (id: number) => void;
+  selected?: boolean;
 }) => {
+  const dispatch = useDispatch();
   const [tabEdit, setTabEdit] = useState(false);
   const colorLookup = getColorLookup(linkPage.color);
   const [editDialog, setEditDialog] = useState(false);
 
   return (
     <motion.li
-      className={`me-2 flex flex-row rounded-t-xl ${colorLookup.background} overflow-hidden`}
+      className={`me-2 flex flex-row rounded-t-xl ${
+        colorLookup.background
+      } overflow-hidden mt-1 ${
+        selected ? `border-3 ${colorLookup.border}` : ""
+      }`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
@@ -102,6 +109,11 @@ const TabBtn = ({
                   color={colorLookup.icon}
                   tooltipText="Move Dash Left"
                   tooltipPosition="bottom"
+                  onClick={() =>
+                    dispatch(
+                      reorderLinkPages({ fromIndex: id, toIndex: id - 1 })
+                    )
+                  }
                 />
               )}
               {chevronRight && (
@@ -111,6 +123,11 @@ const TabBtn = ({
                   color={colorLookup.icon}
                   tooltipText="Move Dash Right"
                   tooltipPosition="bottom"
+                  onClick={() =>
+                    dispatch(
+                      reorderLinkPages({ fromIndex: id, toIndex: id + 1 })
+                    )
+                  }
                 />
               )}
             </motion.div>
@@ -205,6 +222,7 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
               chevronLeft={idx !== 0}
               chevronRight={idx < linkPages.length - 1}
               tabSelectFunc={handlePageIndexChange}
+              selected={resolvedPageIndex === idx}
             />
           ))}
         </ul>
