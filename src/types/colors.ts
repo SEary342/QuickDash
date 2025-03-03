@@ -58,7 +58,7 @@ const colorMap: { [key: string]: colorStruct } = {
   lime: {
     background: "bg-lime-400",
     hoverColor: "hover:bg-lime-500",
-    border: "border-white",
+    border: "border-black",
     outlineBorder: "border-lime-400",
     text: "text-black",
     outlineText: "text-lime-400",
@@ -69,7 +69,7 @@ const colorMap: { [key: string]: colorStruct } = {
   amber: {
     background: "bg-amber-500",
     hoverColor: "hover:bg-amber-600",
-    border: "border-white",
+    border: "border-black",
     outlineBorder: "border-amber-500",
     text: "text-black",
     outlineText: "text-amber-500",
@@ -80,7 +80,7 @@ const colorMap: { [key: string]: colorStruct } = {
   orange: {
     background: "bg-orange-500",
     hoverColor: "hover:bg-orange-600",
-    border: "border-white",
+    border: "border-black",
     outlineBorder: "border-orange-500",
     text: "text-black",
     outlineText: "text-orange-500",

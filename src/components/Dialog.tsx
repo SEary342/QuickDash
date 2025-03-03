@@ -1,5 +1,6 @@
 import { mdiClose } from "@mdi/js";
 import Icon from "@mdi/react";
+import { AnimatePresence, motion } from "motion/react";
 
 interface DialogProps {
   title: string;
@@ -15,11 +16,17 @@ export const Dialog = ({
   onClose,
 }: DialogProps) => {
   return (
-    <>
+    <AnimatePresence>
       {isOpen && (
         <>
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full transform">
               <div className="flex justify-between px-6 py-4">
                 <h3 className="text-lg font-medium text-gray-900">{title}</h3>
@@ -43,9 +50,9 @@ export const Dialog = ({
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </>
       )}
-    </>
+    </AnimatePresence>
   );
 };

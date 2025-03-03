@@ -61,7 +61,7 @@ const TabBtn = ({
 
       {/* Edit & Control Buttons Container */}
       <motion.div
-        className={`relative flex items-center border-white border-2 rounded-full my-2 transition-all duration-200 px-2 mr-3 ${colorLookup.text}`}
+        className={`relative flex items-center ${colorLookup.border} border-2 rounded-full my-2 transition-all duration-200 px-2 mr-3 ${colorLookup.text}`}
         initial={{ width: "auto", opacity: 1 }}
         animate={
           tabEdit

@@ -28,3 +28,4 @@
     [ ] Testing
     [ ] Logo Work
     [x] Generic dialog
+    [x] Dialog Animation
