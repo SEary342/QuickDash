@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { SelectWithLabel } from "./SelectWithLabel";
 import { iconOptionsArray } from "../types/icons";
 import { colorOptionsArray } from "../types/colors";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const defaultDash: () => LinkPage = () => ({ name: "", groupList: [] });
 const colorSelect = colorOptionsArray.map(({ title, label }) => ({
@@ -34,6 +36,11 @@ const PanelDialog = ({
   const [name, setName] = useState(linkPage.name);
   const [color, setColor] = useState(linkPage.color);
   const [icon, setIcon] = useState(linkPage.icon);
+  const linkPageNames = useSelector((state: RootState) => state.linkPages)
+    .filter((pg) => pg.name != linkPage.name)
+    .map((pg) => pg.name.toLowerCase());
+  const isDuplicate = linkPageNames.includes(name.trim().toLowerCase());
+  const nameExists = name.trim().length > 0;
 
   const title = editMode ? "Edit Dash" : "Add Dash";
 
@@ -48,22 +55,29 @@ const PanelDialog = ({
 
   const handleClose = (confirm: boolean) => {
     if (confirm) {
+      setName(name.trim());
       onClose({ ...linkPage, name, color, icon });
     } else {
       onClose(undefined);
     }
   };
 
-  // TODO name validation (no duplicates)
+  // TODO Disable confirm if nothing has been changed (edit mode)
   // TODO add delete button for edit mode
   return (
-    <Dialog title={title} isOpen={isOpen} onClose={handleClose}>
+    <Dialog
+      title={title}
+      isOpen={isOpen}
+      onClose={handleClose}
+      disableConfirm={isDuplicate || !nameExists}
+    >
       <InputWithLabel
         id="dashName"
         value={name}
         type="text"
         onInputChange={(e) => setName(e.target.value)}
         className="my-2"
+        hasError={isDuplicate}
       >
         Dash Name
       </InputWithLabel>

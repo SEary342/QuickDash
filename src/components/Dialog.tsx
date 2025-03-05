@@ -7,6 +7,7 @@ interface DialogProps {
   children?: React.ReactNode;
   isOpen: boolean;
   onClose: (confirm: boolean) => void;
+  disableConfirm?: boolean;
 }
 
 export const Dialog = ({
@@ -14,6 +15,7 @@ export const Dialog = ({
   children,
   isOpen = false,
   onClose,
+  disableConfirm = false,
 }: DialogProps) => {
   return (
     <AnimatePresence>
@@ -37,8 +39,8 @@ export const Dialog = ({
                   <Icon path={mdiClose} size={1} />
                 </button>
               </div>
-              <div className="px-6 py-4 text-black text-start">{children}</div>
-              <div className="bg-gray-50 px-6 py-4 flex justify-end space-x-3 rounded-b-lg">
+              <div className="px-6 pb-4 text-black text-start">{children}</div>
+              <div className="bg-gray-50 px-6 p-4 flex justify-end space-x-3 rounded-b-lg">
                 <button
                   onClick={() => onClose(false)}
                   className="bg-white px-4 py-2 rounded-md cursor-pointer text-sm font-medium text-gray-700 hover:bg-gray-100 border border-gray-300"
@@ -46,8 +48,14 @@ export const Dialog = ({
                   Cancel
                 </button>
                 <button
-                  className="bg-blue-600 px-4 py-2 rounded-md cursor-pointer text-sm font-medium text-white hover:bg-blue-700"
+                  className={`px-4 py-2 rounded-md text-sm font-medium 
+                    ${
+                      disableConfirm
+                        ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                        : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                    }`}
                   onClick={() => onClose(true)}
+                  disabled={disableConfirm}
                 >
                   Confirm
                 </button>
