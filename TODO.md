@@ -1,11 +1,11 @@
 ### Dash
     [ ] Initial State Message box
 
-    Tabs
+    Tabs/Dashes
     [x] Selected Tab indication
     [x] Tab Reorder Functionality
-    [~] Tab Edit Modal & funcs
-    [~] New Tab Button and Modal & funcs
+    [~] Dash Edit Modal & funcs
+    [x] New Dash Button and Modal & funcs
 
 ### Panels
     [ ] Panel Edit Modal
@@ -24,7 +24,7 @@
     [ ] Import/Export functionality
 
 ### General
-    [ ] Color setting validation (see tab borders for dark colors when selected)
+    [x] Color setting validation (see tab borders for dark colors when selected)
     [ ] Testing
     [ ] Logo Work
     [x] Generic dialog
