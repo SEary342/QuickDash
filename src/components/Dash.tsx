@@ -80,7 +80,7 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
   return (
     <>
       <div className="border-b border-gray-200 dark:border-gray-700">
-        <ul className="flex flex-wrap -mb-px text-sm font-medium text-center">
+        <ul className="flex flex-wrap text-sm font-medium text-center ms-[2px]">
           {linkPages.map((pg, idx) => (
             <TabBtn
               key={`${pg.name}-${idx}`}

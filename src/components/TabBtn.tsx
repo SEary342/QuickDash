@@ -37,7 +37,7 @@ const TabBtn = ({
 
   return (
     <motion.li
-      className={`me-2 flex flex-row rounded-t-xl ${
+      className={`me-1 flex flex-row rounded-t-xl ${
         colorLookup.background
       } overflow-hidden mt-1 ${
         selected
