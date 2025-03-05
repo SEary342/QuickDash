@@ -8,6 +8,7 @@ import {
   mdiChevronRight,
   mdiPencil,
   mdiPlaylistEdit,
+  mdiPlus,
 } from "@mdi/js";
 import { useState } from "react";
 import LinkPanel from "./LinkPanel";
@@ -17,6 +18,7 @@ import { LinkData } from "../types/linkData";
 import { useDispatch, useSelector } from "react-redux";
 import { reorderLinkPages, RootState, setSelectedDash } from "../store/store";
 import { Dialog } from "./Dialog";
+import PanelDialog from "./DashDialog";
 
 const TabBtn = ({
   id,
@@ -192,6 +194,7 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
   const selectedDash = useSelector(
     (state: RootState) => state.app.selectedDash
   );
+  const [addPage, setAddPage] = useState(false);
   const pageIndex = linkPages.findIndex((page) => page.name === selectedDash);
   const resolvedPageIndex = pageIndex !== -1 ? pageIndex : 0;
 
@@ -225,6 +228,24 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
               selected={resolvedPageIndex === idx}
             />
           ))}
+          <li className="align-bottom mt-2">
+            <IconBtn
+              path={mdiPlus}
+              className="cursor-pointer hover:bg-gray-300 rounded-full"
+              tooltipText="Add Dash"
+              color="black"
+              onClick={() => setAddPage(!addPage)}
+              size={2}
+            />
+            <PanelDialog
+              isOpen={addPage}
+              onClose={(linkPage?: LinkPage) => {
+                // TODO Connect to Store and handle a no-op change
+                console.log(linkPage)
+                setAddPage(false);
+              }}
+            />
+          </li>
         </ul>
       </div>
 

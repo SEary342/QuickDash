@@ -1,4 +1,5 @@
-interface colorStruct {
+export interface colorStruct {
+  name: string;
   background: string;
   hoverColor: string;
   border: string;
@@ -12,6 +13,7 @@ interface colorStruct {
 
 const colorMap: { [key: string]: colorStruct } = {
   red: {
+    name: "Red",
     background: "bg-red-600",
     hoverColor: "hover:bg-red-700",
     border: "border-white",
@@ -23,6 +25,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-white",
   },
   green: {
+    name: "Green",
     background: "bg-green-600",
     hoverColor: "hover:bg-green-700",
     border: "border-white",
@@ -34,6 +37,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-white",
   },
   "grey-lighten-4": {
+    name: "Light Grey",
     background: "bg-gray-500",
     hoverColor: "hover:bg-gray-600",
     border: "border-black",
@@ -45,6 +49,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-white",
   },
   "light-green": {
+    name: "Light Green",
     background: "bg-lime-500",
     hoverColor: "hover:bg-lime-600",
     border: "border-white",
@@ -56,6 +61,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-white",
   },
   lime: {
+    name: "Lime",
     background: "bg-lime-400",
     hoverColor: "hover:bg-lime-500",
     border: "border-black",
@@ -67,6 +73,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-black",
   },
   amber: {
+    name: "Amber",
     background: "bg-amber-500",
     hoverColor: "hover:bg-amber-600",
     border: "border-black",
@@ -78,6 +85,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-black",
   },
   orange: {
+    name: "Orange",
     background: "bg-orange-500",
     hoverColor: "hover:bg-orange-600",
     border: "border-black",
@@ -89,6 +97,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-black",
   },
   "deep-orange": {
+    name: "Dark Orange",
     background: "bg-orange-700",
     hoverColor: "hover:bg-orange-800",
     border: "border-white",
@@ -100,6 +109,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-white",
   },
   brown: {
+    name: "Brown",
     background: "bg-amber-900",
     hoverColor: "hover:bg-amber-950",
     border: "border-white",
@@ -111,6 +121,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-white",
   },
   "blue-grey": {
+    name: "Blue Grey",
     background: "bg-gray-700",
     hoverColor: "hover:bg-gray-800",
     border: "border-white",
@@ -122,6 +133,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-white",
   },
   white: {
+    name: "White",
     background: "bg-white",
     hoverColor: "hover:bg-gray-100",
     border: "border-black",
@@ -133,6 +145,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-black",
   },
   black: {
+    name: "Black",
     background: "bg-black",
     hoverColor: "hover:bg-gray-900",
     border: "border-white",
@@ -144,6 +157,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-white",
   },
   blue: {
+    name: "Blue",
     background: "bg-blue-600",
     hoverColor: "hover:bg-blue-700",
     border: "border-white",
@@ -155,6 +169,7 @@ const colorMap: { [key: string]: colorStruct } = {
     focus: "focus:outline-white",
   },
   unknown: {
+    name: "Unknown",
     background: "bg-gray-200",
     hoverColor: "hover:bg-gray-300",
     border: "border-black",
@@ -176,3 +191,7 @@ export const getColorLookup = (color?: string) => {
   }
   return colorMap["unknown"];
 };
+
+export const colorOptionsArray = Object.entries(colorMap)
+  .map(([label, value]) => ({ label, title: value.name }))
+  .sort((a, b) => a.title.localeCompare(b.title));

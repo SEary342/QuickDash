@@ -1,12 +1,11 @@
 ### Dash
     [ ] Initial State Message box
-    [ ] Panel Add UI
 
     Tabs
     [x] Selected Tab indication
     [x] Tab Reorder Functionality
-    [ ] Tab Edit Modal & funcs
-    [ ] New Tab Button and Modal & funcs
+    [~] Tab Edit Modal & funcs
+    [~] New Tab Button and Modal & funcs
 
 ### Panels
     [ ] Panel Edit Modal
