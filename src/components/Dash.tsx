@@ -16,7 +16,12 @@ import { LinkGroup } from "../types/linkGroup";
 import { motion, AnimatePresence } from "motion/react";
 import { LinkData } from "../types/linkData";
 import { useDispatch, useSelector } from "react-redux";
-import { reorderLinkPages, RootState, setSelectedDash } from "../store/store";
+import {
+  addLinkPage,
+  reorderLinkPages,
+  RootState,
+  setSelectedDash,
+} from "../store/store";
 import { Dialog } from "./Dialog";
 import PanelDialog from "./DashDialog";
 
@@ -228,20 +233,21 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
               selected={resolvedPageIndex === idx}
             />
           ))}
-          <li className="align-bottom mt-2">
+          <li className="flex items-center justify-center">
             <IconBtn
               path={mdiPlus}
               className="cursor-pointer hover:bg-gray-300 rounded-full"
               tooltipText="Add Dash"
               color="black"
               onClick={() => setAddPage(!addPage)}
-              size={2}
+              size={1.5}
             />
             <PanelDialog
               isOpen={addPage}
               onClose={(linkPage?: LinkPage) => {
-                // TODO Connect to Store and handle a no-op change
-                console.log(linkPage)
+                if (linkPage) {
+                  dispatch(addLinkPage(linkPage));
+                }
                 setAddPage(false);
               }}
             />

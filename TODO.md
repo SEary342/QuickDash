@@ -24,6 +24,7 @@
     [ ] Import/Export functionality
 
 ### General
+    [ ] Color setting validation (see tab borders for dark colors when selected)
     [ ] Testing
     [ ] Logo Work
     [x] Generic dialog

@@ -1,7 +1,7 @@
 import { LinkPage } from "../types/linkPage";
 import { Dialog } from "./Dialog";
 import { InputWithLabel } from "./InputWithLabel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SelectWithLabel } from "./SelectWithLabel";
 import { iconOptionsArray } from "../types/icons";
 import { colorOptionsArray } from "../types/colors";
@@ -9,7 +9,7 @@ import { colorOptionsArray } from "../types/colors";
 const defaultDash: () => LinkPage = () => ({ name: "", groupList: [] });
 const colorSelect = colorOptionsArray.map(({ title, label }) => ({
   value: label,
-  label :title,
+  label: title,
   color: true,
   icon: false,
 }));
@@ -37,12 +37,25 @@ const PanelDialog = ({
 
   const title = editMode ? "Edit Dash" : "Add Dash";
 
-  const handleClose = () => {
-    // TODO handle no-op changes
-    // TODO wire up the confirm button on the dialog.
-    onClose({ ...linkPage, name });
+  useEffect(() => {
+    if (!isOpen) {
+      const reset = defaultDash();
+      setName(reset.name);
+      setColor(reset.color);
+      setIcon(reset.icon);
+    }
+  }, [isOpen]);
+
+  const handleClose = (confirm: boolean) => {
+    if (confirm) {
+      onClose({ ...linkPage, name, color, icon });
+    } else {
+      onClose(undefined);
+    }
   };
 
+  // TODO name validation (no duplicates)
+  // TODO add delete button for edit mode
   return (
     <Dialog title={title} isOpen={isOpen} onClose={handleClose}>
       <InputWithLabel
