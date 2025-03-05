@@ -33,7 +33,8 @@ const Link = ({
   const hoverColor = item.outline
     ? "hover:bg-gray-100"
     : colorLookup.hoverColor;
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
     window.open(item.url, "_blank", "noopener noreferrer");
   };
   const [editDialog, setEditDialog] = useState(false);
@@ -46,13 +47,12 @@ const Link = ({
           : colorLookup.background
       }`}
     >
-      <div
+      <a
+        href={item.url}
         className={`${hoverColor} flex cursor-pointer w-full pl-3 py-3 rounded-s-xl ${
           editMode ? "" : "rounded-e-xl"
         }`}
-        onClick={() => {
-          handleClick();
-        }}
+        onClick={handleClick}
       >
         <Icon
           path={item.icon ? iconTranslation[item.icon] : mdiLink}
@@ -66,7 +66,7 @@ const Link = ({
         >
           {item.text}
         </span>
-      </div>
+      </a>
 
       <AnimatePresence>
         {editMode && (
