@@ -4,11 +4,11 @@
     Tabs/Dashes
     [x] Selected Tab indication
     [x] Tab Reorder Functionality
-    [~] Dash Edit Modal & funcs
+    [x] Dash Edit Modal & funcs
     [x] New Dash Button and Modal & funcs
 
 ### Panels
-    [ ] Panel Edit Modal
+    [x] Panel Edit Modal
     [ ] New Panel Button and Modal
     [ ] Panel Link Add Button
 

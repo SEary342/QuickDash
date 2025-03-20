@@ -14,8 +14,9 @@ import { getColorLookup } from "../types/colors";
 import Link from "./Link";
 import { iconTranslation } from "../types/icons";
 import { useDispatch } from "react-redux";
-import { reorderLinkGroups } from "../store/store";
-import { Dialog } from "./Dialog";
+import { deleteLinkGroup, reorderLinkGroups, updateLinkGroup } from "../store/store";
+import PanelDialog from "./DashGroupDialog";
+import { LinkPage } from "../types/linkPage";
 
 const LinkPanel = ({
   pageId,
@@ -65,13 +66,25 @@ const LinkPanel = ({
                 size={1}
                 onClick={() => setEditDialog(true)}
               />
-              <Dialog
-                title="Edit Group"
+              <PanelDialog
                 isOpen={editDialog}
-                onClose={() => setEditDialog(false)}
-              >
-                test
-              </Dialog>
+                onClose={(
+                  _?: LinkPage,
+                  linkGroup?: LinkGroup,
+                  remove?: boolean,
+                ) => {
+                  if (remove) {
+                    dispatch(deleteLinkGroup({pageIndex: pageId, groupIndex: panelId}));
+                  } else if (linkGroup) {
+                    dispatch(updateLinkGroup({ pageIndex: pageId, groupIndex: panelId, group: linkGroup }));
+                  }
+                  setEditDialog(false);
+                }}
+                editMode={true}
+                groupMode={true}
+                pageId={pageId}
+                linkGroup={linkGroup}
+              />
               {moveUp && (
                 <IconBtn
                   path={mdiChevronUp}
@@ -124,8 +137,6 @@ const LinkPanel = ({
           />
         </div>
       </div>
-
-      {/* Link List */}
       <div className="pt-1 pb-3">
         {linkGroup.linkList.map((item, index) => (
           <Link

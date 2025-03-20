@@ -8,6 +8,8 @@ interface DialogProps {
   isOpen: boolean;
   onClose: (confirm: boolean) => void;
   disableConfirm?: boolean;
+  confirmClass?: string;
+  actionButton?: {text: string; color: string; action: ()=>void}
 }
 
 export const Dialog = ({
@@ -16,6 +18,8 @@ export const Dialog = ({
   isOpen = false,
   onClose,
   disableConfirm = false,
+  confirmClass = "",
+  actionButton,
 }: DialogProps) => {
   return (
     <AnimatePresence>
@@ -40,20 +44,21 @@ export const Dialog = ({
                 </button>
               </div>
               <div className="px-6 pb-4 text-black text-start">{children}</div>
-              <div className="bg-gray-50 px-6 p-4 flex justify-end space-x-3 rounded-b-lg">
+              <div className="bg-gray-50 px-6 p-4 flex justify-between space-x-3 rounded-b-lg">
                 <button
                   onClick={() => onClose(false)}
                   className="bg-white px-4 py-2 rounded-md cursor-pointer text-sm font-medium text-gray-700 hover:bg-gray-100 border border-gray-300"
                 >
                   Cancel
                 </button>
+                {actionButton ? <button className={`px-4 py-2 rounded-md cursor-pointer text-sm font-medium ${actionButton.color}`} onClick={actionButton.action}>{actionButton.text}</button> : ""}
                 <button
                   className={`px-4 py-2 rounded-md text-sm font-medium 
                     ${
                       disableConfirm
                         ? "bg-gray-400 text-gray-200 cursor-not-allowed"
                         : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
-                    }`}
+                    } ${confirmClass}`}
                   onClick={() => onClose(true)}
                   disabled={disableConfirm}
                 >

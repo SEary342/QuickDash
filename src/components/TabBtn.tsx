@@ -1,5 +1,4 @@
 import Icon from "@mdi/react";
-import { Dialog } from "./Dialog";
 import { LinkPage } from "../types/linkPage";
 import { iconTranslation } from "../types/icons";
 import { getColorLookup } from "../types/colors";
@@ -13,7 +12,13 @@ import {
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useDispatch } from "react-redux";
-import { reorderLinkPages } from "../store/store";
+import {
+  deleteLinkPage,
+  reorderLinkPages,
+  updateLinkPage,
+} from "../store/store";
+import PanelDialog from "./DashGroupDialog";
+import { LinkGroup } from "../types/linkGroup";
 
 const TabBtn = ({
   id,
@@ -39,21 +44,12 @@ const TabBtn = ({
     <motion.li
       className={`me-1 flex flex-row rounded-t-xl ${
         colorLookup.background
-      } overflow-hidden mt-1 ${
-        selected
-          ? `border-3 ${
-              colorLookup.border == "border-white"
-                ? "border-gray-600"
-                : colorLookup.border
-            }`
-          : ""
-      }`}
+      } overflow-hidden ${selected ? "mt-1" : "mt-2"}`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
     >
-      {/* Tab Button */}
       <button
         className={`inline-flex items-center justify-center p-3 border-b-2 text-lg font-bold border-transparent rounded-t-lg group cursor-pointer ${colorLookup.text} ${colorLookup.hoverColor}`}
         onClick={() => tabSelectFunc(id)}
@@ -68,8 +64,6 @@ const TabBtn = ({
         )}
         {linkPage.name}
       </button>
-
-      {/* Edit & Control Buttons Container */}
       <motion.div
         className={`relative flex items-center ${colorLookup.border} border-2 rounded-full my-2 transition-all duration-200 px-2 mr-3 ${colorLookup.text}`}
         initial={{ width: "auto", opacity: 1 }}
@@ -98,13 +92,19 @@ const TabBtn = ({
                 tooltipPosition="bottom"
                 onClick={() => setEditDialog(true)}
               />
-              <Dialog
-                title="Edit Group"
+              <PanelDialog
                 isOpen={editDialog}
-                onClose={() => setEditDialog(false)}
-              >
-                test
-              </Dialog>
+                editMode={true}
+                linkPage={linkPage}
+                onClose={(linkPage?: LinkPage, _?:LinkGroup, remove?: boolean) => {
+                  if (remove) {
+                    dispatch(deleteLinkPage(id));
+                  } else if (linkPage) {
+                    dispatch(updateLinkPage({ index: id, data: linkPage }));
+                  }
+                  setEditDialog(false);
+                }}
+              />
               {chevronLeft && (
                 <IconBtn
                   className={`${colorLookup.hoverColor}`}

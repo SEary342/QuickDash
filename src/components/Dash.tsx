@@ -9,14 +9,13 @@ import { LinkData } from "../types/linkData";
 import { useDispatch, useSelector } from "react-redux";
 import { addLinkPage, RootState, setSelectedDash } from "../store/store";
 
-import PanelDialog from "./DashDialog";
+import PanelDialog from "./DashGroupDialog";
 import TabBtn from "./TabBtn";
 
 function distributeLinkGroups(
   groups: LinkGroup[],
   numColumns: number
 ): LinkGroup[][] {
-  // Flatten all LinkData into an array with references to their parent groups
   const allLinks: { group: LinkGroup; data: LinkData }[] = [];
   for (const group of groups) {
     for (const link of group.linkList) {
@@ -24,14 +23,11 @@ function distributeLinkGroups(
     }
   }
 
-  // Calculate how many items per column
   const result: LinkGroup[][] = Array.from({ length: numColumns }, () => []);
 
-  // Track group placements to maintain structure
   const groupMap = new Map<LinkGroup, LinkGroup>();
   let columnIndex = 0;
 
-  // Ensure all groups are placed, even if empty
   for (const group of groups) {
     if (!groupMap.has(group)) {
       const newGroup: LinkGroup = { ...group, linkList: [] };
@@ -43,10 +39,7 @@ function distributeLinkGroups(
 
   columnIndex = 0;
   for (const { group, data } of allLinks) {
-    // Add the link data to the correct group in the result set
     groupMap.get(group)!.linkList.push(data);
-
-    // Move to the next column
     columnIndex = (columnIndex + 1) % numColumns;
   }
 
@@ -113,11 +106,9 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
           </li>
         </ul>
       </div>
-
-      {/* Animating the grid transition */}
       <AnimatePresence mode="wait">
         <motion.div
-          key={pageIndex} // This triggers animation when the tab changes
+          key={pageIndex}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
