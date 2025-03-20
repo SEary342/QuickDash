@@ -41,14 +41,11 @@ const LinkPanel = ({
 
   return (
     <div className="rounded-md flex flex-col border border-black m-5">
-      {/* Header Section */}
       <div
         className={`flex flex-row w-full ${colorLookup.text} rounded-t-md px-3 py-3 items-center font-bold ${colorLookup.background}`}
       >
         {linkGroup.icon && <Icon path={iconLookup} size={1} />}
         <span className="ml-3 text-xl">{linkGroup.name}</span>
-
-        {/* Edit Buttons - Animated */}
         <AnimatePresence>
           {tabEdit && (
             <motion.div
@@ -124,8 +121,6 @@ const LinkPanel = ({
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Edit Toggle Button */}
         <div className="ml-auto">
           <IconBtn
             className={`focus:outline-2 focus:outline-offset-2 ${colorLookup.focus} ${colorLookup.hoverColor}`}

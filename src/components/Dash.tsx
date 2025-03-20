@@ -11,6 +11,7 @@ import { addLinkPage, RootState, setSelectedDash } from "../store/store";
 
 import PanelDialog from "./DashGroupDialog";
 import TabBtn from "./TabBtn";
+import { LinkPanelAdd } from "./LinkPanelAdd";
 
 function distributeLinkGroups(
   groups: LinkGroup[],
@@ -116,24 +117,35 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
           className="grid gap-4"
           style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
         >
-          {columnGroups.map((groupColumn, colIdx) => (
-            <div key={`column-${colIdx}`} className="flex flex-col gap-4">
-              {groupColumn.map((gp, idx) => {
-                const globalIndex = flattenedGroups.indexOf(gp);
+          {columnGroups.map((groupColumn, colIdx) => {
+            const isFirstEmptyColumn =
+              groupColumn.length === 0 &&
+              columnGroups.findIndex((col) => col.length === 0) === colIdx;
+            const isLastColumn = colIdx === columnGroups.length - 1;
+            const shouldRenderAddPanel =
+              isFirstEmptyColumn ||
+              (isLastColumn && columnGroups.every((col) => col.length > 0));
 
-                return (
-                  <LinkPanel
-                    pageId={pageIndex}
-                    panelId={globalIndex}
-                    key={`${gp.name}-${idx}`}
-                    linkGroup={gp}
-                    moveUp={globalIndex > 0}
-                    moveDown={globalIndex < totalGroups - 1}
-                  />
-                );
-              })}
-            </div>
-          ))}
+            return (
+              <div key={`column-${colIdx}`} className="flex flex-col gap-4">
+                {groupColumn.map((gp, idx) => {
+                  const globalIndex = flattenedGroups.indexOf(gp);
+
+                  return (
+                    <LinkPanel
+                      pageId={pageIndex}
+                      panelId={globalIndex}
+                      key={`${gp.name}-${idx}`}
+                      linkGroup={gp}
+                      moveUp={globalIndex > 0}
+                      moveDown={globalIndex < totalGroups - 1}
+                    />
+                  );
+                })}
+                {shouldRenderAddPanel && <LinkPanelAdd pageId={pageIndex} />}
+              </div>
+            );
+          })}
         </motion.div>
       </AnimatePresence>
     </>

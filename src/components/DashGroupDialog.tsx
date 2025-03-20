@@ -1,7 +1,7 @@
 import { LinkPage } from "../types/linkPage";
 import { Dialog } from "./Dialog";
 import { InputWithLabel } from "./InputWithLabel";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SelectWithLabel } from "./SelectWithLabel";
 import { iconOptionsArray } from "../types/icons";
 import { colorOptionsArray } from "../types/colors";
@@ -52,23 +52,28 @@ const PanelDialog = ({
   const [name, setName] = useState(initialState.name);
   const [color, setColor] = useState(initialState.color);
   const [icon, setIcon] = useState(initialState.icon);
-  const { existingNames } = useSelector((state: RootState) => {
-    const existingNames: string[] = [];
-    if (pageId != undefined) {
-      state.linkPages[pageId].groupList.forEach((gp) => {
+  const linkPages = useSelector((state: RootState) => state.linkPages);
+
+  const existingNames = useMemo(() => {
+    const names: string[] = [];
+
+    if (pageId !== undefined) {
+      linkPages[pageId].groupList.forEach((gp) => {
         if (gp.name !== linkGroup.name) {
-          existingNames.push(gp.name.toLowerCase());
+          names.push(gp.name.toLowerCase());
         }
       });
     } else {
-      state.linkPages.forEach((pg) => {
+      linkPages.forEach((pg) => {
         if (pg.name !== linkPage.name) {
-          existingNames.push(pg.name.toLowerCase());
+          names.push(pg.name.toLowerCase());
         }
       });
     }
-    return { existingNames };
-  });
+
+    return names;
+  }, [linkPages, pageId, linkGroup.name, linkPage.name]);
+
   const isDuplicate = existingNames.includes(name.trim().toLowerCase());
   const nameExists = name.trim().length > 0;
   const hasChanged =

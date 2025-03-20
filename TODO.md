@@ -9,7 +9,7 @@
 
 ### Panels
     [x] Panel Edit Modal
-    [ ] New Panel Button and Modal
+    [x] New Panel Button and Modal
     [ ] Panel Link Add Button
 
 ### Links
