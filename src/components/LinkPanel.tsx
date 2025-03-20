@@ -14,9 +14,14 @@ import { getColorLookup } from "../types/colors";
 import Link from "./Link";
 import { iconTranslation } from "../types/icons";
 import { useDispatch } from "react-redux";
-import { deleteLinkGroup, reorderLinkGroups, updateLinkGroup } from "../store/store";
+import {
+  deleteLinkGroup,
+  reorderLinkGroups,
+  updateLinkGroup,
+} from "../store/store";
 import PanelDialog from "./DashGroupDialog";
 import { LinkPage } from "../types/linkPage";
+import { LinkAdd } from "./LinkAdd";
 
 const LinkPanel = ({
   pageId,
@@ -68,12 +73,23 @@ const LinkPanel = ({
                 onClose={(
                   _?: LinkPage,
                   linkGroup?: LinkGroup,
-                  remove?: boolean,
+                  remove?: boolean
                 ) => {
                   if (remove) {
-                    dispatch(deleteLinkGroup({pageIndex: pageId, groupIndex: panelId}));
+                    dispatch(
+                      deleteLinkGroup({
+                        pageIndex: pageId,
+                        groupIndex: panelId,
+                      })
+                    );
                   } else if (linkGroup) {
-                    dispatch(updateLinkGroup({ pageIndex: pageId, groupIndex: panelId, group: linkGroup }));
+                    dispatch(
+                      updateLinkGroup({
+                        pageIndex: pageId,
+                        groupIndex: panelId,
+                        group: linkGroup,
+                      })
+                    );
                   }
                   setEditDialog(false);
                 }}
@@ -132,20 +148,30 @@ const LinkPanel = ({
           />
         </div>
       </div>
-      <div className="pt-1 pb-3">
-        {linkGroup.linkList.map((item, index) => (
-          <Link
-            key={`${linkGroup.name}-${index}`}
-            pageId={pageId}
-            panelId={panelId}
-            id={index}
-            item={item}
-            upArrow={index !== 0}
-            downArrow={index !== linkGroup.linkList.length - 1}
-            editMode={tabEdit}
-          />
-        ))}
-      </div>
+      <AnimatePresence>
+        <motion.div
+          className="pt-1 pb-3 overflow-hidden"
+          initial={{ opacity: 0, scale: 0.8, height: 0 }}
+          animate={{ opacity: 1, scale: 1, height: "auto" }}
+          exit={{ opacity: 0, scale: 0.8, height: 0 }}
+          transition={{ duration: 0.1, ease: "easeIn" }}
+          layout
+        >
+          {linkGroup.linkList.map((item, index) => (
+            <Link
+              key={`${linkGroup.name}-${index}`}
+              pageId={pageId}
+              panelId={panelId}
+              id={index}
+              item={item}
+              upArrow={index !== 0}
+              downArrow={index !== linkGroup.linkList.length - 1}
+              editMode={tabEdit}
+            />
+          ))}
+          {tabEdit && <LinkAdd pageId={pageId} panelId={panelId} />}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 };

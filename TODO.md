@@ -15,8 +15,9 @@
 ### Links
     [x] Reorder functionality
     [ ] New Icons
-    [ ] Link edit modal
-    [ ] Link add modal
+    [x] Link edit modal
+    [x] Link add modal
+    [ ] Link validation
 
 ### AppBar 
     [ ] Settings Drop Down

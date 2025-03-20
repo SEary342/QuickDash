@@ -5,10 +5,14 @@ import { LinkData } from "../types/linkData";
 import Icon from "@mdi/react";
 import IconBtn from "./IconBtn";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dialog } from "./Dialog";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { reorderLinkData } from "../store/store";
+import {
+  deleteLinkData,
+  reorderLinkData,
+  updateLinkData,
+} from "../store/store";
+import LinkDialog from "./LinkDialog";
 
 const Link = ({
   pageId,
@@ -120,13 +124,32 @@ const Link = ({
               color={iconColor}
               onClick={() => setEditDialog(true)}
             />
-            <Dialog
-              title="Edit Group"
+            <LinkDialog
+              editMode={true}
               isOpen={editDialog}
-              onClose={() => setEditDialog(false)}
-            >
-              test
-            </Dialog>
+              link={item}
+              onClose={(linkData, remove) => {
+                if (remove) {
+                  dispatch(
+                    deleteLinkData({
+                      pageIndex: pageId,
+                      groupIndex: panelId,
+                      linkIndex: id,
+                    })
+                  );
+                } else if (linkData) {
+                  dispatch(
+                    updateLinkData({
+                      pageIndex: pageId,
+                      groupIndex: panelId,
+                      linkIndex: id,
+                      link: linkData,
+                    })
+                  );
+                }
+                setEditDialog(false);
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
