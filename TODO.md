@@ -15,12 +15,14 @@
 ### Links
     [x] Reorder functionality
     [ ] New Icons
+    [ ] Icon colors (outline view)
     [x] Link edit modal
     [x] Link add modal
-    [ ] Link validation
+    [x] Link validation
 
 ### AppBar 
-    [ ] Settings Drop Down
+    [x] Settings Drop Down
+    [x] Column Change functionality
     [ ] Import/Export Modal
     [ ] Import/Export functionality
 

@@ -11,6 +11,7 @@ const IconBtn = ({
   onClick,
   size,
   tooltipPosition = "top",
+  disabled = false,
 }: {
   className?: string;
   path: string;
@@ -20,6 +21,7 @@ const IconBtn = ({
   onClick?: (e: React.MouseEvent) => void;
   size?: number;
   tooltipPosition?: "top" | "bottom" | "left" | "right";
+  disabled?: boolean;
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipStyle, setTooltipStyle] = useState({});
@@ -61,10 +63,13 @@ const IconBtn = ({
     <>
       <button
         ref={buttonRef}
-        className={`relative p-[2px] rounded-full cursor-pointer flex flex-row ${className}`}
+        className={`relative p-[2px] rounded-full cursor-pointer flex flex-row ${className} ${disabled ? "opacity-50 cursor-not-allowed" : ""}`} // Disabled styling
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        onClick={onClick}
+        onClick={(e) => {
+          if (!disabled && onClick) onClick(e);
+        }}
+        disabled={disabled}
       >
         <Icon path={path} size={iconSize} color={color} />
         {auxPath && <Icon path={auxPath} size={iconSize} color={color} />}
