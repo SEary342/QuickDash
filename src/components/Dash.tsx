@@ -53,7 +53,7 @@ function distributeLinkGroups(
   return result;
 }
 
-const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
+const Dash = ({ linkPages }: { linkPages: LinkPage[]; }) => {
   const dispatch = useDispatch();
   const selectedDash = useSelector(
     (state: RootState) => state.app.selectedDash

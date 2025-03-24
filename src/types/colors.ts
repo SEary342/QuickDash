@@ -195,3 +195,12 @@ export const getColorLookup = (color?: string) => {
 export const colorOptionsArray = Object.entries(colorMap)
   .map(([label, value]) => ({ label, title: value.name }))
   .sort((a, b) => a.title.localeCompare(b.title));
+
+export const colorConversions: { [key: string]: string } = {
+  Danger: "red",
+  Info: "teal",
+  Warning: "yellow",
+  Secondary: "grey",
+  Primary: "blue",
+  Success: "green",
+};

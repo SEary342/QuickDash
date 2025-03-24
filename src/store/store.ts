@@ -52,6 +52,9 @@ const linkPageSlice = createSlice({
   name: "linkPages",
   initialState: initialState.linkPages,
   reducers: {
+    overwriteConfig(state, action: PayloadAction<LinkPage[]>) {
+      state = action.payload;
+    },
     addLinkPage(state, action: PayloadAction<LinkPage>) {
       state.push(action.payload);
     },
@@ -168,6 +171,7 @@ const linkPageSlice = createSlice({
 
 export const { setSelectedDash, setNumberOfColumns } = appSlice.actions;
 export const {
+  overwriteConfig,
   addLinkPage,
   updateLinkPage,
   deleteLinkPage,

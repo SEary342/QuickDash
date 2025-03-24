@@ -1,20 +1,65 @@
-import { useState, useRef } from "react";
-import { mdiChevronDown, mdiCog, mdiMinus, mdiPlus } from "@mdi/js";
+import { useState, useRef, useEffect } from "react";
+import {
+  mdiChevronDown,
+  mdiCog,
+  mdiExport,
+  mdiImport,
+  mdiMinus,
+  mdiPlus,
+} from "@mdi/js";
 import IconBtn from "./IconBtn";
 import { motion } from "motion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, setNumberOfColumns } from "../store/store";
+import Icon from "@mdi/react";
+import FileImportDialog from "./FileImportDialog";
+import { LinkPage } from "../types/linkPage";
+
 const colMax = 6;
 const colMin = 1;
 
-// TODO: Implement Import, Export
-const AppBar = () => {
+declare global {
+  interface Navigator {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    msSaveBlob?: (blob: any, defaultName?: string) => boolean;
+  }
+}
+
+function exportConfig(
+  exportFileName: string,
+  fileExtension: string,
+  exportData: LinkPage[]
+) {
+  const jsonFile = JSON.stringify(exportData);
+  const blob = new Blob([jsonFile], { type: "application/json" });
+  if (navigator.msSaveBlob) {
+    // IE 10+
+    navigator.msSaveBlob(blob, exportFileName);
+  } else {
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+      // feature detection
+      // Browsers that support HTML5 download attribute
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", exportFileName.concat(fileExtension));
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+}
+
+const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
   const dispatch = useDispatch();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const columns = useSelector((state: RootState) => state.app.numberOfColumns); // Default to 3 columns
+  const [importOpen, setImportOpen] = useState(false);
+  const columns = useSelector((state: RootState) => state.app.numberOfColumns);
   const appVersion = import.meta.env.APP_VERSION;
 
   const appBarRef = useRef<HTMLDivElement | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const handleColumnIncrease = () => {
     if (columns < colMax) dispatch(setNumberOfColumns(columns + 1));
@@ -24,15 +69,26 @@ const AppBar = () => {
     if (columns > colMin) dispatch(setNumberOfColumns(columns - 1));
   };
 
-  const handleImport = () => {
-    // TODO: Implement Import functionality
-    console.log("Import clicked");
+  const handleExport = () => {
+    exportConfig("QuickDashConfig", ".QDconfig", linkPages);
   };
 
-  const handleExport = () => {
-    // TODO: Implement Export functionality
-    console.log("Export clicked");
-  };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        appBarRef.current &&
+        !appBarRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div
@@ -84,27 +140,35 @@ const AppBar = () => {
       />
       {isDropdownOpen && (
         <motion.div
+          ref={dropdownRef} // Reference to the dropdown
           className="absolute right-0 w-48 bg-white text-black rounded-lg shadow-lg p-3 z-10"
-          initial={{ opacity: 0, y: -20 }} // Initial state (dropdown is invisible and slightly above)
-          animate={{ opacity: 1, y: 0 }} // Final state (dropdown becomes visible and moves into position)
-          exit={{ opacity: 0, y: -20 }} // Exit state (dropdown fades and moves up when closed)
-          transition={{ duration: 0.3 }} // Duration of the animation
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
           style={{
-            top: appBarRef.current ? appBarRef.current.offsetHeight : 0, // Calculate the top position based on the app bar height
+            top: appBarRef.current ? appBarRef.current.offsetHeight : 0,
           }}
         >
           <div className="space-y-2">
             <button
-              onClick={handleImport}
-              className="w-full text-left p-2 hover:bg-gray-200 rounded"
+              onClick={() => setImportOpen(true)}
+              className="w-full text-left p-2 hover:bg-gray-200 rounded flex flex-row cursor-pointer"
             >
+              <Icon path={mdiImport} size={1} className="mr-2" />
               Import
             </button>
+            <FileImportDialog
+              isOpen={importOpen}
+              onClose={() => {
+                setImportOpen(false);
+              }}
+            />
             <button
               onClick={handleExport}
-              className="w-full text-left p-2 hover:bg-gray-200 rounded"
+              className="w-full text-left p-2 hover:bg-gray-200 rounded  flex flex-row cursor-pointer"
             >
-              Export
+              <Icon path={mdiExport} size={1} className="mr-2" /> Export
             </button>
             <hr />
             <div className="px-2">

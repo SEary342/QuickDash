@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div>
-      <AppBar />
+      <AppBar linkPages={linkPages} />
       <Dash linkPages={linkPages} />
     </div>
   );

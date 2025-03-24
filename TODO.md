@@ -23,8 +23,8 @@
 ### AppBar 
     [x] Settings Drop Down
     [x] Column Change functionality
-    [ ] Import/Export Modal
-    [ ] Import/Export functionality
+    [x] Import/Export Modal
+    [x] Import/Export functionality
 
 ### General
     [x] Color setting validation (see tab borders for dark colors when selected)
