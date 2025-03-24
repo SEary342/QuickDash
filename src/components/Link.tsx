@@ -125,6 +125,8 @@ const Link = ({
               onClick={() => setEditDialog(true)}
             />
             <LinkDialog
+              pageId={pageId}
+              panelId={panelId}
               editMode={true}
               isOpen={editDialog}
               link={item}

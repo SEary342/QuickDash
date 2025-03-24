@@ -7,6 +7,7 @@ type InputWithLabelProps = {
   onInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   hasError?: boolean;
+  errorText?: boolean|string;
   children: ReactNode;
 };
 
@@ -17,6 +18,7 @@ const InputWithLabel = ({
   onInputChange,
   className,
   hasError = false,
+  errorText = true,
   children,
 }: InputWithLabelProps) => {
   return (
@@ -42,8 +44,8 @@ const InputWithLabel = ({
           }`}
         placeholder=" "
       />
-      {hasError && (
-        <p className="text-red-500 text-sm mt-1">Name already exists</p>
+      {(hasError || errorText !== true) && (
+        <p className="text-red-500 text-sm mt-1">{errorText === true ? "Name is a duplicate" :errorText}</p>
       )}
     </div>
   );

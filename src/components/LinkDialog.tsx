@@ -7,10 +7,18 @@ import { iconOptionsArray } from "../types/icons";
 import { colorOptionsArray } from "../types/colors";
 import Link from "./Link";
 import { LinkData } from "../types/linkData";
+import { RootState } from "../store/store";
+import { useSelector } from "react-redux";
 
-//TODO verify URL
-//TODO prevent duplicates
-//TODO Confirm enable/disable
+const validUrl = (v: string) => {
+  let url;
+  try {
+    url = new URL(v);
+  } catch {
+    return "URL is not valid";
+  }
+  return ["http:", "https:"].includes(url.protocol) || "URL protocol not valid";
+};
 
 const colorSelect = colorOptionsArray.map(({ title, label }) => ({
   value: label,
@@ -26,11 +34,15 @@ const iconSelect = iconOptionsArray.map(({ title, value }) => ({
 }));
 
 const LinkDialog = ({
+  pageId,
+  panelId,
   isOpen,
   editMode = false,
   link = { text: "", url: "", color: "", outline: false, icon: "" },
   onClose,
 }: {
+  pageId: number;
+  panelId: number;
   isOpen: boolean;
   editMode: boolean;
   link?: LinkData;
@@ -43,12 +55,30 @@ const LinkDialog = ({
   const [outlined, setOutlined] = useState(link.outline);
   const [icon, setIcon] = useState(link.icon);
 
+  const linkPages = useSelector((state: RootState) => state.linkPages);
+
+  const existingNames = linkPages[pageId].groupList[panelId].linkList.map(
+    (lnk) => lnk.text.trim().toLowerCase()
+  );
+
+  const urlValid = validUrl(url);
+  const isDuplicate =
+    link.text != name && existingNames.includes(name?.trim().toLowerCase());
+
   const hasChanged =
     name !== link.text ||
     url !== link.url ||
     color !== link.color ||
     outlined !== link.outline ||
     icon !== link.icon;
+
+  const resetDialog = () => {
+    setName(link.text);
+    setUrl(link.url);
+    setColor(link.color);
+    setOutlined(link.outline);
+    setIcon(link.icon);
+  };
 
   useEffect(() => {
     if (!isOpen && !editMode) {
@@ -61,11 +91,15 @@ const LinkDialog = ({
   }, [isOpen, editMode]);
 
   const handleClose = (confirm: boolean) => {
-    if (!confirm) return onClose(undefined);
-    onClose(
-      { text: name, url: url, color: color, outline: outlined, icon: icon },
-      false
-    );
+    if (!confirm) {
+      onClose(undefined);
+    } else {
+      onClose(
+        { text: name, url: url, color: color, outline: outlined, icon: icon },
+        false
+      );
+    }
+    resetDialog();
   };
 
   return (
@@ -73,7 +107,13 @@ const LinkDialog = ({
       title={editMode ? "Edit Link" : "Add Link"}
       isOpen={isOpen}
       onClose={handleClose}
-      disableConfirm={!name || !url || (editMode && !hasChanged)}
+      disableConfirm={
+        !name ||
+        !url ||
+        urlValid !== true ||
+        isDuplicate ||
+        (editMode && !hasChanged)
+      }
       actionButton={
         editMode
           ? {
@@ -96,6 +136,7 @@ const LinkDialog = ({
       />
       <InputWithLabel
         id="linkName"
+        hasError={isDuplicate}
         value={name}
         type="text"
         onInputChange={(e) => setName(e.target.value)}
@@ -104,6 +145,8 @@ const LinkDialog = ({
         Link Name
       </InputWithLabel>
       <InputWithLabel
+        errorText={urlValid}
+        hasError={urlValid !== true}
         id="linkUrl"
         value={url}
         type="text"
