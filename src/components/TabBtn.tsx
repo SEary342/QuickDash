@@ -12,11 +12,7 @@ import {
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useDispatch } from "react-redux";
-import {
-  deleteLinkPage,
-  reorderLinkPages,
-  updateLinkPage,
-} from "../store/store";
+import { reorderLinkPages, updateLinkPage } from "../store/store";
 import PanelDialog from "./DashGroupDialog";
 import { LinkGroup } from "../types/linkGroup";
 
@@ -26,6 +22,7 @@ const TabBtn = ({
   chevronLeft,
   chevronRight,
   tabSelectFunc,
+  onRemove,
   selected = false,
 }: {
   id: number;
@@ -33,6 +30,7 @@ const TabBtn = ({
   chevronLeft: boolean;
   chevronRight: boolean;
   tabSelectFunc: (id: number) => void;
+  onRemove: (id: number) => void;
   selected?: boolean;
 }) => {
   const dispatch = useDispatch();
@@ -96,9 +94,13 @@ const TabBtn = ({
                 isOpen={editDialog}
                 editMode={true}
                 linkPage={linkPage}
-                onClose={(linkPage?: LinkPage, _?:LinkGroup, remove?: boolean) => {
+                onClose={(
+                  linkPage?: LinkPage,
+                  _?: LinkGroup,
+                  remove?: boolean
+                ) => {
                   if (remove) {
-                    dispatch(deleteLinkPage(id));
+                    onRemove(id);
                   } else if (linkPage) {
                     dispatch(updateLinkPage({ index: id, data: linkPage }));
                   }

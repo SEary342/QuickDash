@@ -57,7 +57,11 @@ const PanelDialog = ({
   const existingNames = useMemo(() => {
     const names: string[] = [];
 
-    if (pageId !== undefined) {
+    if (
+      pageId !== undefined &&
+      pageId >= 0 &&
+      linkPages[pageId] !== undefined
+    ) {
       linkPages[pageId].groupList.forEach((gp) => {
         if (gp.name !== linkGroup.name) {
           names.push(gp.name.toLowerCase());

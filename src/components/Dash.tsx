@@ -7,11 +7,17 @@ import { LinkGroup } from "../types/linkGroup";
 import { motion, AnimatePresence } from "motion/react";
 import { LinkData } from "../types/linkData";
 import { useDispatch, useSelector } from "react-redux";
-import { addLinkPage, RootState, setSelectedDash } from "../store/store";
+import {
+  addLinkPage,
+  deleteLinkPage,
+  RootState,
+  setSelectedDash,
+} from "../store/store";
 
 import PanelDialog from "./DashGroupDialog";
 import TabBtn from "./TabBtn";
 import { LinkPanelAdd } from "./LinkPanelAdd";
+import QuickDashWelcome from "./QuickDashWelcome";
 
 function distributeLinkGroups(
   groups: LinkGroup[],
@@ -84,6 +90,14 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
               chevronRight={idx < linkPages.length - 1}
               tabSelectFunc={handlePageIndexChange}
               selected={resolvedPageIndex === idx}
+              onRemove={(id) => {
+                const newPage =
+                  selectedDash === linkPages[id].name
+                    ? linkPages[id - 1]?.name || linkPages[id + 1]?.name || ""
+                    : linkPages[id].name;
+                dispatch(deleteLinkPage(id));
+                dispatch(setSelectedDash(newPage));
+              }}
             />
           ))}
           <li className="flex items-center justify-center">
@@ -91,6 +105,7 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
               path={mdiPlus}
               className="cursor-pointer hover:bg-gray-300 rounded-full"
               tooltipText="Add Dash"
+              tooltipPosition="right"
               color="black"
               onClick={() => setAddPage(!addPage)}
               size={1.5}
@@ -100,6 +115,7 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
               onClose={(linkPage?: LinkPage) => {
                 if (linkPage) {
                   dispatch(addLinkPage(linkPage));
+                  dispatch(setSelectedDash(linkPage.name));
                 }
                 setAddPage(false);
               }}
@@ -107,6 +123,8 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
           </li>
         </ul>
       </div>
+      {linkPages.length == 0 && <QuickDashWelcome />}
+
       <AnimatePresence mode="wait">
         <motion.div
           key={pageIndex}
@@ -123,8 +141,9 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; columns?: number }) => {
               columnGroups.findIndex((col) => col.length === 0) === colIdx;
             const isLastColumn = colIdx === columnGroups.length - 1;
             const shouldRenderAddPanel =
-              isFirstEmptyColumn ||
-              (isLastColumn && columnGroups.every((col) => col.length > 0));
+              linkPages.length > 0 &&
+              (isFirstEmptyColumn ||
+                (isLastColumn && columnGroups.every((col) => col.length > 0)));
 
             return (
               <div key={`column-${colIdx}`} className="flex flex-col gap-4">

@@ -1,5 +1,5 @@
 ### Dash
-    [ ] Initial State Message box
+    [x] Initial State Message box
 
     Tabs/Dashes
     [x] Selected Tab indication
@@ -10,7 +10,7 @@
 ### Panels
     [x] Panel Edit Modal
     [x] New Panel Button and Modal
-    [ ] Panel Link Add Button
+    [x] Panel Link Add Button
 
 ### Links
     [x] Reorder functionality

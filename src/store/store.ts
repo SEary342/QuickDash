@@ -2,11 +2,9 @@ import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { LinkPage } from "../types/linkPage";
 import { LinkGroup } from "../types/linkGroup";
 import { LinkData } from "../types/linkData";
-import { testLinkPages } from "./testData";
 
 // Local Storage Key
 const LOCAL_STORAGE_KEY = "app";
-
 // Load State from Local Storage
 const loadState = (): {
   selectedDash: string;
@@ -19,14 +17,14 @@ const loadState = (): {
       const parsedState = JSON.parse(storedState);
       return {
         selectedDash: parsedState.selectedDash || "",
-        linkPages: parsedState.quickDashConfig || testLinkPages, // Use the legacy key
+        linkPages: parsedState.quickDashConfig || [],
         numberOfColumns: parsedState.numberOfColumns ?? 3,
       };
     }
   } catch (error) {
     console.error("Error loading state from localStorage:", error);
   }
-  return { selectedDash: "", linkPages: testLinkPages, numberOfColumns: 3 };
+  return { selectedDash: "", linkPages: [], numberOfColumns: 3 };
 };
 
 // Initial state
