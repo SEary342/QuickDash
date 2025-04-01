@@ -1,5 +1,5 @@
 import { useState, ChangeEventHandler, DragEventHandler } from "react";
-import { Dialog } from "./Dialog";
+import { Dialog } from "./Dialog/Dialog";
 import { LinkPage } from "../types/linkPage";
 import { LinkGroup } from "../types/linkGroup";
 import { LinkData } from "../types/linkData";

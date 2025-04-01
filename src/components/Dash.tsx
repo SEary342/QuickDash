@@ -17,7 +17,7 @@ import {
 import PanelDialog from "./DashGroupDialog";
 import TabBtn from "./TabBtn";
 import { LinkPanelAdd } from "./LinkPanelAdd";
-import QuickDashWelcome from "./QuickDashWelcome";
+import QuickDashWelcome from "./QuickDashWelcome/QuickDashWelcome";
 
 function distributeLinkGroups(
   groups: LinkGroup[],

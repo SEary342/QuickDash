@@ -9,11 +9,11 @@ export default function QuickDashWelcome() {
         There are currently no dashboards to display. To start a new one, use
         the add{" "}
         <span className="inline-flex items-center">
-          <Icon path={mdiPlus} size={0.6} className="mx-1" />
+          <Icon path={mdiPlus} size={0.6} className="mx-1" data-testid="plus-icon" />
         </span>{" "}
         button in the left right corner or use the settings menu{" "}
         <span className="inline-flex items-center">
-          <Icon path={mdiCog} size={0.6} className="mx-1" />
+          <Icon path={mdiCog} size={0.6} className="mx-1" data-testid="cog-icon" />
         </span>{" "}
         in the upper right corner to import an existing dashboard.
       </p>

@@ -1,6 +1,6 @@
 import "./App.css";
 import Dash from "./components/Dash";
-import AppBar from "./components/AppBar";
+import AppBar from "./components/AppBar/AppBar";
 import { useSelector } from "react-redux";
 import { RootState } from "./store/store";
 

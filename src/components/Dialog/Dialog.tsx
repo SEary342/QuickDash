@@ -39,6 +39,7 @@ export const Dialog = ({
                 <button
                   onClick={() => onClose(false)}
                   className="text-gray-400 hover:text-gray-500 cursor-pointer"
+                  aria-label="Close dialog"
                 >
                   <Icon path={mdiClose} size={1} />
                 </button>

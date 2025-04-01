@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Dialog } from "./Dialog";
+import { Dialog } from "./Dialog/Dialog";
 import { InputWithLabel } from "./InputWithLabel";
 import { SelectWithLabel } from "./SelectWithLabel";
-import { ConfirmDialog } from "./ConfirmDialog";
+import { ConfirmDialog } from "./ConfirmDialog/ConfirmDialog";
 import { iconOptionsArray } from "../types/icons";
 import { colorOptionsArray } from "../types/colors";
 import Link from "./Link";

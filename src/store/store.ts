@@ -53,7 +53,7 @@ const linkPageSlice = createSlice({
   initialState: initialState.linkPages,
   reducers: {
     overwriteConfig(state, action: PayloadAction<LinkPage[]>) {
-      state = action.payload;
+      state.splice(0, state.length, ...action.payload);
     },
     addLinkPage(state, action: PayloadAction<LinkPage>) {
       state.push(action.payload);

@@ -7,13 +7,13 @@ import {
   mdiMinus,
   mdiPlus,
 } from "@mdi/js";
-import IconBtn from "./IconBtn";
+import IconBtn from "../IconBtn";
 import { motion } from "motion/react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState, setNumberOfColumns } from "../store/store";
+import { RootState, setNumberOfColumns } from "../../store/store";
 import Icon from "@mdi/react";
-import FileImportDialog from "./FileImportDialog";
-import { LinkPage } from "../types/linkPage";
+import FileImportDialog from "../FileImportDialog";
+import { LinkPage } from "../../types/linkPage";
 
 const colMax = 6;
 const colMin = 1;

@@ -1,5 +1,5 @@
 import { LinkPage } from "../types/linkPage";
-import { Dialog } from "./Dialog";
+import { Dialog } from "./Dialog/Dialog";
 import { InputWithLabel } from "./InputWithLabel";
 import { useEffect, useMemo, useState } from "react";
 import { SelectWithLabel } from "./SelectWithLabel";
@@ -7,7 +7,7 @@ import { iconOptionsArray } from "../types/icons";
 import { colorOptionsArray } from "../types/colors";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { ConfirmDialog } from "./ConfirmDialog";
+import { ConfirmDialog } from "./ConfirmDialog/ConfirmDialog";
 import { LinkGroup } from "../types/linkGroup";
 
 const defaultDash: () => LinkPage = () => ({ name: "", groupList: [] });
