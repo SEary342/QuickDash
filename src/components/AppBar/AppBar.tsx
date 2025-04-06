@@ -198,6 +198,16 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
               </div>
             </div>
             <hr />
+            <button className="w-full text-left p-2">
+              <a
+                href="https://github.com/SEary342/QuickDash/issues"
+                className="hover:underline"
+                target="_blank"
+              >
+                Help
+              </a>
+            </button>
+            <hr />
             <div className="w-full text-left p-2">
               <span className="block text-sm font-semibold">App Version</span>
               <p className="text-sm">{appVersion}</p>
