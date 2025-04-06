@@ -1,40 +1,35 @@
-// Plugins
-import vue from "@vitejs/plugin-vue";
-import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
-import { viteSingleFile } from "vite-plugin-singlefile";
-import svgLoader from "vite-svg-loader";
+/// <reference types="vitest/config" />
 
-// Utilities
 import { defineConfig } from "vite";
-import { fileURLToPath, URL } from "node:url";
+import react from "@vitejs/plugin-react-swc";
+import { viteSingleFile } from "vite-plugin-singlefile";
+import tailwindcss from "@tailwindcss/vite";
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    vue({
-      template: { transformAssetUrls },
-    }),
-    // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
-    vuetify({
-      autoImport: true,
-    }),
-    viteSingleFile(),
-    svgLoader(),
-  ],
+  plugins: [react(), tailwindcss(), viteSingleFile()],
   define: {
     "process.env": {},
-    "import.meta.env.APP_VERSION": JSON.stringify(process.env.npm_package_version),
+    "import.meta.env.APP_VERSION": JSON.stringify(
+      process.env.npm_package_version
+    ),
   },
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./src/tests/setup.js",
+    coverage: {
+      provider: "v8",
+      exclude: [
+        "src/tests/**",
+        "vite.config.ts",
+        "src/vite-env.d.ts",
+        "coverage/**",
+        "eslint.config.js",
+      ],
     },
-    extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
-  },
-  server: {
-    port: 3000,
   },
   build: {
-    outDir: "docs"
+    outDir: "docs",
   },
 });

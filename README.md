@@ -15,10 +15,7 @@
 
 ## Colors and Icons
 
-- The available colors are based on: [https://github.com/vuetifyjs/vuetify/blob/master/packages/vuetify/src/styles/settings/\_colors.scss](https://github.com/vuetifyjs/vuetify/blob/master/packages/vuetify/src/styles/settings/_colors.scss)
-  - The base colors are included in the dropdown menus.
-  - You can manually override to use one of the lighten or darken variants by modifying your export file and re-importing.
-  - New colors can be requested by creating an issue at [https://github.com/SEary342/QuickDash/issues](https://github.com/SEary342/QuickDash/issues)
+- New colors can be requested by creating an issue at [https://github.com/SEary342/QuickDash/issues](https://github.com/SEary342/QuickDash/issues)
 - The available colors are based on [Material Design Icons](https://materialdesignicons.com/).
   - Note: The MDI website is pretty slow to search. [Iconify](https://icon-sets.iconify.design/mdi/) has a pretty decent search for MDI icons.
   - The icons are somewhat limited at the moment as the package size could greatly inflate if all were included.
@@ -33,11 +30,10 @@
 
   | Component             | Technology                                                                                                                 |
   | --------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-  | UI Framework          | [Vue 3](https://vuejs.org/)                                                                                                |
-  | Component Library     | [Vuetify 3](https://next.vuetifyjs.com/en/)                                                                                |
+  | UI Framework          | [React 19](https://react.dev/)                                                                                             |
+  | CSS       Library     | [tailwindcss](https://tailwindcss.com/)                                                                                    |
   | Language              | [TypeScript](https://www.typescriptlang.org/)                                                                              |
   | Icons                 | [Material Design Icons](https://icon-sets.iconify.design/mdi/)                                                             |
-  | Persistant Data Store | [Pinia](https://pinia.vuejs.org/) & [pinia-plugin-persistedstate](https://github.com/prazdevs/pinia-plugin-persistedstate) |
 
 ## Page deployment
 
