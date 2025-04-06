@@ -56,8 +56,7 @@ const TabBtn = ({
           <Icon
             path={iconTranslation[linkPage.icon]}
             size={1}
-            color={colorLookup.icon}
-            className="mr-2"
+            className={`mr-2 ${colorLookup.text}`}
           />
         )}
         {linkPage.name}
@@ -85,7 +84,7 @@ const TabBtn = ({
               <IconBtn
                 className={`${colorLookup.hoverColor}`}
                 path={mdiPencil}
-                color={colorLookup.icon}
+                color={colorLookup.text}
                 tooltipText="Edit Dash"
                 tooltipPosition="bottom"
                 onClick={() => setEditDialog(true)}
@@ -111,7 +110,7 @@ const TabBtn = ({
                 <IconBtn
                   className={`${colorLookup.hoverColor}`}
                   path={mdiChevronLeft}
-                  color={colorLookup.icon}
+                  color={colorLookup.text}
                   tooltipText="Move Dash Left"
                   tooltipPosition="bottom"
                   onClick={() =>
@@ -125,7 +124,7 @@ const TabBtn = ({
                 <IconBtn
                   className={`${colorLookup.hoverColor}`}
                   path={mdiChevronRight}
-                  color={colorLookup.icon}
+                  color={colorLookup.text}
                   tooltipText="Move Dash Right"
                   tooltipPosition="bottom"
                   onClick={() =>
@@ -141,7 +140,7 @@ const TabBtn = ({
         <IconBtn
           className={`${colorLookup.hoverColor}`}
           path={mdiPlaylistEdit}
-          color={colorLookup.icon}
+          color={colorLookup.text}
           tooltipText={tabEdit ? "Hide Controls" : "Show Controls"}
           tooltipPosition="bottom"
           onClick={() => setTabEdit(!tabEdit)}

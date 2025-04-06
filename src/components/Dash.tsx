@@ -1,11 +1,10 @@
 import { LinkPage } from "../types/linkPage";
 import IconBtn from "./IconBtn";
 import { mdiPlus } from "@mdi/js";
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import LinkPanel from "./LinkPanel";
 import { LinkGroup } from "../types/linkGroup";
 import { motion, AnimatePresence } from "motion/react";
-import { LinkData } from "../types/linkData";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addLinkPage,
@@ -20,40 +19,46 @@ import { LinkPanelAdd } from "./LinkPanelAdd";
 import QuickDashWelcome from "./QuickDashWelcome/QuickDashWelcome";
 
 function distributeLinkGroups(
-  groups: LinkGroup[],
-  numColumns: number
+  linkGroups: LinkGroup[],
+  groupsCount: number
 ): LinkGroup[][] {
-  const allLinks: { group: LinkGroup; data: LinkData }[] = [];
-  for (const group of groups) {
-    for (const link of group.linkList) {
-      allLinks.push({ group, data: link });
+  const weightedGroups = linkGroups.map((group) => ({
+    ...group,
+    weight: group.linkList.length + 1,
+  }));
+
+  const totalWeight = weightedGroups.reduce(
+    (acc, group) => acc + group.weight,
+    0
+  );
+
+  const targetWeightPerGroup = Math.floor(totalWeight / groupsCount);
+
+  let currentGroupWeight = 0;
+  let currentGroup: LinkGroup[] = [];
+  const result: LinkGroup[][] = [];
+
+  for (const group of weightedGroups) {
+    currentGroup.push(group);
+    currentGroupWeight += group.weight;
+
+    if (
+      currentGroupWeight >= targetWeightPerGroup ||
+      weightedGroups.indexOf(group) === weightedGroups.length - 1
+    ) {
+      result.push(currentGroup);
+      currentGroup = [];
+      currentGroupWeight = 0;
     }
   }
-
-  const result: LinkGroup[][] = Array.from({ length: numColumns }, () => []);
-
-  const groupMap = new Map<LinkGroup, LinkGroup>();
-  let columnIndex = 0;
-
-  for (const group of groups) {
-    if (!groupMap.has(group)) {
-      const newGroup: LinkGroup = { ...group, linkList: [] };
-      groupMap.set(group, newGroup);
-      result[columnIndex].push(newGroup);
-      columnIndex = (columnIndex + 1) % numColumns;
-    }
-  }
-
-  columnIndex = 0;
-  for (const { group, data } of allLinks) {
-    groupMap.get(group)!.linkList.push(data);
-    columnIndex = (columnIndex + 1) % numColumns;
+  while (result.length < groupsCount) {
+    result.push([]);
   }
 
   return result;
 }
 
-const Dash = ({ linkPages }: { linkPages: LinkPage[]; }) => {
+const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
   const dispatch = useDispatch();
   const selectedDash = useSelector(
     (state: RootState) => state.app.selectedDash
@@ -77,9 +82,34 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; }) => {
     }
   };
 
+  const aboveScrollRef = useRef<HTMLDivElement>(null);
+  const [scrollAreaHeight, setScrollAreaHeight] = useState<number | null>(null);
+
+  useLayoutEffect(() => {
+    const updateHeight = () => {
+      if (aboveScrollRef.current) {
+        const rect = aboveScrollRef.current.getBoundingClientRect();
+        const offsetTop = rect.top; // Distance from top of viewport
+        const height = rect.height;
+
+        // Total space to subtract from 100vh
+        const totalOffset = offsetTop + height;
+
+        setScrollAreaHeight(window.innerHeight - totalOffset);
+      }
+    };
+
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, [linkPages.length]);
+
   return (
     <>
-      <div className="border-b border-gray-200 dark:border-gray-700">
+      <div
+        className="border-b border-gray-200 dark:border-gray-700"
+        ref={aboveScrollRef}
+      >
         <ul className="flex flex-wrap text-sm font-medium text-center ms-[2px]">
           {linkPages.map((pg, idx) => (
             <TabBtn
@@ -106,7 +136,7 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; }) => {
               className="cursor-pointer hover:bg-gray-300 rounded-full"
               tooltipText="Add Dash"
               tooltipPosition="right"
-              color="black"
+              color="text-black"
               onClick={() => setAddPage(!addPage)}
               size={1.5}
             />
@@ -123,50 +153,55 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[]; }) => {
           </li>
         </ul>
       </div>
-      {linkPages.length == 0 && <QuickDashWelcome />}
-
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={pageIndex}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.3 }}
-          className="grid gap-4"
-          style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
-        >
-          {columnGroups.map((groupColumn, colIdx) => {
-            const isFirstEmptyColumn =
-              groupColumn.length === 0 &&
-              columnGroups.findIndex((col) => col.length === 0) === colIdx;
-            const isLastColumn = colIdx === columnGroups.length - 1;
-            const shouldRenderAddPanel =
-              linkPages.length > 0 &&
-              (isFirstEmptyColumn ||
-                (isLastColumn && columnGroups.every((col) => col.length > 0)));
-
-            return (
-              <div key={`column-${colIdx}`} className="flex flex-col gap-4">
-                {groupColumn.map((gp, idx) => {
-                  const globalIndex = flattenedGroups.indexOf(gp);
-
-                  return (
-                    <LinkPanel
-                      pageId={pageIndex}
-                      panelId={globalIndex}
-                      key={`${gp.name}-${idx}`}
-                      linkGroup={gp}
-                      moveUp={globalIndex > 0}
-                      moveDown={globalIndex < totalGroups - 1}
-                    />
-                  );
-                })}
-                {shouldRenderAddPanel && <LinkPanelAdd pageId={pageIndex} />}
-              </div>
-            );
-          })}
-        </motion.div>
-      </AnimatePresence>
+      <div
+        className="overflow-y-auto"
+        style={{
+          height: scrollAreaHeight !== null ? `${scrollAreaHeight}px` : "auto",
+        }}
+      >
+        {linkPages.length == 0 && <QuickDashWelcome />}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={pageIndex}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="grid gap-4 mt-2"
+            style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
+          >
+            {columnGroups.map((groupColumn, colIdx) => {
+              const isFirstEmptyColumn =
+                groupColumn.length === 0 &&
+                columnGroups.findIndex((col) => col.length === 0) === colIdx;
+              const isLastColumn = colIdx === columnGroups.length - 1;
+              const shouldRenderAddPanel =
+                linkPages.length > 0 &&
+                (isFirstEmptyColumn ||
+                  (isLastColumn &&
+                    columnGroups.every((col) => col.length > 0)));
+              return (
+                <div key={`column-${colIdx}`} className="flex flex-col gap-4">
+                  {groupColumn.map((gp, idx) => {
+                    const globalIndex = flattenedGroups.indexOf(gp);
+                    return (
+                      <LinkPanel
+                        pageId={pageIndex}
+                        panelId={globalIndex}
+                        key={`${gp.name}-${idx}`}
+                        linkGroup={gp}
+                        moveUp={globalIndex > 0}
+                        moveDown={globalIndex < totalGroups - 1}
+                      />
+                    );
+                  })}
+                  {shouldRenderAddPanel && <LinkPanelAdd pageId={pageIndex} />}
+                </div>
+              );
+            })}
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </>
   );
 };

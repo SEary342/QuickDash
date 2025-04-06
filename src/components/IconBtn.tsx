@@ -71,8 +71,8 @@ const IconBtn = ({
         }}
         disabled={disabled}
       >
-        <Icon path={path} size={iconSize} color={color} />
-        {auxPath && <Icon path={auxPath} size={iconSize} color={color} />}
+        <Icon path={path} size={iconSize} className={color} />
+        {auxPath && <Icon path={auxPath} size={iconSize} className={color} />}
       </button>
 
       {showTooltip &&

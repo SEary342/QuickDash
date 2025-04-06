@@ -14,7 +14,7 @@ export const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
   const dispatch = useDispatch();
   const [addGroup, setAddGroup] = useState(false);
   return (
-    <div className="rounded-md flex flex-col border border-black m-5">
+    <div className="rounded-md flex flex-col border border-black m-3">
       <div
         className={`flex flex-row w-full ${colorLookup.text} rounded-t-md px-3 py-3 items-center font-bold ${colorLookup.background}`}
       >

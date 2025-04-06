@@ -15,7 +15,7 @@
 ### Links
     [x] Reorder functionality
     [ ] New Icons
-    [ ] Icon colors (outline view)
+    [x] Icon colors (outline view)
     [x] Link edit modal
     [x] Link add modal
     [x] Link validation
