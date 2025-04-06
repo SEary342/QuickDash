@@ -49,7 +49,7 @@ const TabBtn = ({
       transition={{ duration: 0.2, ease: "easeOut" }}
     >
       <button
-        className={`inline-flex items-center justify-center p-3 border-b-2 text-lg font-bold border-transparent rounded-t-lg group cursor-pointer ${colorLookup.text} ${colorLookup.hoverColor}`}
+        className={`inline-flex items-center justify-center px-3 py-2 border-b-2 text-md font-bold border-transparent rounded-t-lg group cursor-pointer ${colorLookup.text} ${colorLookup.hoverColor}`}
         onClick={() => tabSelectFunc(id)}
       >
         {linkPage.icon && (
@@ -62,7 +62,7 @@ const TabBtn = ({
         )}
         {linkPage.name}
       </button>
-      <motion.div
+      {selected && <motion.div
         className={`relative flex items-center ${colorLookup.border} border-2 rounded-full my-2 transition-all duration-200 px-2 mr-3 ${colorLookup.text}`}
         initial={{ width: "auto", opacity: 1 }}
         animate={
@@ -146,7 +146,7 @@ const TabBtn = ({
           tooltipPosition="bottom"
           onClick={() => setTabEdit(!tabEdit)}
         />
-      </motion.div>
+      </motion.div>}
     </motion.li>
   );
 };
