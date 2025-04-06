@@ -45,9 +45,9 @@ const LinkPanel = ({
   const [editDialog, setEditDialog] = useState(false);
 
   return (
-    <div className="rounded-md flex flex-col border border-black m-5">
+    <div className="rounded-md flex flex-col border border-black m-3">
       <div
-        className={`flex flex-row w-full ${colorLookup.text} rounded-t-md px-3 py-3 items-center font-bold ${colorLookup.background}`}
+        className={`flex flex-row w-full ${colorLookup.text} rounded-t-md p-3 items-center font-bold ${colorLookup.background}`}
       >
         {linkGroup.icon && <Icon path={iconLookup} size={1} />}
         <span className="ml-3 text-xl">{linkGroup.name}</span>
@@ -64,7 +64,7 @@ const LinkPanel = ({
                 path={mdiPencil}
                 className={`${colorLookup.hoverColor}`}
                 tooltipText="Edit Group"
-                color={colorLookup.icon}
+                color={colorLookup.text}
                 size={1}
                 onClick={() => setEditDialog(true)}
               />
@@ -102,7 +102,7 @@ const LinkPanel = ({
                 <IconBtn
                   path={mdiChevronUp}
                   tooltipText="Move Up"
-                  color={colorLookup.icon}
+                  color={colorLookup.text}
                   className={`${colorLookup.hoverColor}`}
                   size={1}
                   onClick={() =>
@@ -120,7 +120,7 @@ const LinkPanel = ({
                 <IconBtn
                   path={mdiChevronDown}
                   tooltipText="Move Down"
-                  color={colorLookup.icon}
+                  color={colorLookup.text}
                   className={`${colorLookup.hoverColor}`}
                   size={1}
                   onClick={() =>
@@ -142,7 +142,7 @@ const LinkPanel = ({
             className={`focus:outline-2 focus:outline-offset-2 ${colorLookup.focus} ${colorLookup.hoverColor}`}
             path={mdiPlaylistEdit}
             tooltipText={tabEdit ? "Hide Controls" : "Show Controls"}
-            color={colorLookup.icon}
+            color={colorLookup.text}
             size={1}
             onClick={() => setTabEdit(!tabEdit)}
           />

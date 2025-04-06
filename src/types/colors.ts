@@ -6,8 +6,6 @@ export interface colorStruct {
   outlineBorder: string;
   text: string;
   outlineText: string;
-  icon: string;
-  outlineIcon: string;
   focus: string;
 }
 
@@ -20,8 +18,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-red-600",
     text: "text-white",
     outlineText: "text-red-600",
-    icon: "white",
-    outlineIcon: "red",
     focus: "focus:outline-white",
   },
   green: {
@@ -32,8 +28,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-green-600",
     text: "text-white",
     outlineText: "text-green-600",
-    icon: "white",
-    outlineIcon: "green",
     focus: "focus:outline-white",
   },
   "grey-lighten-4": {
@@ -44,8 +38,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-gray-500",
     text: "text-black",
     outlineText: "text-gray-500",
-    icon: "black",
-    outlineIcon: "gray",
     focus: "focus:outline-white",
   },
   "light-green": {
@@ -56,8 +48,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-lime-500",
     text: "text-white",
     outlineText: "text-lime-500",
-    icon: "white",
-    outlineIcon: "lime",
     focus: "focus:outline-white",
   },
   lime: {
@@ -68,8 +58,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-lime-400",
     text: "text-black",
     outlineText: "text-lime-400",
-    icon: "black",
-    outlineIcon: "lime",
     focus: "focus:outline-black",
   },
   amber: {
@@ -80,8 +68,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-amber-500",
     text: "text-black",
     outlineText: "text-amber-500",
-    icon: "black",
-    outlineIcon: "amber",
     focus: "focus:outline-black",
   },
   orange: {
@@ -92,8 +78,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-orange-500",
     text: "text-black",
     outlineText: "text-orange-500",
-    icon: "black",
-    outlineIcon: "orange",
     focus: "focus:outline-black",
   },
   "deep-orange": {
@@ -104,8 +88,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-orange-700",
     text: "text-white",
     outlineText: "text-orange-700",
-    icon: "white",
-    outlineIcon: "orange",
     focus: "focus:outline-white",
   },
   brown: {
@@ -116,8 +98,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-amber-900",
     text: "text-white",
     outlineText: "text-amber-900",
-    icon: "white",
-    outlineIcon: "amber",
     focus: "focus:outline-white",
   },
   "blue-grey": {
@@ -128,8 +108,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-gray-700",
     text: "text-white",
     outlineText: "text-gray-700",
-    icon: "white",
-    outlineIcon: "gray",
     focus: "focus:outline-white",
   },
   white: {
@@ -140,8 +118,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-white",
     text: "text-black",
     outlineText: "text-white",
-    icon: "black",
-    outlineIcon: "white",
     focus: "focus:outline-black",
   },
   black: {
@@ -152,8 +128,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-black",
     text: "text-white",
     outlineText: "text-black",
-    icon: "white",
-    outlineIcon: "black",
     focus: "focus:outline-white",
   },
   blue: {
@@ -164,8 +138,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-blue-600",
     text: "text-white",
     outlineText: "text-blue-600",
-    icon: "white",
-    outlineIcon: "blue",
     focus: "focus:outline-white",
   },
   unknown: {
@@ -176,8 +148,6 @@ const colorMap: { [key: string]: colorStruct } = {
     outlineBorder: "border-black",
     text: "text-black",
     outlineText: "text-black",
-    icon: "black",
-    outlineIcon: "black",
     focus: "focus:outline-black",
   },
 };

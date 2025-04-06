@@ -134,7 +134,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
         path={mdiCog}
         auxPath={mdiChevronDown}
         tooltipText="Settings"
-        color="white"
+        color="text-white"
         className="ml-auto hover:bg-slate-600"
         tooltipPosition="left"
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -181,7 +181,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
                   size={1}
                   onClick={handleColumnDecrease}
                   tooltipText="Decrease Columns"
-                  color="black"
+                  color="text-black"
                   className="bg-gray-200 rounded hover:bg-gray-300"
                   disabled={columns <= colMin}
                 />
@@ -191,7 +191,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
                   size={1}
                   onClick={handleColumnIncrease}
                   tooltipText="Increase Columns"
-                  color="black"
+                  color="text-black"
                   className="bg-gray-200 rounded hover:bg-gray-300"
                   disabled={columns >= colMax}
                 />

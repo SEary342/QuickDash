@@ -33,7 +33,7 @@ const Link = ({
 }) => {
   const dispatch = useDispatch();
   const colorLookup = getColorLookup(item.color);
-  const iconColor = item.outline ? colorLookup.outlineIcon : colorLookup.icon;
+  const iconColor = item.outline ? colorLookup.outlineText : colorLookup.text;
   const hoverColor = item.outline
     ? "hover:bg-gray-100"
     : colorLookup.hoverColor;
@@ -61,7 +61,7 @@ const Link = ({
         <Icon
           path={item.icon ? iconTranslation[item.icon] : mdiLink}
           size={1}
-          color={iconColor}
+          className={iconColor}
         />
         <span
           className={`${

@@ -8,10 +8,10 @@ function App() {
   const linkPages = useSelector((state: RootState) => state.linkPages);
 
   return (
-    <div>
+    <>
       <AppBar linkPages={linkPages} />
       <Dash linkPages={linkPages} />
-    </div>
+    </>
   );
 }
 
