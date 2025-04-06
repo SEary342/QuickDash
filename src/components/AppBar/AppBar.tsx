@@ -71,6 +71,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
 
   const handleExport = () => {
     exportConfig("QuickDashConfig", ".QDconfig", linkPages);
+    setIsDropdownOpen(false);
   };
 
   useEffect(() => {
@@ -162,6 +163,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
               isOpen={importOpen}
               onClose={() => {
                 setImportOpen(false);
+                setIsDropdownOpen(false);
               }}
             />
             <button
