@@ -1,6 +1,6 @@
 import { LinkPage } from "../types/linkPage";
 import { Dialog } from "./Dialog/Dialog";
-import { InputWithLabel } from "./InputWithLabel";
+import { InputWithLabel } from "./InputWithLabel/InputWithLabel";
 import { useEffect, useMemo, useState } from "react";
 import { SelectWithLabel } from "./SelectWithLabel";
 import { iconOptionsArray } from "../types/icons";
