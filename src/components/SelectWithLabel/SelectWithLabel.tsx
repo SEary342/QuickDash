@@ -1,8 +1,8 @@
 import { mdiChevronDown } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useState } from "react";
-import { getColorLookup } from "../types/colors";
-import { iconTranslation } from "../types/icons";
+import { getColorLookup } from "../../types/colors";
+import { iconTranslation } from "../../types/icons";
 
 type SelectOption = {
   value: string;
@@ -59,7 +59,7 @@ const SelectWithLabel = ({
         <Icon path={mdiChevronDown} size={1} className="text-gray-500" />
       </div>
       {isOpen && (
-        <div className="absolute w-full bg-white border border-gray-300 rounded-md mt-1 shadow-md z-10">
+        <div className="absolute w-full bg-white border border-gray-300 rounded-md mt-1 shadow-md z-10 max-h-60 overflow-y-auto">
           {options.map((option) => (
             <div
               key={option.value}

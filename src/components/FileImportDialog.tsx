@@ -96,7 +96,7 @@ const FileImportDialog = ({ isOpen, onClose }: FileImportDialogProps) => {
               let linkColor: string = lnk["color"];
 
               let outline = Boolean(lnk["outline"]);
-              if (linkColor.includes("outline")) {
+              if (linkColor?.includes("outline")) {
                 outline = true;
                 linkColor = linkColor.replace("outline-", "");
               }
