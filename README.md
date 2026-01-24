@@ -13,13 +13,15 @@
 2. Open the html file as save it as a bookmark
 3. Add links & enjoy!
 
+## Feature / Issue Requests
+
+Requests for new features to improve QuickDash or submission of bugs and issues can be made at [https://github.com/SEary342/QuickDash/issues](https://github.com/SEary342/QuickDash/issues)
+
 ## Colors and Icons
 
-- New colors can be requested by creating an issue at [https://github.com/SEary342/QuickDash/issues](https://github.com/SEary342/QuickDash/issues)
-- The available colors are based on [Material Design Icons](https://materialdesignicons.com/).
-  - Note: The MDI website is pretty slow to search. [Iconify](https://icon-sets.iconify.design/mdi/) has a pretty decent search for MDI icons.
-  - The icons are somewhat limited at the moment as the package size could greatly inflate if all were included.
-  - New icons can be requested by creating an issue at [https://github.com/SEary342/QuickDash/issues](https://github.com/SEary342/QuickDash/issues)
+- New colors/Icons can be requested by creating an issue at [https://github.com/SEary342/QuickDash/issues](https://github.com/SEary342/QuickDash/issues)
+- The available colors and icons can be selected from [Mui Icons](https://mui.com/material-ui/material-icons/) 
+  - Total icons approved are limited to reduce package size. 
 
 ## Project Develompent setup
 
