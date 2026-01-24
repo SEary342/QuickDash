@@ -1,24 +1,24 @@
-import { mdiChevronDown } from "@mdi/js";
-import Icon from "@mdi/react";
-import { useState } from "react";
-import { getColorLookup } from "../../types/colors";
-import { iconTranslation } from "../../types/icons";
+import { mdiChevronDown } from '@mdi/js'
+import Icon from '@mdi/react'
+import { useState } from 'react'
+import { getColorLookup } from '../../types/colors'
+import { iconTranslation } from '../../types/icons'
 
 type SelectOption = {
-  value: string;
-  label: string;
-  color: boolean;
-  icon: boolean;
-};
+  value: string
+  label: string
+  color: boolean
+  icon: boolean
+}
 
 type SelectWithLabelProps = {
-  id: string;
-  value?: string;
-  options: SelectOption[];
-  onChange: (value: string) => void;
-  className?: string;
-  children: React.ReactNode;
-};
+  id: string
+  value?: string
+  options: SelectOption[]
+  onChange: (value: string) => void
+  className?: string
+  children: React.ReactNode
+}
 
 const SelectWithLabel = ({
   id,
@@ -28,15 +28,12 @@ const SelectWithLabel = ({
   className,
   children,
 }: SelectWithLabelProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const selectedOption = options.find((opt) => opt.value === value);
+  const [isOpen, setIsOpen] = useState(false)
+  const selectedOption = options.find((opt) => opt.value === value)
 
   return (
     <div className={`relative w-full ${className}`}>
-      <label
-        htmlFor={id}
-        className="absolute left-3 top-1 text-gray-500 text-sm"
-      >
+      <label htmlFor={id} className="absolute left-3 top-1 text-gray-500 text-sm">
         {children}
       </label>
       <div
@@ -46,15 +43,13 @@ const SelectWithLabel = ({
         <div className="flex items-center gap-2">
           {selectedOption?.color && (
             <div
-              className={`w-4 h-4 rounded ${
-                getColorLookup(selectedOption.value).background
-              }`}
+              className={`w-4 h-4 rounded ${getColorLookup(selectedOption.value).background}`}
             ></div>
           )}
           {selectedOption?.icon && iconTranslation[selectedOption.value] && (
             <Icon path={iconTranslation[selectedOption.value]} size={1} />
           )}
-          <span>{selectedOption?.label || "Select an option"}</span>
+          <span>{selectedOption?.label || 'Select an option'}</span>
         </div>
         <Icon path={mdiChevronDown} size={1} className="text-gray-500" />
       </div>
@@ -65,16 +60,12 @@ const SelectWithLabel = ({
               key={option.value}
               className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100"
               onClick={() => {
-                onChange(option.value);
-                setIsOpen(false);
+                onChange(option.value)
+                setIsOpen(false)
               }}
             >
               {option.color && (
-                <div
-                  className={`w-4 h-4 rounded ${
-                    getColorLookup(option.value).background
-                  }`}
-                ></div>
+                <div className={`w-4 h-4 rounded ${getColorLookup(option.value).background}`}></div>
               )}
               {option.icon && iconTranslation[option.value] && (
                 <Icon path={iconTranslation[option.value]} size={1} />
@@ -85,7 +76,7 @@ const SelectWithLabel = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export { SelectWithLabel };
+export { SelectWithLabel }

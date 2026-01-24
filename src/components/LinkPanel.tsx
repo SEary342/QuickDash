@@ -1,27 +1,23 @@
-import Icon from "@mdi/react";
-import { LinkGroup } from "../types/linkGroup";
-import IconBtn from "./IconBtn";
+import Icon from '@mdi/react'
+import { LinkGroup } from '../types/linkGroup'
+import IconBtn from './IconBtn'
 import {
   mdiChevronDown,
   mdiChevronUp,
   mdiFormatListGroup,
   mdiPencil,
   mdiPlaylistEdit,
-} from "@mdi/js";
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { getColorLookup } from "../types/colors";
-import Link from "./Link";
-import { iconTranslation } from "../types/icons";
-import { useDispatch } from "react-redux";
-import {
-  deleteLinkGroup,
-  reorderLinkGroups,
-  updateLinkGroup,
-} from "../store/store";
-import PanelDialog from "./DashGroupDialog";
-import { LinkPage } from "../types/linkPage";
-import { LinkAdd } from "./LinkAdd";
+} from '@mdi/js'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
+import { getColorLookup } from '../types/colors'
+import Link from './Link'
+import { iconTranslation } from '../types/icons'
+import { useDispatch } from 'react-redux'
+import { deleteLinkGroup, reorderLinkGroups, updateLinkGroup } from '../store/store'
+import PanelDialog from './DashGroupDialog'
+import { LinkPage } from '../types/linkPage'
+import { LinkAdd } from './LinkAdd'
 
 const LinkPanel = ({
   pageId,
@@ -30,19 +26,17 @@ const LinkPanel = ({
   moveUp,
   moveDown,
 }: {
-  pageId: number;
-  panelId: number;
-  linkGroup: LinkGroup;
-  moveUp: boolean;
-  moveDown: boolean;
+  pageId: number
+  panelId: number
+  linkGroup: LinkGroup
+  moveUp: boolean
+  moveDown: boolean
 }) => {
-  const dispatch = useDispatch();
-  const [tabEdit, setTabEdit] = useState(false);
-  const iconLookup = linkGroup.icon
-    ? iconTranslation[linkGroup.icon]
-    : mdiFormatListGroup;
-  const colorLookup = getColorLookup(linkGroup.color);
-  const [editDialog, setEditDialog] = useState(false);
+  const dispatch = useDispatch()
+  const [tabEdit, setTabEdit] = useState(false)
+  const iconLookup = linkGroup.icon ? iconTranslation[linkGroup.icon] : mdiFormatListGroup
+  const colorLookup = getColorLookup(linkGroup.color)
+  const [editDialog, setEditDialog] = useState(false)
 
   return (
     <div className="rounded-md flex flex-col border border-black m-3">
@@ -58,7 +52,7 @@ const LinkPanel = ({
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
             >
               <IconBtn
                 path={mdiPencil}
@@ -70,28 +64,24 @@ const LinkPanel = ({
               />
               <PanelDialog
                 isOpen={editDialog}
-                onClose={(
-                  _?: LinkPage,
-                  linkGroup?: LinkGroup,
-                  remove?: boolean
-                ) => {
+                onClose={(_?: LinkPage, linkGroup?: LinkGroup, remove?: boolean) => {
                   if (remove) {
                     dispatch(
                       deleteLinkGroup({
                         pageIndex: pageId,
                         groupIndex: panelId,
-                      })
-                    );
+                      }),
+                    )
                   } else if (linkGroup) {
                     dispatch(
                       updateLinkGroup({
                         pageIndex: pageId,
                         groupIndex: panelId,
                         group: linkGroup,
-                      })
-                    );
+                      }),
+                    )
                   }
-                  setEditDialog(false);
+                  setEditDialog(false)
                 }}
                 editMode={true}
                 groupMode={true}
@@ -111,7 +101,7 @@ const LinkPanel = ({
                         pageIndex: pageId,
                         fromIndex: panelId,
                         toIndex: panelId - 1,
-                      })
+                      }),
                     )
                   }
                 />
@@ -129,7 +119,7 @@ const LinkPanel = ({
                         pageIndex: pageId,
                         fromIndex: panelId,
                         toIndex: panelId + 1,
-                      })
+                      }),
                     )
                   }
                 />
@@ -141,7 +131,7 @@ const LinkPanel = ({
           <IconBtn
             className={`focus:outline-2 focus:outline-offset-2 ${colorLookup.focus} ${colorLookup.hoverColor}`}
             path={mdiPlaylistEdit}
-            tooltipText={tabEdit ? "Hide Controls" : "Show Controls"}
+            tooltipText={tabEdit ? 'Hide Controls' : 'Show Controls'}
             color={colorLookup.text}
             size={1}
             onClick={() => setTabEdit(!tabEdit)}
@@ -152,9 +142,9 @@ const LinkPanel = ({
         <motion.div
           className="pt-1 pb-3 overflow-hidden"
           initial={{ opacity: 0, scale: 0.8, height: 0 }}
-          animate={{ opacity: 1, scale: 1, height: "auto" }}
+          animate={{ opacity: 1, scale: 1, height: 'auto' }}
           exit={{ opacity: 0, scale: 0.8, height: 0 }}
-          transition={{ duration: 0.1, ease: "easeIn" }}
+          transition={{ duration: 0.1, ease: 'easeIn' }}
           layout
         >
           {linkGroup.linkList.map((item, index) => (
@@ -173,7 +163,7 @@ const LinkPanel = ({
         </motion.div>
       </AnimatePresence>
     </div>
-  );
-};
+  )
+}
 
-export default LinkPanel;
+export default LinkPanel
