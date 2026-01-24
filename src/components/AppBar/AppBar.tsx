@@ -182,13 +182,6 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
               <Icon path={mdiImport} size={1} className="mr-2" />
               Import
             </button>
-            <FileImportDialog
-              isOpen={importOpen}
-              onClose={() => {  
-                setImportOpen(false)
-                setIsDropdownOpen(false)
-              }}
-            />
             <button
               onClick={handleExport}
               className="w-full text-left p-2 hover:bg-gray-200 rounded flex flex-row cursor-pointer"
