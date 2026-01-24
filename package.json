@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
-    "release": "node scripts/update-and-build.mjs"
+    "release:start": "node scripts/update-and-build.mjs",
+    "release:finish": "node scripts/update-and-build.mjs --finish"
   },
   "dependencies": {
     "@mdi/js": "^7.4.47",
