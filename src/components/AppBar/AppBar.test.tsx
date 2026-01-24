@@ -9,6 +9,11 @@ vi.mock('react-redux', () => ({
   useDispatch: vi.fn(),
 }))
 
+// Mock ExportReminder to avoid store access
+vi.mock('../ExportReminder/ExportReminder', () => ({
+  default: () => null,
+}))
+
 describe('AppBar Component', () => {
   beforeEach(() => {
     render(<AppBar linkPages={mockLinkPages} />)
