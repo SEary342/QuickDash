@@ -68,33 +68,49 @@ function exportConfig(exportFileName: string, fileExtension: string, exportData:
   }
 }
 /**
- * 
- * @param param0 
- * @returns 
+ * The AppBar function is the main React component for the application's 
+ * top navigation bar. It acts as a container for the application branding 
+ * and a controller for global settings.
+ * @param linkPages  Current Dashboard Configuration
+ * @returns div with branding, triggers and dropdown menu
  */
 const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
-  const dispatch = useDispatch()
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [importOpen, setImportOpen] = useState(false)
-  const columns = useSelector((state: RootState) => state.app.numberOfColumns)
+  const dispatch = useDispatch() //Used to send actions (like changing column count) to the Redux store.
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false) //  Toggles the visibility of the settings menu.
+  const [importOpen, setImportOpen] = useState(false) // Toggles the visibility of the "Import File" dialog.
+  const columns = useSelector((state: RootState) => state.app.numberOfColumns) // Subscribes to the numberOfColumns state from the store.
   const appVersion = import.meta.env.APP_VERSION
-
+  /**
+   * Created to access the DOM elements directly, which is necessary for detecting clicks outside the menu.
+   */
   const appBarRef = useRef<HTMLDivElement | null>(null)
+  /**
+   * created to access the DOM elements directly, which is necessary for detecting clicks outside the menu.
+   */
   const dropdownRef = useRef<HTMLDivElement | null>(null)
-
+  /**
+   * Ensures the column add actions stay within the defined column limits
+   */
   const handleColumnIncrease = () => {
     if (columns < colMax) dispatch(setNumberOfColumns(columns + 1))
   }
-
+  /**
+   *  Ensures the column remove actions stay within the defined column min
+   */
   const handleColumnDecrease = () => {
     if (columns > colMin) dispatch(setNumberOfColumns(columns - 1))
   }
-
+  /**
+   * Calls Export config to download the current config as a .QDConfig 
+   * and closes menu
+   */
   const handleExport = () => {
     exportConfig('QuickDashConfig', '.QDconfig', linkPages)
     setIsDropdownOpen(false)
   }
-
+  /**
+   * Closes menu if user clicks outside dropdown
+   */
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
