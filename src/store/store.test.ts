@@ -8,7 +8,7 @@ import store, {
   // Mock localStorage directly before the store is initialized
   beforeAll(() => {
     // Mock localStorage to return custom state
-    global.localStorage = {
+    vi.stubGlobal("localStorage", {
       getItem: vi.fn().mockReturnValue(
         JSON.stringify({
           selectedDash: "",
@@ -21,7 +21,7 @@ import store, {
       length: 0, // Mock length
       key: vi.fn().mockReturnValue(null),
       removeItem: vi.fn(),
-    } as unknown as Storage;
+    } as unknown as Storage);
   });
   
   describe('Redux Store', () => {
