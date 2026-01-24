@@ -19,9 +19,8 @@ Requests for new features to improve QuickDash or submission of bugs and issues 
 
 ## Colors and Icons
 
-New colors/Icons can be requested by creating an issue at [https://github.com/SEary342/QuickDash/issues](https://github.com/SEary342/QuickDash/issues)
-- The available colors are based on [Material Design Icons](https://materialdesignicons.com/).
-- New Icons can be selected from [Mui Icons](https://mui.com/material-ui/material-icons/) 
+- New colors/Icons can be requested by creating an issue at [https://github.com/SEary342/QuickDash/issues](https://github.com/SEary342/QuickDash/issues)
+- The available colors and icons can be selected from [Mui Icons](https://mui.com/material-ui/material-icons/) 
   - Total icons approved are limited to reduce package size. 
 
 ## Project Develompent setup
