@@ -16,7 +16,7 @@ import Icon from '@mdi/react'
 import FileImportDialog from '../FileImportDialog'
 import { LinkPage } from '../../types/linkPage'
 
-// Constants
+// Constants used by the settings bar to constrain increase / decrease column feature
 const colMax = 6
 const colMin = 1
 
@@ -52,16 +52,24 @@ function exportConfig(exportFileName: string, fileExtension: string, exportData:
   if (navigator.msSaveBlob) {
     // IE 10+
     navigator.msSaveBlob(blob, exportFileName)
-  } else {
+  } 
+  /** The following uses a common web development technique: creating a temporary, 
+   * invisible link to a file in memory and programmatically "clicking" it to force 
+   * the browser to download the file. */
+  else {
     const link = document.createElement('a')
+    /**checking if the browser supports HTML5 download attribute */
     if (link.download !== undefined) {
-      // feature detection
-      // Browsers that support HTML5 download attribute
+      /** creates a temp internal URL, which allows the broswer to treat
+       * the data in memory like a real file on a server */
       const url = URL.createObjectURL(blob)
       link.setAttribute('href', url)
       link.setAttribute('download', exportFileName.concat(fileExtension))
       link.style.visibility = 'hidden'
       document.body.appendChild(link)
+      /** This programitically stimulates a user click to trigger the browser's 
+       *  native download manager. 
+       */
       link.click()
       document.body.removeChild(link)
     }
@@ -135,10 +143,13 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
         version="1.1"
         width="40"
         height="40"
-        viewBox="0 0 200 200"
+        viewBox="0 0 200 200" // Icon size in top bar
       >
+        {/** ----------------- Icon --------------------------------- */}
+        {/* background for the icon */ }
         <rect width="200" height="200" fill="#7f00ff" />
-        <ellipse cx="65" cy="100" rx="45" ry="50" fill="none" stroke="#ffffff" strokeWidth="15" />
+        {/* foreground for the icon QD*/ }
+        <ellipse cx="65" cy="100" rx="45" ry="50" fill="none" stroke="#ffffff" strokeWidth="15" /> 
         <line
           x1="65"
           y1="100"
@@ -155,7 +166,10 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
           strokeWidth="15"
         />
       </svg>
+      {/* Title Banner */}
       <span className="ml-3 text-2xl font-bold text-white">QuickDash</span>
+
+      {/* --------------- Settings Button -------------- */}
       <IconBtn
         path={mdiCog}
         auxPath={mdiChevronDown}
@@ -172,8 +186,13 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: .2 }} // time for the drop down to open 
         >
+          {/** This code block defines the content of the Settings Dropdown Menu 
+           * and the instantiation of the Import Dialog. It provides the user 
+           * interface for exporting data, adjusting the dashboard layout (columns), 
+           * accessing help, viewing version information, and handling the file import modal. 
+           * */}
           <div className="space-y-2">
             <button
               onClick={() => setImportOpen(true)}
@@ -188,6 +207,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
             >
               <Icon path={mdiExport} size={1} className="mr-2" /> Export
             </button>
+            {/**  ------------------- Column Area ---------------- */}
             <hr className="border-gray-200" />
             <div className="px-2">
               <p className="text-sm font-semibold text-gray-500">Columns</p>
@@ -213,6 +233,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
                 />
               </div>
             </div>
+            {/**  ------------------- Help Area ---------------- */}
             <hr className="border-gray-200" />
             <a
               href="https://github.com/SEary342/QuickDash/issues"
@@ -222,6 +243,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
             >
               Help
             </a>
+            {/**  ------------------- Version Area ---------------- */}
             <hr className="border-gray-200" />
             <div className="w-full text-left p-2">
               <span className="block text-xs font-semibold text-gray-400 uppercase">
@@ -232,6 +254,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
           </div>
         </motion.div>
       )}
+      {/**  ------------------- Import Area ----------------*/}
       <FileImportDialog
         isOpen={importOpen}
         onClose={() => {
