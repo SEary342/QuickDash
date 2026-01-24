@@ -102,6 +102,7 @@ const FileImportDialog = ({ isOpen, onClose }: FileImportDialogProps) => {
               linkList.push({
                 text: lnk['text'],
                 url: lnk['url'],
+                description: lnk['description'] ?? undefined,
                 color: linkColor,
                 outline: outline,
                 icon: lnk['icon'],

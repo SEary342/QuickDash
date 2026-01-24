@@ -5,7 +5,7 @@ import { SelectWithLabel } from './SelectWithLabel/SelectWithLabel'
 import { ConfirmDialog } from './ConfirmDialog/ConfirmDialog'
 import { iconOptionsArray } from '../types/icons'
 import { colorOptionsArray } from '../types/colors'
-import Link from './Link'
+import Link from './Link/Link'
 import { LinkData } from '../types/linkData'
 import { RootState } from '../store/store'
 import { useSelector } from 'react-redux'
@@ -38,7 +38,7 @@ const LinkDialog = ({
   panelId,
   isOpen,
   editMode = false,
-  link = { text: '', url: '', color: '', outline: false, icon: '' },
+  link = { text: '', url: '', color: '', outline: false, icon: '', description: '' },
   onClose,
 }: {
   pageId: number
@@ -71,6 +71,7 @@ const LinkDialog = ({
   const hasChanged =
     formData.text !== link.text ||
     formData.url !== link.url ||
+    formData.description !== link.description ||
     formData.color !== link.color ||
     formData.outline !== link.outline ||
     formData.icon !== link.icon
@@ -79,7 +80,10 @@ const LinkDialog = ({
     if (!confirm) {
       onClose(undefined)
     } else {
-      onClose({ ...formData, text: formData.text.trim() }, false)
+      onClose(
+        { ...formData, text: formData.text.trim(), description: formData.description?.trim() },
+        false,
+      )
     }
   }
 
@@ -135,6 +139,15 @@ const LinkDialog = ({
         className="my-2"
       >
         Link URL
+      </InputWithLabel>
+
+      <InputWithLabel
+        id="linkDescription"
+        value={formData.description || ''}
+        onInputChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+        className="my-2"
+      >
+        Description
       </InputWithLabel>
 
       <SelectWithLabel

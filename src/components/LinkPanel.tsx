@@ -11,7 +11,7 @@ import {
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { getColorLookup } from '../types/colors'
-import Link from './Link'
+import Link from './Link/Link'
 import { iconTranslation } from '../types/icons'
 import { useDispatch } from 'react-redux'
 import { deleteLinkGroup, reorderLinkGroups, updateLinkGroup } from '../store/store'

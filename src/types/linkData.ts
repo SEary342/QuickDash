@@ -4,4 +4,5 @@ export interface LinkData {
   color: string
   outline: boolean
   icon?: string
+  description?: string
 }
