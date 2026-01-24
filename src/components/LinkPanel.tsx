@@ -34,14 +34,15 @@ const LinkPanel = ({
 }) => {
   const dispatch = useDispatch()
   const [tabEdit, setTabEdit] = useState(false)
-  const iconLookup = linkGroup.icon ? iconTranslation[linkGroup.icon] : mdiFormatListGroup
-  const colorLookup = getColorLookup(linkGroup.color)
   const [editDialog, setEditDialog] = useState(false)
 
+  const iconLookup = linkGroup.icon ? iconTranslation[linkGroup.icon] : mdiFormatListGroup
+  const colorLookup = getColorLookup(linkGroup.color)
+
   return (
-    <div className="rounded-md flex flex-col border border-black m-3">
+    <div className="rounded-md flex flex-col border border-black m-3 bg-white overflow-hidden">
       <div
-        className={`flex flex-row w-full ${colorLookup.text} rounded-t-md p-3 items-center font-bold ${colorLookup.background}`}
+        className={`flex flex-row w-full ${colorLookup.text} p-3 items-center font-bold ${colorLookup.background}`}
       >
         {linkGroup.icon && <Icon path={iconLookup} size={1} />}
         <span className="ml-3 text-xl">{linkGroup.name}</span>
@@ -49,51 +50,24 @@ const LinkPanel = ({
           {tabEdit && (
             <motion.div
               className="flex flex-row ml-3"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
             >
               <IconBtn
                 path={mdiPencil}
-                className={`${colorLookup.hoverColor}`}
+                className={colorLookup.hoverColor}
                 tooltipText="Edit Group"
                 color={colorLookup.text}
                 size={1}
                 onClick={() => setEditDialog(true)}
-              />
-              <PanelDialog
-                isOpen={editDialog}
-                onClose={(_?: LinkPage, linkGroup?: LinkGroup, remove?: boolean) => {
-                  if (remove) {
-                    dispatch(
-                      deleteLinkGroup({
-                        pageIndex: pageId,
-                        groupIndex: panelId,
-                      }),
-                    )
-                  } else if (linkGroup) {
-                    dispatch(
-                      updateLinkGroup({
-                        pageIndex: pageId,
-                        groupIndex: panelId,
-                        group: linkGroup,
-                      }),
-                    )
-                  }
-                  setEditDialog(false)
-                }}
-                editMode={true}
-                groupMode={true}
-                pageId={pageId}
-                linkGroup={linkGroup}
               />
               {moveUp && (
                 <IconBtn
                   path={mdiChevronUp}
                   tooltipText="Move Up"
                   color={colorLookup.text}
-                  className={`${colorLookup.hoverColor}`}
+                  className={colorLookup.hoverColor}
                   size={1}
                   onClick={() =>
                     dispatch(
@@ -111,7 +85,7 @@ const LinkPanel = ({
                   path={mdiChevronDown}
                   tooltipText="Move Down"
                   color={colorLookup.text}
-                  className={`${colorLookup.hoverColor}`}
+                  className={colorLookup.hoverColor}
                   size={1}
                   onClick={() =>
                     dispatch(
@@ -138,30 +112,54 @@ const LinkPanel = ({
           />
         </div>
       </div>
-      <AnimatePresence>
-        <motion.div
-          className="pt-1 pb-3 overflow-hidden"
-          initial={{ opacity: 0, scale: 0.8, height: 0 }}
-          animate={{ opacity: 1, scale: 1, height: 'auto' }}
-          exit={{ opacity: 0, scale: 0.8, height: 0 }}
-          transition={{ duration: 0.1, ease: 'easeIn' }}
-          layout
-        >
+      <div className="pt-1 pb-3">
+        <AnimatePresence initial={false}>
           {linkGroup.linkList.map((item, index) => (
-            <Link
-              key={`${linkGroup.name}-${index}`}
-              pageId={pageId}
-              panelId={panelId}
-              id={index}
-              item={item}
-              upArrow={index !== 0}
-              downArrow={index !== linkGroup.linkList.length - 1}
-              editMode={tabEdit}
-            />
+            <motion.div
+              key={item.url + index}
+              layout
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Link
+                pageId={pageId}
+                panelId={panelId}
+                id={index}
+                item={item}
+                upArrow={index !== 0}
+                downArrow={index !== linkGroup.linkList.length - 1}
+                editMode={tabEdit}
+              />
+            </motion.div>
           ))}
-          {tabEdit && <LinkAdd pageId={pageId} panelId={panelId} />}
-        </motion.div>
-      </AnimatePresence>
+        </AnimatePresence>
+
+        {tabEdit && (
+          <motion.div layout initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <LinkAdd pageId={pageId} panelId={panelId} />
+          </motion.div>
+        )}
+      </div>
+      <PanelDialog
+        key={editDialog ? 'editing' : 'closed'}
+        isOpen={editDialog}
+        onClose={(_?: LinkPage, updatedGroup?: LinkGroup, remove?: boolean) => {
+          if (remove) {
+            dispatch(deleteLinkGroup({ pageIndex: pageId, groupIndex: panelId }))
+          } else if (updatedGroup) {
+            dispatch(
+              updateLinkGroup({ pageIndex: pageId, groupIndex: panelId, group: updatedGroup }),
+            )
+          }
+          setEditDialog(false)
+        }}
+        editMode={true}
+        groupMode={true}
+        pageId={pageId}
+        linkGroup={linkGroup}
+      />
     </div>
   )
 }

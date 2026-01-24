@@ -28,6 +28,7 @@ export const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
           onClick={() => setAddGroup(true)}
         />
         <PanelDialog
+          key={addGroup ? 'open' : 'closed'}
           isOpen={addGroup}
           onClose={(_?: LinkPage, linkGroup?: LinkGroup) => {
             if (linkGroup) {

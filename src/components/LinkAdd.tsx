@@ -11,6 +11,7 @@ export const LinkAdd = ({ pageId, panelId }: { pageId: number; panelId: number }
   return (
     <div className="relative flex items-center gap-3 m-3 hover:shadow-md rounded-xl border-3 border-black hover:bg-gray-100">
       <LinkDialog
+        key={addDialog ? 'open' : 'closed'}
         pageId={pageId}
         panelId={panelId}
         editMode={false}

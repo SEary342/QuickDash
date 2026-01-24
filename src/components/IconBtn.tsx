@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { Icon } from '@mdi/react'
 
 const IconBtn = ({
-  className,
+  className = '',
   path,
   auxPath,
   tooltipText,
@@ -24,51 +24,68 @@ const IconBtn = ({
   disabled?: boolean
 }) => {
   const [showTooltip, setShowTooltip] = useState(false)
-  const [tooltipStyle, setTooltipStyle] = useState({})
+  const [coords, setCoords] = useState({ top: 0, left: 0, transform: '' })
   const buttonRef = useRef<HTMLButtonElement | null>(null)
   const iconSize = size !== undefined ? size : 0.9
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!showTooltip || !buttonRef.current) return
 
-    const buttonRect = buttonRef.current.getBoundingClientRect()
-    const tooltipPadding = 8
+    const updatePosition = () => {
+      if (!buttonRef.current) return
+      const rect = buttonRef.current.getBoundingClientRect()
+      const padding = 8
 
-    let top = buttonRect.top - tooltipPadding
-    let left = buttonRect.left + buttonRect.width / 2
-    let transform = 'translateX(-50%)'
+      let top = 0
+      let left = 0
+      let transform = ''
 
-    if (tooltipPosition === 'bottom') {
-      top = buttonRect.bottom + tooltipPadding
-    } else if (tooltipPosition === 'left') {
-      left = buttonRect.left - tooltipPadding
-      transform = 'translateX(-100%)'
-    } else if (tooltipPosition === 'right') {
-      left = buttonRect.right + tooltipPadding
-      transform = 'translateX(0%)'
-    } else if (tooltipPosition === 'top') {
-      top = buttonRect.top - 20 - tooltipPadding
+      switch (tooltipPosition) {
+        case 'bottom':
+          top = rect.bottom + padding
+          left = rect.left + rect.width / 2
+          transform = 'translateX(-50%)'
+          break
+        case 'left':
+          top = rect.top + rect.height / 2
+          left = rect.left - padding
+          transform = 'translate(-100%, -50%)'
+          break
+        case 'right':
+          top = rect.top + rect.height / 2
+          left = rect.right + padding
+          transform = 'translate(0, -50%)'
+          break
+        default: // top
+          top = rect.top - padding
+          left = rect.left + rect.width / 2
+          transform = 'translate(-50%, -100%)'
+      }
+
+      setCoords({ top, left, transform })
     }
 
-    // Ensure tooltip is fully visible within viewport
-    if (top < 0) top = buttonRect.bottom + tooltipPadding
-    if (top + 40 > window.innerHeight) top = buttonRect.top - 40
-    if (left < 0) left = 8
-    if (left + 50 > window.innerWidth) left = window.innerWidth - 58
+    updatePosition()
 
-    setTooltipStyle({ top, left, transform })
-  }, [showTooltip, tooltipPosition])
+    window.addEventListener('resize', updatePosition)
+    window.addEventListener('scroll', updatePosition, true)
+
+    return () => {
+      window.removeEventListener('resize', updatePosition)
+      window.removeEventListener('scroll', updatePosition, true)
+    }
+  }, [showTooltip, tooltipPosition]) // Dependencies are strictly what is needed
 
   return (
     <>
       <button
         ref={buttonRef}
-        className={`relative p-[2px] rounded-full cursor-pointer flex flex-row ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} // Disabled styling
-        onMouseEnter={() => setShowTooltip(true)}
+        className={`p-0.5 rounded-full flex flex-row transition-opacity ${className} ${
+          disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+        }`}
+        onMouseEnter={() => !disabled && setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        onClick={(e) => {
-          if (!disabled && onClick) onClick(e)
-        }}
+        onClick={(e) => !disabled && onClick?.(e)}
         disabled={disabled}
       >
         <Icon path={path} size={iconSize} className={color} />
@@ -78,8 +95,12 @@ const IconBtn = ({
       {showTooltip &&
         createPortal(
           <div
-            className="fixed px-2 py-1 bg-gray-800 text-white text-sm shadow-md text-nowrap rounded-md z-50"
-            style={tooltipStyle}
+            className="fixed px-2 py-1 bg-gray-800 text-white text-xs shadow-lg whitespace-nowrap rounded pointer-events-none z-9999"
+            style={{
+              top: `${coords.top}px`,
+              left: `${coords.left}px`,
+              transform: coords.transform,
+            }}
           >
             {tooltipText}
           </div>,

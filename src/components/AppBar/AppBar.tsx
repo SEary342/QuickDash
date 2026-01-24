@@ -119,15 +119,12 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
       />
       {isDropdownOpen && (
         <motion.div
-          ref={dropdownRef} // Reference to the dropdown
-          className="absolute right-0 w-48 bg-white text-black rounded-lg shadow-lg p-3 z-10"
-          initial={{ opacity: 0, y: -20 }}
+          ref={dropdownRef}
+          className="absolute right-0 top-full mt-1 w-48 bg-white text-black rounded-lg shadow-lg p-3 z-10"
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-          style={{
-            top: appBarRef.current ? appBarRef.current.offsetHeight : 0,
-          }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.2 }}
         >
           <div className="space-y-2">
             <button
@@ -139,20 +136,20 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
             </button>
             <FileImportDialog
               isOpen={importOpen}
-              onClose={() => {
+              onClose={() => {  
                 setImportOpen(false)
                 setIsDropdownOpen(false)
               }}
             />
             <button
               onClick={handleExport}
-              className="w-full text-left p-2 hover:bg-gray-200 rounded  flex flex-row cursor-pointer"
+              className="w-full text-left p-2 hover:bg-gray-200 rounded flex flex-row cursor-pointer"
             >
               <Icon path={mdiExport} size={1} className="mr-2" /> Export
             </button>
-            <hr />
+            <hr className="border-gray-200" />
             <div className="px-2">
-              <p>Columns</p>
+              <p className="text-sm font-semibold text-gray-500">Columns</p>
               <div className="flex items-center space-x-2 w-full text-left py-1">
                 <IconBtn
                   path={mdiMinus}
@@ -175,20 +172,21 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
                 />
               </div>
             </div>
-            <hr />
-            <button className="w-full text-left p-2">
-              <a
-                href="https://github.com/SEary342/QuickDash/issues"
-                className="hover:underline"
-                target="_blank"
-              >
-                Help
-              </a>
-            </button>
-            <hr />
+            <hr className="border-gray-200" />
+            <a
+              href="https://github.com/SEary342/QuickDash/issues"
+              className="block w-full text-left p-2 hover:bg-gray-200 rounded"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Help
+            </a>
+            <hr className="border-gray-200" />
             <div className="w-full text-left p-2">
-              <span className="block text-sm font-semibold">App Version</span>
-              <p className="text-sm">{appVersion}</p>
+              <span className="block text-xs font-semibold text-gray-400 uppercase">
+                App Version
+              </span>
+              <p className="text-sm text-gray-600">{appVersion}</p>
             </div>
           </div>
         </motion.div>

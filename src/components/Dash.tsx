@@ -94,7 +94,7 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
   return (
     <>
       <div className="border-b border-gray-200 dark:border-gray-700" ref={aboveScrollRef}>
-        <ul className="flex flex-wrap text-sm font-medium text-center ms-[2px]">
+        <ul className="flex flex-wrap text-sm font-medium text-center ms-0.5">
           {linkPages.map((pg, idx) => (
             <TabBtn
               key={`${pg.name}-${idx}`}
@@ -125,6 +125,7 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
               size={1.5}
             />
             <PanelDialog
+              key={addPage ? 'open' : 'closed'}
               isOpen={addPage}
               onClose={(linkPage?: LinkPage) => {
                 if (linkPage) {
