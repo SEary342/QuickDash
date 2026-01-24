@@ -6,11 +6,7 @@ import { LinkData } from '../types/linkData'
 // Local Storage Key
 const LOCAL_STORAGE_KEY = 'app'
 // Load State from Local Storage
-const loadState = (): {
-  selectedDash: string
-  linkPages: LinkPage[]
-  numberOfColumns: number
-} => {
+const loadState = () => {
   try {
     const storedState = localStorage.getItem(LOCAL_STORAGE_KEY)
     if (storedState) {
@@ -19,12 +15,13 @@ const loadState = (): {
         selectedDash: parsedState.selectedDash || '',
         linkPages: parsedState.quickDashConfig || [],
         numberOfColumns: parsedState.numberOfColumns ?? 3,
+        fontSize: parsedState.fontSize ?? 16,
       }
     }
   } catch (error) {
     console.error('Error loading state from localStorage:', error)
   }
-  return { selectedDash: '', linkPages: [], numberOfColumns: 3 }
+  return { selectedDash: '', linkPages: [], numberOfColumns: 3, fontSize: 16 }
 }
 
 // Initial state
@@ -36,6 +33,7 @@ const appSlice = createSlice({
   initialState: {
     selectedDash: initialState.selectedDash,
     numberOfColumns: initialState.numberOfColumns,
+    fontSize: initialState.fontSize,
   },
   reducers: {
     setSelectedDash(state, action: PayloadAction<string>) {
@@ -43,6 +41,9 @@ const appSlice = createSlice({
     },
     setNumberOfColumns(state, action: PayloadAction<number>) {
       state.numberOfColumns = action.payload
+    },
+    setFontSize(state, action: PayloadAction<number>) {
+      state.fontSize = action.payload
     },
   },
 })
@@ -151,7 +152,7 @@ const linkPageSlice = createSlice({
   },
 })
 
-export const { setSelectedDash, setNumberOfColumns } = appSlice.actions
+export const { setSelectedDash, setNumberOfColumns, setFontSize } = appSlice.actions
 export const {
   overwriteConfig,
   addLinkPage,
@@ -182,8 +183,9 @@ store.subscribe(() => {
     const state = store.getState()
     const persistedState = {
       selectedDash: state.app.selectedDash,
-      quickDashConfig: state.linkPages, // Still using legacy key
+      quickDashConfig: state.linkPages,
       numberOfColumns: state.app.numberOfColumns,
+      fontSize: state.app.fontSize,
     }
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedState))
   } catch (error) {

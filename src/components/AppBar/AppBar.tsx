@@ -11,7 +11,7 @@ import { mdiChevronDown, mdiCog, mdiExport, mdiImport, mdiMinus, mdiPlus } from 
 import IconBtn from '../IconBtn'
 import { motion } from 'motion/react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState, setNumberOfColumns } from '../../store/store'
+import { RootState, setFontSize, setNumberOfColumns } from '../../store/store'
 import Icon from '@mdi/react'
 import FileImportDialog from '../FileImportDialog'
 import { LinkPage } from '../../types/linkPage'
@@ -19,6 +19,8 @@ import { LinkPage } from '../../types/linkPage'
 // Constants used by the settings bar to constrain increase / decrease column feature
 const colMax = 6
 const colMin = 1
+const fontMin = 12
+const fontMax = 24
 
 /**
  * Extends Blob to support Internet Explorer 10+ to allow for local saves
@@ -52,11 +54,10 @@ function exportConfig(exportFileName: string, fileExtension: string, exportData:
   if (navigator.msSaveBlob) {
     // IE 10+
     navigator.msSaveBlob(blob, exportFileName)
-  } 
-  /** The following uses a common web development technique: creating a temporary, 
-   * invisible link to a file in memory and programmatically "clicking" it to force 
-   * the browser to download the file. */
-  else {
+  } else {
+    /** The following uses a common web development technique: creating a temporary,
+     * invisible link to a file in memory and programmatically "clicking" it to force
+     * the browser to download the file. */
     const link = document.createElement('a')
     /**checking if the browser supports HTML5 download attribute */
     if (link.download !== undefined) {
@@ -67,8 +68,8 @@ function exportConfig(exportFileName: string, fileExtension: string, exportData:
       link.setAttribute('download', exportFileName.concat(fileExtension))
       link.style.visibility = 'hidden'
       document.body.appendChild(link)
-      /** This programitically stimulates a user click to trigger the browser's 
-       *  native download manager. 
+      /** This programitically stimulates a user click to trigger the browser's
+       *  native download manager.
        */
       link.click()
       document.body.removeChild(link)
@@ -76,8 +77,8 @@ function exportConfig(exportFileName: string, fileExtension: string, exportData:
   }
 }
 /**
- * The AppBar function is the main React component for the application's 
- * top navigation bar. It acts as a container for the application branding 
+ * The AppBar function is the main React component for the application's
+ * top navigation bar. It acts as a container for the application branding
  * and a controller for global settings.
  * @param linkPages  Current Dashboard Configuration
  * @returns div with branding, triggers and dropdown menu
@@ -88,6 +89,8 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
   const [importOpen, setImportOpen] = useState(false) // Toggles the visibility of the "Import File" dialog.
   const columns = useSelector((state: RootState) => state.app.numberOfColumns) // Subscribes to the numberOfColumns state from the store.
   const appVersion = import.meta.env.APP_VERSION
+  const fontSize = useSelector((state: RootState) => state.app.fontSize) // Select font size
+
   /**
    * Created to access the DOM elements directly, which is necessary for detecting clicks outside the menu.
    */
@@ -108,8 +111,16 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
   const handleColumnDecrease = () => {
     if (columns > colMin) dispatch(setNumberOfColumns(columns - 1))
   }
+
+  const handleFontIncrease = () => {
+    if (fontSize < fontMax) dispatch(setFontSize(fontSize + 1))
+  }
+
+  const handleFontDecrease = () => {
+    if (fontSize > fontMin) dispatch(setFontSize(fontSize - 1))
+  }
   /**
-   * Calls Export config to download the current config as a .QDConfig 
+   * Calls Export config to download the current config as a .QDConfig
    * and closes menu
    */
   const handleExport = () => {
@@ -136,6 +147,11 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
     }
   }, [])
 
+  // Apply font size to the root element whenever it changes
+  useEffect(() => {
+    document.documentElement.style.fontSize = `${fontSize}px`
+  }, [fontSize])
+
   return (
     <div ref={appBarRef} className="relative flex flex-row items-center bg-slate-800 p-2 shadow-xl">
       <svg
@@ -146,10 +162,10 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
         viewBox="0 0 200 200" // Icon size in top bar
       >
         {/** ----------------- Icon --------------------------------- */}
-        {/* background for the icon */ }
+        {/* background for the icon */}
         <rect width="200" height="200" fill="#7f00ff" />
-        {/* foreground for the icon QD*/ }
-        <ellipse cx="65" cy="100" rx="45" ry="50" fill="none" stroke="#ffffff" strokeWidth="15" /> 
+        {/* foreground for the icon QD*/}
+        <ellipse cx="65" cy="100" rx="45" ry="50" fill="none" stroke="#ffffff" strokeWidth="15" />
         <line
           x1="65"
           y1="100"
@@ -186,12 +202,12 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: .2 }} // time for the drop down to open 
+          transition={{ duration: 0.2 }} // time for the drop down to open
         >
-          {/** This code block defines the content of the Settings Dropdown Menu 
-           * and the instantiation of the Import Dialog. It provides the user 
-           * interface for exporting data, adjusting the dashboard layout (columns), 
-           * accessing help, viewing version information, and handling the file import modal. 
+          {/** This code block defines the content of the Settings Dropdown Menu
+           * and the instantiation of the Import Dialog. It provides the user
+           * interface for exporting data, adjusting the dashboard layout (columns),
+           * accessing help, viewing version information, and handling the file import modal.
            * */}
           <div className="space-y-2">
             <button
@@ -230,6 +246,32 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
                   color="text-black"
                   className="bg-gray-200 rounded hover:bg-gray-300"
                   disabled={columns >= colMax}
+                />
+              </div>
+            </div>
+            {/**  ------------------- Font Area ---------------- */}
+            <hr className="border-gray-200" />
+            <div className="px-2">
+              <p className="text-sm font-semibold text-gray-500">Font Size</p>
+              <div className="flex items-center space-x-2 w-full text-left py-1">
+                <IconBtn
+                  path={mdiMinus}
+                  size={0.8}
+                  onClick={handleFontDecrease}
+                  tooltipText="Smaller Text"
+                  color="text-black"
+                  className="bg-gray-200 rounded hover:bg-gray-300"
+                  disabled={fontSize <= fontMin}
+                />
+                <span className="text-lg font-semibold w-6 text-center">{fontSize}</span>
+                <IconBtn
+                  path={mdiPlus}
+                  size={0.8}
+                  onClick={handleFontIncrease}
+                  tooltipText="Larger Text"
+                  color="text-black"
+                  className="bg-gray-200 rounded hover:bg-gray-300"
+                  disabled={fontSize >= fontMax}
                 />
               </div>
             </div>
