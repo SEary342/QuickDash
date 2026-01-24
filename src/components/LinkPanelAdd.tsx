@@ -1,6 +1,6 @@
 import { mdiPlus } from '@mdi/js'
 import { getColorLookup } from '../types/colors'
-import IconBtn from './IconBtn'
+import IconBtn from './IconBtn/IconBtn'
 import { useState } from 'react'
 import PanelDialog from './DashGroupDialog'
 import { LinkPage } from '../types/linkPage'

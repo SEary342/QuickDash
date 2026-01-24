@@ -1,6 +1,6 @@
 import Icon from '@mdi/react'
 import { LinkGroup } from '../types/linkGroup'
-import IconBtn from './IconBtn'
+import IconBtn from './IconBtn/IconBtn'
 import {
   mdiChevronDown,
   mdiChevronUp,

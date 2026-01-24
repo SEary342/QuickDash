@@ -33,11 +33,7 @@ vi.mock('../../types/icons', () => ({
   },
 }))
 
-vi.mock('@mdi/react', () => ({
-  default: () => <div data-testid="mdi-icon" />,
-}))
-
-vi.mock('../IconBtn', () => ({
+vi.mock('../IconBtn/IconBtn', () => ({
   default: ({ onClick, tooltipText }: any) => (
     <button onClick={onClick} data-testid={`icon-btn-${tooltipText}`}>
       {tooltipText}

@@ -1,5 +1,5 @@
 import { LinkPage } from '../types/linkPage'
-import IconBtn from './IconBtn'
+import IconBtn from './IconBtn/IconBtn'
 import { mdiPlus } from '@mdi/js'
 import { useLayoutEffect, useRef, useState } from 'react'
 import LinkPanel from './LinkPanel'

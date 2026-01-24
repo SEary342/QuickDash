@@ -8,7 +8,7 @@
  */
 import { useState, useRef, useEffect } from 'react'
 import { mdiChevronDown, mdiCog, mdiExport, mdiImport, mdiMinus, mdiPlus } from '@mdi/js'
-import IconBtn from '../IconBtn'
+import IconBtn from '../IconBtn/IconBtn'
 import { motion } from 'motion/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState, setFontSize, setNumberOfColumns } from '../../store/store'

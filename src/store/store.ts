@@ -51,7 +51,7 @@ const appSlice = createSlice({
 // Slice for managing link pages
 const linkPageSlice = createSlice({
   name: 'linkPages',
-  initialState: initialState.linkPages,
+  initialState: initialState.linkPages as LinkPage[],
   reducers: {
     overwriteConfig(state, action: PayloadAction<LinkPage[]>) {
       state.splice(0, state.length, ...action.payload)

@@ -1,7 +1,7 @@
 import { useState, useRef, useLayoutEffect, ReactElement, cloneElement, DOMAttributes, Ref } from 'react'
 import { createPortal } from 'react-dom'
 
-interface TooltipProps {
+export interface TooltipProps {
   text?: string
   children: ReactElement<DOMAttributes<HTMLElement> & { ref?: Ref<HTMLElement> }>
   position?: 'top' | 'bottom' | 'left' | 'right'
