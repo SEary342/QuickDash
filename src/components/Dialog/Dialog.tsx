@@ -1,15 +1,15 @@
-import { mdiClose } from "@mdi/js";
-import Icon from "@mdi/react";
-import { AnimatePresence, motion } from "motion/react";
+import { mdiClose } from '@mdi/js'
+import Icon from '@mdi/react'
+import { AnimatePresence, motion } from 'motion/react'
 
 interface DialogProps {
-  title: string;
-  children?: React.ReactNode;
-  isOpen: boolean;
-  onClose: (confirm: boolean) => void;
-  disableConfirm?: boolean;
-  confirmClass?: string;
-  actionButton?: {text: string; color: string; action: ()=>void}
+  title: string
+  children?: React.ReactNode
+  isOpen: boolean
+  onClose: (confirm: boolean) => void
+  disableConfirm?: boolean
+  confirmClass?: string
+  actionButton?: { text: string; color: string; action: () => void }
 }
 
 export const Dialog = ({
@@ -18,7 +18,7 @@ export const Dialog = ({
   isOpen = false,
   onClose,
   disableConfirm = false,
-  confirmClass = "",
+  confirmClass = '',
   actionButton,
 }: DialogProps) => {
   return (
@@ -52,13 +52,22 @@ export const Dialog = ({
                 >
                   Cancel
                 </button>
-                {actionButton ? <button className={`px-4 py-2 rounded-md cursor-pointer text-sm font-medium ${actionButton.color}`} onClick={actionButton.action}>{actionButton.text}</button> : ""}
+                {actionButton ? (
+                  <button
+                    className={`px-4 py-2 rounded-md cursor-pointer text-sm font-medium ${actionButton.color}`}
+                    onClick={actionButton.action}
+                  >
+                    {actionButton.text}
+                  </button>
+                ) : (
+                  ''
+                )}
                 <button
                   className={`px-4 py-2 rounded-md text-sm font-medium 
                     ${
                       disableConfirm
-                        ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                        : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                        ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                        : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
                     } ${confirmClass}`}
                   onClick={() => onClose(true)}
                   disabled={disableConfirm}
@@ -71,5 +80,5 @@ export const Dialog = ({
         </>
       )}
     </AnimatePresence>
-  );
-};
+  )
+}

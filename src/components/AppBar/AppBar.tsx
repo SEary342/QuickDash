@@ -1,78 +1,67 @@
-import { useState, useRef, useEffect } from "react";
-import {
-  mdiChevronDown,
-  mdiCog,
-  mdiExport,
-  mdiImport,
-  mdiMinus,
-  mdiPlus,
-} from "@mdi/js";
-import IconBtn from "../IconBtn";
-import { motion } from "motion/react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, setNumberOfColumns } from "../../store/store";
-import Icon from "@mdi/react";
-import FileImportDialog from "../FileImportDialog";
-import { LinkPage } from "../../types/linkPage";
+import { useState, useRef, useEffect } from 'react'
+import { mdiChevronDown, mdiCog, mdiExport, mdiImport, mdiMinus, mdiPlus } from '@mdi/js'
+import IconBtn from '../IconBtn'
+import { motion } from 'motion/react'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState, setNumberOfColumns } from '../../store/store'
+import Icon from '@mdi/react'
+import FileImportDialog from '../FileImportDialog'
+import { LinkPage } from '../../types/linkPage'
 
-const colMax = 6;
-const colMin = 1;
+const colMax = 6
+const colMin = 1
 
 declare global {
   interface Navigator {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    msSaveBlob?: (blob: any, defaultName?: string) => boolean;
+    msSaveBlob?: (blob: any, defaultName?: string) => boolean
   }
 }
 
-function exportConfig(
-  exportFileName: string,
-  fileExtension: string,
-  exportData: LinkPage[]
-) {
-  const jsonFile = JSON.stringify(exportData);
-  const blob = new Blob([jsonFile], { type: "application/json" });
+function exportConfig(exportFileName: string, fileExtension: string, exportData: LinkPage[]) {
+  const jsonFile = JSON.stringify(exportData)
+  const blob = new Blob([jsonFile], { type: 'application/json' })
   if (navigator.msSaveBlob) {
     // IE 10+
-    navigator.msSaveBlob(blob, exportFileName);
+    navigator.msSaveBlob(blob, exportFileName)
   } else {
-    const link = document.createElement("a");
+    const link = document.createElement('a')
     if (link.download !== undefined) {
       // feature detection
       // Browsers that support HTML5 download attribute
-      const url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", exportFileName.concat(fileExtension));
-      link.style.visibility = "hidden";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const url = URL.createObjectURL(blob)
+      link.setAttribute('href', url)
+      link.setAttribute('download', exportFileName.concat(fileExtension))
+      link.style.visibility = 'hidden'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     }
   }
 }
 
 const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
-  const dispatch = useDispatch();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [importOpen, setImportOpen] = useState(false);
-  const columns = useSelector((state: RootState) => state.app.numberOfColumns);
-  const appVersion = import.meta.env.APP_VERSION;
+  const dispatch = useDispatch()
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [importOpen, setImportOpen] = useState(false)
+  const columns = useSelector((state: RootState) => state.app.numberOfColumns)
+  const appVersion = import.meta.env.APP_VERSION
 
-  const appBarRef = useRef<HTMLDivElement | null>(null);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const appBarRef = useRef<HTMLDivElement | null>(null)
+  const dropdownRef = useRef<HTMLDivElement | null>(null)
 
   const handleColumnIncrease = () => {
-    if (columns < colMax) dispatch(setNumberOfColumns(columns + 1));
-  };
+    if (columns < colMax) dispatch(setNumberOfColumns(columns + 1))
+  }
 
   const handleColumnDecrease = () => {
-    if (columns > colMin) dispatch(setNumberOfColumns(columns - 1));
-  };
+    if (columns > colMin) dispatch(setNumberOfColumns(columns - 1))
+  }
 
   const handleExport = () => {
-    exportConfig("QuickDashConfig", ".QDconfig", linkPages);
-    setIsDropdownOpen(false);
-  };
+    exportConfig('QuickDashConfig', '.QDconfig', linkPages)
+    setIsDropdownOpen(false)
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -82,20 +71,17 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
         appBarRef.current &&
         !appBarRef.current.contains(event.target as Node)
       ) {
-        setIsDropdownOpen(false);
+        setIsDropdownOpen(false)
       }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
+    }
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   return (
-    <div
-      ref={appBarRef}
-      className="relative flex flex-row items-center bg-slate-800 p-2 shadow-xl"
-    >
+    <div ref={appBarRef} className="relative flex flex-row items-center bg-slate-800 p-2 shadow-xl">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         version="1.1"
@@ -104,15 +90,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
         viewBox="0 0 200 200"
       >
         <rect width="200" height="200" fill="#7f00ff" />
-        <ellipse
-          cx="65"
-          cy="100"
-          rx="45"
-          ry="50"
-          fill="none"
-          stroke="#ffffff"
-          strokeWidth="15"
-        />
+        <ellipse cx="65" cy="100" rx="45" ry="50" fill="none" stroke="#ffffff" strokeWidth="15" />
         <line
           x1="65"
           y1="100"
@@ -162,8 +140,8 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
             <FileImportDialog
               isOpen={importOpen}
               onClose={() => {
-                setImportOpen(false);
-                setIsDropdownOpen(false);
+                setImportOpen(false)
+                setIsDropdownOpen(false)
               }}
             />
             <button
@@ -216,7 +194,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
         </motion.div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default AppBar;
+export default AppBar

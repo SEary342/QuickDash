@@ -1,140 +1,136 @@
-import { useState, ChangeEventHandler, DragEventHandler } from "react";
-import { Dialog } from "./Dialog/Dialog";
-import { LinkPage } from "../types/linkPage";
-import { LinkGroup } from "../types/linkGroup";
-import { LinkData } from "../types/linkData";
-import { colorConversions } from "../types/colors";
-import { useDispatch } from "react-redux";
-import {
-  setSelectedDash,
-  overwriteConfig,
-  setNumberOfColumns,
-} from "../store/store";
+import { useState, ChangeEventHandler, DragEventHandler } from 'react'
+import { Dialog } from './Dialog/Dialog'
+import { LinkPage } from '../types/linkPage'
+import { LinkGroup } from '../types/linkGroup'
+import { LinkData } from '../types/linkData'
+import { colorConversions } from '../types/colors'
+import { useDispatch } from 'react-redux'
+import { setSelectedDash, overwriteConfig, setNumberOfColumns } from '../store/store'
 
 interface FileImportDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
-const fileType = ".QDconfig";
+const fileType = '.QDconfig'
 function readFile(uploadFile: File): Promise<string> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
+    const reader = new FileReader()
 
     reader.onload = () => {
-      resolve(String(reader.result));
-    };
-    reader.onerror = reject;
-    reader.readAsText(uploadFile);
-  });
+      resolve(String(reader.result))
+    }
+    reader.onerror = reject
+    reader.readAsText(uploadFile)
+  })
 }
 
 const FileImportDialog = ({ isOpen, onClose }: FileImportDialogProps) => {
-  const dispatch = useDispatch();
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [dragging, setDragging] = useState<boolean>(false);
+  const dispatch = useDispatch()
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [dragging, setDragging] = useState<boolean>(false)
 
   // Handles file drop
   const handleDrop: DragEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-    setDragging(false);
+    e.preventDefault()
+    setDragging(false)
 
-    const file = e.dataTransfer.files[0];
+    const file = e.dataTransfer.files[0]
     if (file && file.name.endsWith(fileType)) {
-      setSelectedFile(file);
+      setSelectedFile(file)
     } else {
-      alert(`Only ${fileType} files are allowed`);
+      alert(`Only ${fileType} files are allowed`)
     }
-  };
+  }
 
   // Handles file selection from browse button
   const handleFileSelect: ChangeEventHandler<HTMLInputElement> = (e) => {
-    const file = e.target.files ? e.target.files[0] : null;
+    const file = e.target.files ? e.target.files[0] : null
     if (file && file.name.endsWith(fileType)) {
-      setSelectedFile(file);
+      setSelectedFile(file)
     } else {
-      alert(`Only ${fileType} files are allowed`);
+      alert(`Only ${fileType} files are allowed`)
     }
-  };
+  }
 
   // Handles drag enter
   const handleDragEnter = () => {
-    setDragging(true);
-  };
+    setDragging(true)
+  }
 
   // Handles drag leave
   const handleDragLeave = () => {
-    setDragging(false);
-  };
+    setDragging(false)
+  }
 
   const handleConfirm = (confirm: boolean) => {
     if (confirm && selectedFile) {
-      save();
+      save()
     } else {
-      onClose();
+      onClose()
     }
-    setSelectedFile(null);
-  };
+    setSelectedFile(null)
+  }
 
   const save = async () => {
     if (selectedFile) {
       // Ensure fileInput is not empty
       try {
-        const data = await readFile(selectedFile);
-        const tempObj = JSON.parse(data);
-        let config = [];
+        const data = await readFile(selectedFile)
+        const tempObj = JSON.parse(data)
+        let config = []
         if (Array.isArray(tempObj)) {
-          config = tempObj;
+          config = tempObj
         } else {
-          config = tempObj["QuickDashConfig"];
+          config = tempObj['QuickDashConfig']
         }
-        const tempConfig: LinkPage[] = [];
+        const tempConfig: LinkPage[] = []
         for (const page of config) {
-          const groupList: LinkGroup[] = [];
-          for (const grp of page["groupList"]) {
-            const linkList: LinkData[] = [];
-            for (const lnk of grp["linkList"]) {
-              let linkColor: string = lnk["color"];
+          const groupList: LinkGroup[] = []
+          for (const grp of page['groupList']) {
+            const linkList: LinkData[] = []
+            for (const lnk of grp['linkList']) {
+              let linkColor: string = lnk['color']
 
-              let outline = Boolean(lnk["outline"]);
-              if (linkColor?.includes("outline")) {
-                outline = true;
-                linkColor = linkColor.replace("outline-", "");
+              let outline = Boolean(lnk['outline'])
+              if (linkColor?.includes('outline')) {
+                outline = true
+                linkColor = linkColor.replace('outline-', '')
               }
               if (linkColor in colorConversions) {
-                linkColor = colorConversions[linkColor];
+                linkColor = colorConversions[linkColor]
               }
               linkList.push({
-                text: lnk["text"],
-                url: lnk["url"],
+                text: lnk['text'],
+                url: lnk['url'],
                 color: linkColor,
                 outline: outline,
-                icon: lnk["icon"],
-              });
+                icon: lnk['icon'],
+              })
             }
             groupList.push({
-              name: grp["name"],
+              name: grp['name'],
               linkList: linkList,
-              icon: grp["icon"],
-              color: grp["color"],
-            });
+              icon: grp['icon'],
+              color: grp['color'],
+            })
           }
           tempConfig.push({
-            name: page["name"],
+            name: page['name'],
             groupList: groupList,
-            icon: page["icon"],
-            color: page["color"],
-          });
+            icon: page['icon'],
+            color: page['color'],
+          })
         }
-        dispatch(overwriteConfig(tempConfig));
-        dispatch(setNumberOfColumns(3));
-        dispatch(setSelectedDash(tempConfig[0].name));
-        onClose();
+        dispatch(overwriteConfig(tempConfig))
+        dispatch(setNumberOfColumns(3))
+        dispatch(setSelectedDash(tempConfig[0].name))
+        onClose()
       } catch (err) {
-        console.log(err);
-        alert("An import error occured");
+        console.log(err)
+        alert('An import error occured')
       }
     }
-  };
+  }
 
   return (
     <Dialog
@@ -145,9 +141,7 @@ const FileImportDialog = ({ isOpen, onClose }: FileImportDialogProps) => {
     >
       <div
         className={`border-4 p-6 rounded-lg transition-all ${
-          dragging
-            ? "border-blue-500 bg-blue-50"
-            : "border-gray-300 bg-gray-100"
+          dragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-100'
         }`}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
@@ -179,7 +173,7 @@ const FileImportDialog = ({ isOpen, onClose }: FileImportDialogProps) => {
         )}
       </div>
     </Dialog>
-  );
-};
+  )
+}
 
-export default FileImportDialog;
+export default FileImportDialog

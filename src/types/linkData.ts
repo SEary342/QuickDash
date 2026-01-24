@@ -1,7 +1,7 @@
 export interface LinkData {
-  text: string;
-  url: string;
-  color: string;
-  outline: boolean;
-  icon?: string;
+  text: string
+  url: string
+  color: string
+  outline: boolean
+  icon?: string
 }

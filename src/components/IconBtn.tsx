@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { Icon } from "@mdi/react";
+import { useState, useRef, useEffect } from 'react'
+import { createPortal } from 'react-dom'
+import { Icon } from '@mdi/react'
 
 const IconBtn = ({
   className,
@@ -10,64 +10,64 @@ const IconBtn = ({
   color,
   onClick,
   size,
-  tooltipPosition = "top",
+  tooltipPosition = 'top',
   disabled = false,
 }: {
-  className?: string;
-  path: string;
-  auxPath?: string;
-  tooltipText: string;
-  color: string;
-  onClick?: (e: React.MouseEvent) => void;
-  size?: number;
-  tooltipPosition?: "top" | "bottom" | "left" | "right";
-  disabled?: boolean;
+  className?: string
+  path: string
+  auxPath?: string
+  tooltipText: string
+  color: string
+  onClick?: (e: React.MouseEvent) => void
+  size?: number
+  tooltipPosition?: 'top' | 'bottom' | 'left' | 'right'
+  disabled?: boolean
 }) => {
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [tooltipStyle, setTooltipStyle] = useState({});
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
-  const iconSize = size !== undefined ? size : 0.9;
+  const [showTooltip, setShowTooltip] = useState(false)
+  const [tooltipStyle, setTooltipStyle] = useState({})
+  const buttonRef = useRef<HTMLButtonElement | null>(null)
+  const iconSize = size !== undefined ? size : 0.9
 
   useEffect(() => {
-    if (!showTooltip || !buttonRef.current) return;
+    if (!showTooltip || !buttonRef.current) return
 
-    const buttonRect = buttonRef.current.getBoundingClientRect();
-    const tooltipPadding = 8;
+    const buttonRect = buttonRef.current.getBoundingClientRect()
+    const tooltipPadding = 8
 
-    let top = buttonRect.top - tooltipPadding;
-    let left = buttonRect.left + buttonRect.width / 2;
-    let transform = "translateX(-50%)";
+    let top = buttonRect.top - tooltipPadding
+    let left = buttonRect.left + buttonRect.width / 2
+    let transform = 'translateX(-50%)'
 
-    if (tooltipPosition === "bottom") {
-      top = buttonRect.bottom + tooltipPadding;
-    } else if (tooltipPosition === "left") {
-      left = buttonRect.left - tooltipPadding;
-      transform = "translateX(-100%)";
-    } else if (tooltipPosition === "right") {
-      left = buttonRect.right + tooltipPadding;
-      transform = "translateX(0%)";
-    } else if (tooltipPosition === "top") {
-      top = buttonRect.top - 20 - tooltipPadding;
+    if (tooltipPosition === 'bottom') {
+      top = buttonRect.bottom + tooltipPadding
+    } else if (tooltipPosition === 'left') {
+      left = buttonRect.left - tooltipPadding
+      transform = 'translateX(-100%)'
+    } else if (tooltipPosition === 'right') {
+      left = buttonRect.right + tooltipPadding
+      transform = 'translateX(0%)'
+    } else if (tooltipPosition === 'top') {
+      top = buttonRect.top - 20 - tooltipPadding
     }
 
     // Ensure tooltip is fully visible within viewport
-    if (top < 0) top = buttonRect.bottom + tooltipPadding;
-    if (top + 40 > window.innerHeight) top = buttonRect.top - 40;
-    if (left < 0) left = 8;
-    if (left + 50 > window.innerWidth) left = window.innerWidth - 58;
+    if (top < 0) top = buttonRect.bottom + tooltipPadding
+    if (top + 40 > window.innerHeight) top = buttonRect.top - 40
+    if (left < 0) left = 8
+    if (left + 50 > window.innerWidth) left = window.innerWidth - 58
 
-    setTooltipStyle({ top, left, transform });
-  }, [showTooltip, tooltipPosition]);
+    setTooltipStyle({ top, left, transform })
+  }, [showTooltip, tooltipPosition])
 
   return (
     <>
       <button
         ref={buttonRef}
-        className={`relative p-[2px] rounded-full cursor-pointer flex flex-row ${className} ${disabled ? "opacity-50 cursor-not-allowed" : ""}`} // Disabled styling
+        className={`relative p-[2px] rounded-full cursor-pointer flex flex-row ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} // Disabled styling
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
         onClick={(e) => {
-          if (!disabled && onClick) onClick(e);
+          if (!disabled && onClick) onClick(e)
         }}
         disabled={disabled}
       >
@@ -83,10 +83,10 @@ const IconBtn = ({
           >
             {tooltipText}
           </div>,
-          document.body
+          document.body,
         )}
     </>
-  );
-};
+  )
+}
 
-export default IconBtn;
+export default IconBtn

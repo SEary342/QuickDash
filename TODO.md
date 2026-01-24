@@ -1,4 +1,5 @@
 ### Dash
+
     [x] Initial State Message box
 
     Tabs/Dashes
@@ -8,11 +9,13 @@
     [x] New Dash Button and Modal & funcs
 
 ### Panels
+
     [x] Panel Edit Modal
     [x] New Panel Button and Modal
     [x] Panel Link Add Button
 
 ### Links
+
     [x] Reorder functionality
     [ ] New Icons
     [x] Icon colors (outline view)
@@ -20,13 +23,15 @@
     [x] Link add modal
     [x] Link validation
 
-### AppBar 
+### AppBar
+
     [x] Settings Drop Down
     [x] Column Change functionality
     [x] Import/Export Modal
     [x] Import/Export functionality
 
 ### General
+
     [x] Color setting validation (see tab borders for dark colors when selected)
     [ ] Testing
     [ ] Logo Work

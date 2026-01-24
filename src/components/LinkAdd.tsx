@@ -1,19 +1,13 @@
-import { mdiPlus } from "@mdi/js";
-import Icon from "@mdi/react";
-import LinkDialog from "./LinkDialog";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addLinkData } from "../store/store";
+import { mdiPlus } from '@mdi/js'
+import Icon from '@mdi/react'
+import LinkDialog from './LinkDialog'
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { addLinkData } from '../store/store'
 
-export const LinkAdd = ({
-  pageId,
-  panelId,
-}: {
-  pageId: number;
-  panelId: number;
-}) => {
-  const dispatch = useDispatch();
-  const [addDialog, setAddDialog] = useState(false);
+export const LinkAdd = ({ pageId, panelId }: { pageId: number; panelId: number }) => {
+  const dispatch = useDispatch()
+  const [addDialog, setAddDialog] = useState(false)
   return (
     <div className="relative flex items-center gap-3 m-3 hover:shadow-md rounded-xl border-3 border-black hover:bg-gray-100">
       <LinkDialog
@@ -23,11 +17,9 @@ export const LinkAdd = ({
         isOpen={addDialog}
         onClose={(link) => {
           if (link) {
-            dispatch(
-              addLinkData({ pageIndex: pageId, groupIndex: panelId, link })
-            );
+            dispatch(addLinkData({ pageIndex: pageId, groupIndex: panelId, link }))
           }
-          setAddDialog(false);
+          setAddDialog(false)
         }}
       />
       <span
@@ -38,5 +30,5 @@ export const LinkAdd = ({
         <span className="font-bold ms-3">Add Link</span>
       </span>
     </div>
-  );
-};
+  )
+}

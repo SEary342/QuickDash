@@ -1,9 +1,9 @@
-import { Dialog } from "../Dialog/Dialog";
+import { Dialog } from '../Dialog/Dialog'
 
 interface ConfirmDialogProps {
-  message: string;
-  isOpen: boolean;
-  onConfirm: (confirmed: boolean) => void;
+  message: string
+  isOpen: boolean
+  onConfirm: (confirmed: boolean) => void
 }
 
 export const ConfirmDialog = ({ message, isOpen, onConfirm }: ConfirmDialogProps) => {
@@ -16,5 +16,5 @@ export const ConfirmDialog = ({ message, isOpen, onConfirm }: ConfirmDialogProps
     >
       <p className="text-gray-700">{message}</p>
     </Dialog>
-  );
-};
+  )
+}

@@ -1,18 +1,18 @@
-import { mdiPlus } from "@mdi/js";
-import { getColorLookup } from "../types/colors";
-import IconBtn from "./IconBtn";
-import { useState } from "react";
-import PanelDialog from "./DashGroupDialog";
-import { LinkPage } from "../types/linkPage";
-import { LinkGroup } from "../types/linkGroup";
-import { useDispatch } from "react-redux";
-import { addLinkGroup } from "../store/store";
+import { mdiPlus } from '@mdi/js'
+import { getColorLookup } from '../types/colors'
+import IconBtn from './IconBtn'
+import { useState } from 'react'
+import PanelDialog from './DashGroupDialog'
+import { LinkPage } from '../types/linkPage'
+import { LinkGroup } from '../types/linkGroup'
+import { useDispatch } from 'react-redux'
+import { addLinkGroup } from '../store/store'
 
-const colorLookup = getColorLookup("unknown");
+const colorLookup = getColorLookup('unknown')
 
 export const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
-  const dispatch = useDispatch();
-  const [addGroup, setAddGroup] = useState(false);
+  const dispatch = useDispatch()
+  const [addGroup, setAddGroup] = useState(false)
   return (
     <div className="rounded-md flex flex-col border border-black m-3">
       <div
@@ -35,10 +35,10 @@ export const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
                 addLinkGroup({
                   pageIndex: pageId,
                   group: linkGroup,
-                })
-              );
+                }),
+              )
             }
-            setAddGroup(false);
+            setAddGroup(false)
           }}
           editMode={false}
           groupMode={true}
@@ -47,5 +47,5 @@ export const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
       </div>
       <div className="pb-4"></div>
     </div>
-  );
-};
+  )
+}
