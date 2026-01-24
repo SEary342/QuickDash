@@ -1,3 +1,11 @@
+/**
+ * Overview
+ * This file defines the AppBar React component, which serves as the
+ * top navigation header for the QuickDash application. It handles global
+ * application settings, configuration management (import/export), and
+ * layout adjustments.
+ *
+ */
 import { useState, useRef, useEffect } from 'react'
 import { mdiChevronDown, mdiCog, mdiExport, mdiImport, mdiMinus, mdiPlus } from '@mdi/js'
 import IconBtn from '../IconBtn'
@@ -8,15 +16,35 @@ import Icon from '@mdi/react'
 import FileImportDialog from '../FileImportDialog'
 import { LinkPage } from '../../types/linkPage'
 
+// Constants
 const colMax = 6
 const colMin = 1
 
+/**
+ * Extends Blob to support Internet Explorer 10+ to allow for local saves
+ * on user disk. MsSaveBlob is deprecated in most modern browsers (chrome,Firefox)
+ * it's not included in standard typescript. This allows to check for this option
+ * in the browser anyways for Internet Explorer. This is used later in the
+ * export config for saving to a user hardrive.
+ */
 declare global {
   interface Navigator {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     msSaveBlob?: (blob: any, defaultName?: string) => boolean
   }
 }
+
+/**
+ * The exportConfig function is a utility designed to serialize the
+ * application's current state (specifically the linkPages data) into
+ * a JSON file and trigger a download of that file to the user's
+ * local machine. It handles cross-browser compatibility, specifically
+ * bridging the gap between modern browsers and legacy Internet Explorer.
+ *
+ * @param exportFileName
+ * @param fileExtension
+ * @param exportData
+ */
 
 function exportConfig(exportFileName: string, fileExtension: string, exportData: LinkPage[]) {
   const jsonFile = JSON.stringify(exportData)
@@ -39,7 +67,11 @@ function exportConfig(exportFileName: string, fileExtension: string, exportData:
     }
   }
 }
-
+/**
+ * 
+ * @param param0 
+ * @returns 
+ */
 const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
   const dispatch = useDispatch()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -191,6 +223,13 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
           </div>
         </motion.div>
       )}
+      <FileImportDialog
+        isOpen={importOpen}
+        onClose={() => {
+          setImportOpen(false)
+          setIsDropdownOpen(false)
+        }}
+      />
     </div>
   )
 }
