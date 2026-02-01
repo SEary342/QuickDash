@@ -102,34 +102,11 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
 
   return (
     <div ref={appBarRef} className="relative flex flex-row items-center bg-slate-800 p-2 shadow-xl">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        version="1.1"
-        width="40"
-        height="40"
-        viewBox="0 0 200 200" // Icon size in top bar
-      >
-        {/** ----------------- Icon --------------------------------- */}
-        {/* background for the icon */}
-        <rect width="200" height="200" fill="#7f00ff" />
-        {/* foreground for the icon QD*/}
-        <ellipse cx="65" cy="100" rx="45" ry="50" fill="none" stroke="#ffffff" strokeWidth="15" />
-        <line
-          x1="65"
-          y1="100"
-          x2="100"
-          y2="140"
-          stroke="#ffffff"
-          strokeWidth="15"
-          strokeLinecap="round"
-        />
-        <path
-          d="M130,50 L130,150 Q160,150 170,125 Q180,100 170,75 Q160,50 130,50 Z"
-          fill="none"
-          stroke="#ffffff"
-          strokeWidth="15"
-        />
-      </svg>
+      <img
+        src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%237f00ff'/><text x='50' y='50' dy='.35em' font-family='sans-serif' font-weight='bold' font-size='50' fill='white' text-anchor='middle'>QD</text></svg>"
+        alt="QuickDash Logo"
+        className="w-12 h-12"
+      />
       {/* Title Banner */}
       <span className="ml-3 text-2xl font-bold text-white">QuickDash</span>
 
