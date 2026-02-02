@@ -1,11 +1,11 @@
 import { mdiPlus } from '@mdi/js'
 import Icon from '@mdi/react'
-import LinkDialog from './LinkDialog'
+import LinkDialog from '../LinkDialog'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { addLinkData } from '../store/store'
+import { addLinkData } from '../../store/store'
 
-export const LinkAdd = ({ pageId, panelId }: { pageId: number; panelId: number }) => {
+const LinkAdd = ({ pageId, panelId }: { pageId: number; panelId: number }) => {
   const dispatch = useDispatch()
   const [addDialog, setAddDialog] = useState(false)
   return (
@@ -33,3 +33,5 @@ export const LinkAdd = ({ pageId, panelId }: { pageId: number; panelId: number }
     </div>
   )
 }
+
+export default LinkAdd
