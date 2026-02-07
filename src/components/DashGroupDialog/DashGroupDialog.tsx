@@ -1,14 +1,16 @@
-import { LinkPage } from '../types/linkPage'
-import { Dialog } from './Dialog/Dialog'
-import { InputWithLabel } from './InputWithLabel/InputWithLabel'
 import { useMemo, useState } from 'react'
-import { SelectWithLabel } from './SelectWithLabel/SelectWithLabel'
-import { iconOptionsArray } from '../types/icons'
-import { colorOptionsArray } from '../types/colors'
 import { useSelector } from 'react-redux'
-import { RootState } from '../store/store'
-import { ConfirmDialog } from './ConfirmDialog/ConfirmDialog'
-import { LinkGroup } from '../types/linkGroup'
+
+import { RootState } from '@src/store/store'
+import { colorOptionsArray } from '@src/types/colors'
+import { iconOptionsArray } from '@src/types/icons'
+import { LinkGroup } from '@src/types/linkGroup'
+import { LinkPage } from '@src/types/linkPage'
+
+import ConfirmDialog from '@comp/ConfirmDialog'
+import Dialog from '@comp/Dialog'
+import InputWithLabel from '@comp/InputWithLabel'
+import SelectWithLabel from '@comp/SelectWithLabel'
 
 const defaultDash: () => LinkPage = () => ({ name: '', groupList: [] })
 const defaultGroup: () => LinkGroup = () => ({ name: '', linkList: [] })

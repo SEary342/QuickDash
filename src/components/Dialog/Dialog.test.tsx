@@ -1,6 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { Dialog } from './Dialog'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { vi } from 'vitest'
+
+import Dialog from './Dialog'
 
 describe('Dialog Component', () => {
   const mockOnClose = vi.fn()

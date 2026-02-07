@@ -1,4 +1,4 @@
-import { LinkPage } from '../types/linkPage'
+import { LinkPage } from '@src/types/linkPage'
 
 export const mockLinkPages: LinkPage[] = [
   {

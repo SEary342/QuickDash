@@ -1,9 +1,11 @@
 import { mdiPlus } from '@mdi/js'
 import Icon from '@mdi/react'
-import LinkDialog from '../LinkDialog'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { addLinkData } from '../../store/store'
+
+import { addLinkData } from '@src/store/store'
+
+import LinkDialog from '@comp/LinkDialog'
 
 const LinkAdd = ({ pageId, panelId }: { pageId: number; panelId: number }) => {
   const dispatch = useDispatch()

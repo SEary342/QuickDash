@@ -1,4 +1,4 @@
-export interface colorStruct {
+interface colorStruct {
   name: string
   background: string
   hoverColor: string

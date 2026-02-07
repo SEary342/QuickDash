@@ -1,13 +1,20 @@
 /// <reference types="vitest/config" />
+import { resolve } from 'path'
 
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import { viteSingleFile } from 'vite-plugin-singlefile'
 import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react-swc'
+import { defineConfig } from 'vite'
+import { viteSingleFile } from 'vite-plugin-singlefile'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(), viteSingleFile()],
+  resolve: {
+    alias: {
+      '@src': resolve(__dirname, './src'),
+      '@comp': resolve(__dirname, './src/components'),
+    },
+  },
   define: {
     'process.env': {},
     'import.meta.env.APP_VERSION': JSON.stringify(process.env.npm_package_version),

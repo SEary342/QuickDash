@@ -1,25 +1,27 @@
-import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { LinkData } from '@src/types/linkData'
+import { LinkGroup } from '@src/types/linkGroup'
+import { LinkPage } from '@src/types/linkPage'
+
 import store, {
-  setSelectedDash,
-  setNumberOfColumns,
-  setFontSize,
-  addLinkPage,
-  overwriteConfig,
-  updateLinkPage,
-  deleteLinkPage,
-  reorderLinkPages,
-  addLinkGroup,
-  updateLinkGroup,
-  deleteLinkGroup,
-  reorderLinkGroups,
   addLinkData,
-  updateLinkData,
+  addLinkGroup,
+  addLinkPage,
   deleteLinkData,
+  deleteLinkGroup,
+  deleteLinkPage,
+  overwriteConfig,
   reorderLinkData,
+  reorderLinkGroups,
+  reorderLinkPages,
+  setFontSize,
+  setNumberOfColumns,
+  setSelectedDash,
+  updateLinkData,
+  updateLinkGroup,
+  updateLinkPage,
 } from './store'
-import { LinkPage } from '../types/linkPage'
-import { LinkGroup } from '../types/linkGroup'
-import { LinkData } from '../types/linkData'
 
 // Mock localStorage directly before the store is initialized
 beforeAll(() => {
@@ -164,16 +166,12 @@ describe('Redux Store', () => {
 
     // Update Link Data
     const updatedLink: LinkData = { ...link, text: 'Updated Link' }
-    store.dispatch(
-      updateLinkData({ pageIndex: 0, groupIndex: 0, linkIndex: 0, link: updatedLink }),
-    )
+    store.dispatch(updateLinkData({ pageIndex: 0, groupIndex: 0, linkIndex: 0, link: updatedLink }))
     expect(store.getState().linkPages[0].groupList[0].linkList[0]).toEqual(updatedLink)
 
     // Add another link for reordering
     store.dispatch(addLinkData({ pageIndex: 0, groupIndex: 0, link }))
-    store.dispatch(
-      reorderLinkData({ pageIndex: 0, groupIndex: 0, fromIndex: 0, toIndex: 1 }),
-    )
+    store.dispatch(reorderLinkData({ pageIndex: 0, groupIndex: 0, fromIndex: 0, toIndex: 1 }))
     expect(store.getState().linkPages[0].groupList[0].linkList[0].text).toBe('Link 1')
     expect(store.getState().linkPages[0].groupList[0].linkList[1].text).toBe('Updated Link')
 

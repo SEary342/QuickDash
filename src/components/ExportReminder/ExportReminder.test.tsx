@@ -1,8 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import ExportReminder from './ExportReminder'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { useSelector } from 'react-redux'
-import { exportConfig } from '../ExportUtils/exportUtils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { exportConfig } from '@comp/ExportUtils'
+
+import ExportReminder from './ExportReminder'
 
 // Mock Redux hooks
 vi.mock('react-redux', () => ({
@@ -10,7 +12,7 @@ vi.mock('react-redux', () => ({
 }))
 
 // Mock export utility
-vi.mock('../ExportUtils/exportUtils', () => ({
+vi.mock('@comp/ExportUtils', () => ({
   exportConfig: vi.fn(),
 }))
 

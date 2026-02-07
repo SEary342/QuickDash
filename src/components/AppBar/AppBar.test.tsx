@@ -1,7 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { mockLinkPages } from '@src/tests/MockData'
+
 import AppBar from './AppBar'
-import { mockLinkPages } from '../../tests/MockData'
 
 // Mock Redux hooks
 vi.mock('react-redux', () => ({
@@ -10,7 +12,7 @@ vi.mock('react-redux', () => ({
 }))
 
 // Mock ExportReminder to avoid store access
-vi.mock('../ExportReminder/ExportReminder', () => ({
+vi.mock('@comp/ExportReminder', () => ({
   default: () => null,
 }))
 

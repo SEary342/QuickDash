@@ -1,14 +1,16 @@
-import { useState, useMemo } from 'react'
-import { Dialog } from './Dialog/Dialog'
-import { InputWithLabel } from './InputWithLabel/InputWithLabel'
-import { SelectWithLabel } from './SelectWithLabel/SelectWithLabel'
-import { ConfirmDialog } from './ConfirmDialog/ConfirmDialog'
-import { iconOptionsArray } from '../types/icons'
-import { colorOptionsArray } from '../types/colors'
-import Link from './Link/Link'
-import { LinkData } from '../types/linkData'
-import { RootState } from '../store/store'
+import { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+
+import { RootState } from '@src/store/store'
+import { colorOptionsArray } from '@src/types/colors'
+import { iconOptionsArray } from '@src/types/icons'
+import { LinkData } from '@src/types/linkData'
+
+import ConfirmDialog from '@comp/ConfirmDialog'
+import Dialog from '@comp/Dialog'
+import InputWithLabel from '@comp/InputWithLabel'
+import Link from '@comp/Link'
+import SelectWithLabel from '@comp/SelectWithLabel'
 
 const validUrl = (v: string) => {
   let url

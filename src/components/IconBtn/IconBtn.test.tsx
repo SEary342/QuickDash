@@ -1,11 +1,13 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { mdiMinus, mdiPlus } from '@mdi/js'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { TooltipProps } from '@comp/Tooltip'
+
 import IconBtn from './IconBtn'
-import { mdiPlus, mdiMinus } from '@mdi/js'
-import { TooltipProps } from '../Tooltip/Tooltip'
 
 // Mock Tooltip to isolate IconBtn testing
-vi.mock('../Tooltip/Tooltip', () => ({
+vi.mock('@comp/Tooltip', () => ({
   default: ({ children, text, position, disabled }: TooltipProps) => (
     <div
       data-testid="tooltip-mock"

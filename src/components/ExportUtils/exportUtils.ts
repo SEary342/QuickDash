@@ -1,4 +1,4 @@
-import { LinkPage } from '../../types/linkPage'
+import { LinkPage } from '@src/types/linkPage'
 
 /**
  * Extends Blob to support Internet Explorer 10+ to allow for local saves

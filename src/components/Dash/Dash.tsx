@@ -3,20 +3,21 @@
  * It is responsible for rendering the currently selected dashboard page,
  * managing the layout of link groups across columns, and handling page navigation (tabs).
  */
-import { LinkPage } from '../types/linkPage'
-import IconBtn from './IconBtn/IconBtn'
 import { mdiPlus } from '@mdi/js'
+import { AnimatePresence, motion } from 'motion/react'
 import { useLayoutEffect, useRef, useState } from 'react'
-import LinkPanel from './LinkPanel'
-import { LinkGroup } from '../types/linkGroup'
-import { motion, AnimatePresence } from 'motion/react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addLinkPage, deleteLinkPage, RootState, setSelectedDash } from '../store/store'
 
-import PanelDialog from './DashGroupDialog'
-import TabBtn from './TabBtn'
-import { LinkPanelAdd } from './LinkPanelAdd'
-import QuickDashWelcome from './QuickDashWelcome/QuickDashWelcome'
+import { RootState, addLinkPage, deleteLinkPage, setSelectedDash } from '@src/store/store'
+import { LinkGroup } from '@src/types/linkGroup'
+import { LinkPage } from '@src/types/linkPage'
+
+import PanelDialog from '@comp/DashGroupDialog'
+import IconBtn from '@comp/IconBtn'
+import LinkPanel from '@comp/LinkPanel'
+import LinkPanelAdd from '@comp/LinkPanelAdd'
+import QuickDashWelcome from '@comp/QuickDashWelcome'
+import TabBtn from '@comp/TabBtn'
 
 /**
  * Column Layout & Balancing

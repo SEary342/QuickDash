@@ -1,4 +1,4 @@
-import { Dialog } from '../Dialog/Dialog'
+import Dialog from '@comp/Dialog'
 
 interface ConfirmDialogProps {
   message: string
@@ -6,7 +6,7 @@ interface ConfirmDialogProps {
   onConfirm: (confirmed: boolean) => void
 }
 
-export const ConfirmDialog = ({ message, isOpen, onConfirm }: ConfirmDialogProps) => {
+const ConfirmDialog = ({ message, isOpen, onConfirm }: ConfirmDialogProps) => {
   return (
     <Dialog
       title="Confirmation"
@@ -18,3 +18,5 @@ export const ConfirmDialog = ({ message, isOpen, onConfirm }: ConfirmDialogProps
     </Dialog>
   )
 }
+
+export default ConfirmDialog

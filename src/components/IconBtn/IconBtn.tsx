@@ -1,5 +1,6 @@
 import { Icon } from '@mdi/react'
-import Tooltip from '../Tooltip/Tooltip'
+
+import Tooltip from '@comp/Tooltip'
 
 const IconBtn = ({
   className = '',

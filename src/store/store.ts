@@ -1,7 +1,8 @@
-import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { LinkPage } from '../types/linkPage'
-import { LinkGroup } from '../types/linkGroup'
-import { LinkData } from '../types/linkData'
+import { PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit'
+
+import { LinkData } from '@src/types/linkData'
+import { LinkGroup } from '@src/types/linkGroup'
+import { LinkPage } from '@src/types/linkPage'
 
 // Local Storage Key
 const LOCAL_STORAGE_KEY = 'app'

@@ -1,8 +1,9 @@
-import './App.css'
-import Dash from './components/Dash'
-import AppBar from './components/AppBar/AppBar'
 import { useSelector } from 'react-redux'
-import { RootState } from './store/store'
+
+import { RootState } from '@src/store/store'
+
+import AppBar from '@comp/AppBar'
+import Dash from '@comp/Dash'
 
 function App() {
   const linkPages = useSelector((state: RootState) => state.linkPages)

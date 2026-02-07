@@ -1,7 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { addLinkData } from '@src/store/store'
+
 import LinkAdd from './LinkAdd'
-import { addLinkData } from '../../store/store'
 
 // Mock react-redux
 const mockDispatch = vi.fn()
@@ -10,7 +12,7 @@ vi.mock('react-redux', () => ({
 }))
 
 // Mock LinkDialog
-vi.mock('../LinkDialog', () => ({
+vi.mock('@comp/LinkDialog', () => ({
   default: ({
     isOpen,
     onClose,
@@ -20,11 +22,7 @@ vi.mock('../LinkDialog', () => ({
   }) =>
     isOpen ? (
       <div data-testid="mock-link-dialog">
-        <button
-          onClick={() =>
-            onClose({ text: 'Test Link', url: 'https://test.com' })
-          }
-        >
+        <button onClick={() => onClose({ text: 'Test Link', url: 'https://test.com' })}>
           Save
         </button>
         <button onClick={() => onClose()}>Cancel</button>
@@ -33,7 +31,7 @@ vi.mock('../LinkDialog', () => ({
 }))
 
 // Mock store actions
-vi.mock('../../store/store', () => ({
+vi.mock('@src/store/store', () => ({
   addLinkData: vi.fn(() => ({ type: 'addLinkData' })),
 }))
 

@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, fireEvent, cleanup } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+
+import * as storeActions from '@src/store/store'
+import { LinkData } from '@src/types/linkData'
+
 import Link from './Link'
-import { LinkData } from '../../types/linkData'
-import * as storeActions from '../../store/store'
 
 // Mock dependencies
 const dispatchMock = vi.fn()
@@ -11,13 +13,13 @@ vi.mock('react-redux', () => ({
   useDispatch: () => dispatchMock,
 }))
 
-vi.mock('../../store/store', () => ({
+vi.mock('@src/store/store', () => ({
   deleteLinkData: vi.fn(),
   reorderLinkData: vi.fn(),
   updateLinkData: vi.fn(),
 }))
 
-vi.mock('../../types/colors', () => ({
+vi.mock('@src/types/colors', () => ({
   getColorLookup: () => ({
     text: 'text-class',
     background: 'bg-class',
@@ -27,13 +29,13 @@ vi.mock('../../types/colors', () => ({
   }),
 }))
 
-vi.mock('../../types/icons', () => ({
+vi.mock('@src/types/icons', () => ({
   iconTranslation: {
     'test-icon': 'path-data',
   },
 }))
 
-vi.mock('../IconBtn/IconBtn', () => ({
+vi.mock('@comp/IconBtn', () => ({
   default: ({ onClick, tooltipText }: any) => (
     <button onClick={onClick} data-testid={`icon-btn-${tooltipText}`}>
       {tooltipText}
@@ -41,7 +43,7 @@ vi.mock('../IconBtn/IconBtn', () => ({
   ),
 }))
 
-vi.mock('../LinkDialog', () => ({
+vi.mock('@comp/LinkDialog', () => ({
   default: ({ isOpen, onClose }: any) =>
     isOpen ? (
       <div data-testid="link-dialog">
@@ -58,7 +60,7 @@ vi.mock('../LinkDialog', () => ({
     ) : null,
 }))
 
-vi.mock('../Tooltip/Tooltip', () => ({
+vi.mock('@comp/Tooltip', () => ({
   default: ({ children, text }: any) => (
     <div data-testid="tooltip" title={text}>
       {children}

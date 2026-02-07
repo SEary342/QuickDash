@@ -1,6 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { LinkPage } from '@src/types/linkPage'
+
 import { exportConfig } from './exportUtils'
-import { LinkPage } from '../../types/linkPage'
 
 describe('exportConfig', () => {
   const mockData: LinkPage[] = [

@@ -6,17 +6,19 @@
  * layout adjustments.
  *
  */
-import { useState, useRef, useEffect } from 'react'
 import { mdiChevronDown, mdiCog, mdiExport, mdiImport, mdiMinus, mdiPlus } from '@mdi/js'
-import IconBtn from '../IconBtn/IconBtn'
-import { motion } from 'motion/react'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState, setFontSize, setNumberOfColumns } from '../../store/store'
 import Icon from '@mdi/react'
-import FileImportDialog from '../FileImportDialog'
-import { LinkPage } from '../../types/linkPage'
-import { exportConfig } from '../ExportUtils/exportUtils'
-import ExportReminder from '../ExportReminder/ExportReminder'
+import { motion } from 'motion/react'
+import { useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { RootState, setFontSize, setNumberOfColumns } from '@src/store/store'
+import { LinkPage } from '@src/types/linkPage'
+
+import ExportReminder from '@comp/ExportReminder'
+import { exportConfig } from '@comp/ExportUtils'
+import FileImportDialog from '@comp/FileImportDialog'
+import IconBtn from '@comp/IconBtn'
 
 // Constants used by the settings bar to constrain increase / decrease column feature
 const colMax = 6

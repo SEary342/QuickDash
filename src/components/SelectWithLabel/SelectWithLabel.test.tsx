@@ -1,17 +1,18 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { SelectWithLabel } from './SelectWithLabel'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import SelectWithLabel from './SelectWithLabel'
 
 // Mock dependencies
 vi.mock('@mdi/react', () => ({
   default: ({ path }: { path: string }) => <svg data-testid="icon">{path}</svg>,
 }))
-vi.mock('../types/colors', () => ({
+vi.mock('@src/types/colors', () => ({
   getColorLookup: (value: string) => ({
     background: `bg-${value}`,
   }),
 }))
-vi.mock('../types/icons', () => ({
+vi.mock('@src/types/icons', () => ({
   iconTranslation: {
     apple: 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z',
   },

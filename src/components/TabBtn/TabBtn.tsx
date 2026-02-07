@@ -1,15 +1,17 @@
-import Icon from '@mdi/react'
-import { LinkPage } from '../types/linkPage'
-import { iconTranslation } from '../types/icons'
-import { getColorLookup } from '../types/colors'
-import IconBtn from './IconBtn/IconBtn'
 import { mdiChevronLeft, mdiChevronRight, mdiPencil, mdiPlaylistEdit } from '@mdi/js'
+import Icon from '@mdi/react'
+import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
 import { useDispatch } from 'react-redux'
-import { reorderLinkPages, updateLinkPage } from '../store/store'
-import PanelDialog from './DashGroupDialog'
-import { LinkGroup } from '../types/linkGroup'
+
+import { reorderLinkPages, updateLinkPage } from '@src/store/store'
+import { getColorLookup } from '@src/types/colors'
+import { iconTranslation } from '@src/types/icons'
+import { LinkGroup } from '@src/types/linkGroup'
+import { LinkPage } from '@src/types/linkPage'
+
+import PanelDialog from '@comp/DashGroupDialog'
+import IconBtn from '@comp/IconBtn/IconBtn'
 
 const TabBtn = ({
   id,

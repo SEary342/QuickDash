@@ -1,8 +1,9 @@
 import { mdiChevronDown } from '@mdi/js'
 import Icon from '@mdi/react'
 import { useState } from 'react'
-import { getColorLookup } from '../../types/colors'
-import { iconTranslation } from '../../types/icons'
+
+import { getColorLookup } from '@src/types/colors'
+import { iconTranslation } from '@src/types/icons'
 
 type SelectOption = {
   value: string
@@ -79,4 +80,4 @@ const SelectWithLabel = ({
   )
 }
 
-export { SelectWithLabel }
+export default SelectWithLabel

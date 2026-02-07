@@ -1,10 +1,12 @@
+import { mdiAlertCircleOutline, mdiClose, mdiExport } from '@mdi/js'
+import Icon from '@mdi/react'
 import Cookies from 'js-cookie'
 import { useState } from 'react'
-import { mdiExport, mdiClose, mdiAlertCircleOutline } from '@mdi/js'
-import Icon from '@mdi/react'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store/store'
-import { exportConfig } from '../ExportUtils/exportUtils'
+
+import { RootState } from '@src/store/store'
+
+import { exportConfig } from '@comp/ExportUtils'
 
 const ExportReminder = () => {
   const linkPages = useSelector((state: RootState) => state.linkPages)

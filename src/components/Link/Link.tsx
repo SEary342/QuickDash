@@ -1,15 +1,17 @@
 import { mdiChevronDown, mdiChevronUp, mdiLink, mdiPencil } from '@mdi/js'
-import { getColorLookup } from '../../types/colors'
-import { iconTranslation } from '../../types/icons'
-import { LinkData } from '../../types/linkData'
 import Icon from '@mdi/react'
-import IconBtn from '../IconBtn/IconBtn'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { deleteLinkData, reorderLinkData, updateLinkData } from '../../store/store'
-import LinkDialog from '../LinkDialog'
-import Tooltip from '../Tooltip/Tooltip'
+
+import { deleteLinkData, reorderLinkData, updateLinkData } from '@src/store/store'
+import { getColorLookup } from '@src/types/colors'
+import { iconTranslation } from '@src/types/icons'
+import { LinkData } from '@src/types/linkData'
+
+import IconBtn from '@comp/IconBtn'
+import LinkDialog from '@comp/LinkDialog'
+import Tooltip from '@comp/Tooltip'
 
 const Link = ({
   pageId,

@@ -53,4 +53,4 @@ const InputWithLabel = ({
   )
 }
 
-export { InputWithLabel }
+export default InputWithLabel

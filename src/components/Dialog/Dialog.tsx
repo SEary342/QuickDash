@@ -12,7 +12,7 @@ interface DialogProps {
   actionButton?: { text: string; color: string; action: () => void }
 }
 
-export const Dialog = ({
+const Dialog = ({
   title,
   children,
   isOpen = false,
@@ -82,3 +82,5 @@ export const Dialog = ({
     </AnimatePresence>
   )
 }
+
+export default Dialog

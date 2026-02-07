@@ -1,16 +1,18 @@
 import { mdiPlus } from '@mdi/js'
-import { getColorLookup } from '../types/colors'
-import IconBtn from './IconBtn/IconBtn'
 import { useState } from 'react'
-import PanelDialog from './DashGroupDialog'
-import { LinkPage } from '../types/linkPage'
-import { LinkGroup } from '../types/linkGroup'
 import { useDispatch } from 'react-redux'
-import { addLinkGroup } from '../store/store'
+
+import { addLinkGroup } from '@src/store/store'
+import { getColorLookup } from '@src/types/colors'
+import { LinkGroup } from '@src/types/linkGroup'
+import { LinkPage } from '@src/types/linkPage'
+
+import PanelDialog from '@comp/DashGroupDialog'
+import IconBtn from '@comp/IconBtn'
 
 const colorLookup = getColorLookup('unknown')
 
-export const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
+const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
   const dispatch = useDispatch()
   const [addGroup, setAddGroup] = useState(false)
   return (
@@ -50,3 +52,5 @@ export const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
     </div>
   )
 }
+
+export default LinkPanelAdd

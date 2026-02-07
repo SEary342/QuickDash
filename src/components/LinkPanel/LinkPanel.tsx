@@ -1,6 +1,3 @@
-import Icon from '@mdi/react'
-import { LinkGroup } from '../types/linkGroup'
-import IconBtn from './IconBtn/IconBtn'
 import {
   mdiChevronDown,
   mdiChevronUp,
@@ -8,16 +5,21 @@ import {
   mdiPencil,
   mdiPlaylistEdit,
 } from '@mdi/js'
+import Icon from '@mdi/react'
+import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
-import { getColorLookup } from '../types/colors'
-import Link from './Link/Link'
-import { iconTranslation } from '../types/icons'
 import { useDispatch } from 'react-redux'
-import { deleteLinkGroup, reorderLinkGroups, updateLinkGroup } from '../store/store'
-import PanelDialog from './DashGroupDialog'
-import { LinkPage } from '../types/linkPage'
-import { LinkAdd } from './LinkAdd'
+
+import { deleteLinkGroup, reorderLinkGroups, updateLinkGroup } from '@src/store/store'
+import { getColorLookup } from '@src/types/colors'
+import { iconTranslation } from '@src/types/icons'
+import { LinkGroup } from '@src/types/linkGroup'
+import { LinkPage } from '@src/types/linkPage'
+
+import PanelDialog from '@comp/DashGroupDialog'
+import IconBtn from '@comp/IconBtn'
+import Link from '@comp/Link'
+import LinkAdd from '@comp/LinkAdd'
 
 const LinkPanel = ({
   pageId,
