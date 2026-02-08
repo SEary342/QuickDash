@@ -1,23 +1,27 @@
-import { LinkPage } from '../types/linkPage'
-import { Dialog } from './Dialog/Dialog'
-import { InputWithLabel } from './InputWithLabel/InputWithLabel'
-import { useEffect, useMemo, useState } from 'react'
-import { SelectWithLabel } from './SelectWithLabel/SelectWithLabel'
-import { iconOptionsArray } from '../types/icons'
-import { colorOptionsArray } from '../types/colors'
+import { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { RootState } from '../store/store'
-import { ConfirmDialog } from './ConfirmDialog/ConfirmDialog'
-import { LinkGroup } from '../types/linkGroup'
+
+import { RootState } from '@src/store/store'
+import { colorOptionsArray } from '@src/types/colors'
+import { iconOptionsArray } from '@src/types/icons'
+import { LinkGroup } from '@src/types/linkGroup'
+import { LinkPage } from '@src/types/linkPage'
+
+import ConfirmDialog from '@comp/ConfirmDialog'
+import Dialog from '@comp/Dialog'
+import InputWithLabel from '@comp/InputWithLabel'
+import SelectWithLabel from '@comp/SelectWithLabel'
 
 const defaultDash: () => LinkPage = () => ({ name: '', groupList: [] })
 const defaultGroup: () => LinkGroup = () => ({ name: '', linkList: [] })
+
 const colorSelect = colorOptionsArray.map(({ title, label }) => ({
   value: label,
   label: title,
   color: true,
   icon: false,
 }))
+
 const iconSelect = iconOptionsArray.map(({ title, value }) => ({
   value,
   label: title,
@@ -43,11 +47,15 @@ const PanelDialog = ({
   onClose: (linkPage?: LinkPage, linkGroup?: LinkGroup, remove?: boolean) => void
 }) => {
   const dialogName = groupMode ? 'Group' : 'Dash'
-  const initialState = groupMode ? linkGroup : linkPage
+  const initialData = groupMode ? linkGroup : linkPage
+
+  const [formData, setFormData] = useState({
+    name: initialData.name || '',
+    color: initialData.color || '',
+    icon: initialData.icon || '',
+  })
+
   const [confirmOpen, setConfirmOpen] = useState(false)
-  const [name, setName] = useState(initialState.name)
-  const [color, setColor] = useState(initialState.color)
-  const [icon, setIcon] = useState(initialState.icon)
   const linkPages = useSelector((state: RootState) => state.linkPages)
 
   const existingNames = useMemo(() => {
@@ -66,50 +74,39 @@ const PanelDialog = ({
         }
       })
     }
-
     return names
   }, [linkPages, pageId, linkGroup.name, linkPage.name])
 
-  const isDuplicate = existingNames.includes(name.trim().toLowerCase())
-  const nameExists = name.trim().length > 0
+  const isDuplicate = existingNames.includes(formData.name.trim().toLowerCase())
+  const nameExists = formData.name.trim().length > 0
   const hasChanged =
-    name != initialState.name || color != initialState.color || icon != initialState.icon
-
-  const title = editMode ? `Edit ${dialogName}` : `Add ${dialogName}`
-
-  useEffect(() => {
-    if (!isOpen && !editMode) {
-      const reset = groupMode ? defaultGroup() : defaultDash()
-      setName(reset.name)
-      setColor(reset.color)
-      setIcon(reset.icon)
-    }
-  }, [isOpen, editMode, groupMode])
+    formData.name !== initialData.name ||
+    formData.color !== initialData.color ||
+    formData.icon !== initialData.icon
 
   const handleClose = (confirm: boolean) => {
     if (!confirm) return onClose(undefined)
-    setName(name.trim())
+
+    // Pass back updated objects with the new form values
     onClose(
-      groupMode ? linkPage : { ...linkPage, name, color, icon },
-      groupMode ? { ...linkGroup, name, color, icon } : linkGroup,
+      groupMode ? linkPage : { ...linkPage, ...formData, name: formData.name.trim() },
+      groupMode ? { ...linkGroup, ...formData, name: formData.name.trim() } : linkGroup,
       false,
     )
   }
 
   return (
     <Dialog
-      title={title}
+      title={editMode ? `Edit ${dialogName}` : `Add ${dialogName}`}
       isOpen={isOpen}
       onClose={handleClose}
       disableConfirm={!nameExists || isDuplicate || (editMode && !hasChanged)}
       actionButton={
         editMode
           ? {
-              action: () => {
-                setConfirmOpen(true)
-              },
+              action: () => setConfirmOpen(true),
               text: 'Delete',
-              color: 'bg-red-600 hover:bg-red-700 text-white',
+              color: 'bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white',
             }
           : undefined
       }
@@ -126,9 +123,9 @@ const PanelDialog = ({
       />
       <InputWithLabel
         id="dashGroupName"
-        value={name}
+        value={formData.name}
         type="text"
-        onInputChange={(e) => setName(e.target.value)}
+        onInputChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
         className="my-2"
         hasError={isDuplicate}
       >
@@ -136,18 +133,18 @@ const PanelDialog = ({
       </InputWithLabel>
       <SelectWithLabel
         id="color"
-        value={color}
+        value={formData.color}
         options={colorSelect}
-        onChange={(val) => setColor(val)}
+        onChange={(val) => setFormData((prev) => ({ ...prev, color: val }))}
         className="my-2"
       >
         Color
       </SelectWithLabel>
       <SelectWithLabel
         id="icon"
-        value={icon}
+        value={formData.icon}
         options={iconSelect}
-        onChange={(val) => setIcon(val)}
+        onChange={(val) => setFormData((prev) => ({ ...prev, icon: val }))}
         className="my-2"
       >
         Icon

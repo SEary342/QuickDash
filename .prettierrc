@@ -4,5 +4,17 @@
   "trailingComma": "all",
   "printWidth": 100,
   "tabWidth": 2,
-  "endOfLine": "auto"
+  "endOfLine": "auto",
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^(node:)?(path|fs|os|crypto|stream|util|events|buffer|assert)$",
+    "<THIRD_PARTY_MODULES>",
+    "^@src",
+    "^@comp",
+    "^\\.\\./",
+    "^\\./",
+    "^\\."
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

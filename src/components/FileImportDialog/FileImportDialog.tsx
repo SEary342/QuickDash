@@ -1,11 +1,13 @@
-import { useState, ChangeEventHandler, DragEventHandler } from 'react'
-import { Dialog } from './Dialog/Dialog'
-import { LinkPage } from '../types/linkPage'
-import { LinkGroup } from '../types/linkGroup'
-import { LinkData } from '../types/linkData'
-import { colorConversions } from '../types/colors'
+import { ChangeEventHandler, DragEventHandler, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { setSelectedDash, overwriteConfig, setNumberOfColumns } from '../store/store'
+
+import { overwriteConfig, setNumberOfColumns, setSelectedDash } from '@src/store/store'
+import { colorConversions } from '@src/types/colors'
+import { LinkData } from '@src/types/linkData'
+import { LinkGroup } from '@src/types/linkGroup'
+import { LinkPage } from '@src/types/linkPage'
+
+import Dialog from '@comp/Dialog'
 
 interface FileImportDialogProps {
   isOpen: boolean
@@ -102,6 +104,7 @@ const FileImportDialog = ({ isOpen, onClose }: FileImportDialogProps) => {
               linkList.push({
                 text: lnk['text'],
                 url: lnk['url'],
+                description: lnk['description'] ?? undefined,
                 color: linkColor,
                 outline: outline,
                 icon: lnk['icon'],

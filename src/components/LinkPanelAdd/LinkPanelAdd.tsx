@@ -1,20 +1,22 @@
 import { mdiPlus } from '@mdi/js'
-import { getColorLookup } from '../types/colors'
-import IconBtn from './IconBtn'
 import { useState } from 'react'
-import PanelDialog from './DashGroupDialog'
-import { LinkPage } from '../types/linkPage'
-import { LinkGroup } from '../types/linkGroup'
 import { useDispatch } from 'react-redux'
-import { addLinkGroup } from '../store/store'
+
+import { addLinkGroup } from '@src/store/store'
+import { getColorLookup } from '@src/types/colors'
+import { LinkGroup } from '@src/types/linkGroup'
+import { LinkPage } from '@src/types/linkPage'
+
+import PanelDialog from '@comp/DashGroupDialog'
+import IconBtn from '@comp/IconBtn'
 
 const colorLookup = getColorLookup('unknown')
 
-export const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
+const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
   const dispatch = useDispatch()
   const [addGroup, setAddGroup] = useState(false)
   return (
-    <div className="rounded-md flex flex-col border border-black m-3">
+    <div className="rounded-md flex flex-col border border-black dark:border-gray-600 m-3 bg-white dark:bg-gray-800">
       <div
         className={`flex flex-row w-full ${colorLookup.text} rounded-t-md px-3 py-3 items-center font-bold ${colorLookup.background}`}
       >
@@ -23,11 +25,12 @@ export const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
           path={mdiPlus}
           size={0.8}
           tooltipText="Add Group"
-          color=""
-          className={`border-2 border-black ml-auto ${colorLookup.hoverColor}`}
+          color={colorLookup.text}
+          className={`border-2 border-black dark:border-gray-400 ml-auto ${colorLookup.hoverColor}`}
           onClick={() => setAddGroup(true)}
         />
         <PanelDialog
+          key={addGroup ? 'open' : 'closed'}
           isOpen={addGroup}
           onClose={(_?: LinkPage, linkGroup?: LinkGroup) => {
             if (linkGroup) {
@@ -49,3 +52,5 @@ export const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
     </div>
   )
 }
+
+export default LinkPanelAdd

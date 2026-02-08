@@ -1,0 +1,11 @@
+# Ignore entire directories
+build/
+coverage/
+node_modules/
+docs/
+backend/
+.github/
+.venv/
+
+# Ignore specific files
+package-lock.json

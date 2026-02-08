@@ -1,4 +1,4 @@
-export interface colorStruct {
+interface colorStruct {
   name: string
   background: string
   hoverColor: string
@@ -132,13 +132,13 @@ const colorMap: { [key: string]: colorStruct } = {
   },
   white: {
     name: 'White',
-    background: 'bg-white',
-    hoverColor: 'hover:bg-gray-100',
-    border: 'border-black',
-    outlineBorder: 'border-white',
-    text: 'text-black',
-    outlineText: 'text-white',
-    focus: 'focus:outline-black',
+    background: 'bg-white dark:bg-gray-700',
+    hoverColor: 'hover:bg-gray-100 dark:hover:bg-gray-600',
+    border: 'border-black dark:border-gray-400',
+    outlineBorder: 'border-white dark:border-gray-500',
+    text: 'text-black dark:text-white',
+    outlineText: 'text-white dark:text-gray-200',
+    focus: 'focus:outline-black dark:focus:outline-white',
   },
   black: {
     name: 'Black',
@@ -172,13 +172,13 @@ const colorMap: { [key: string]: colorStruct } = {
   },
   unknown: {
     name: 'Unknown',
-    background: 'bg-gray-200',
-    hoverColor: 'hover:bg-gray-300',
-    border: 'border-black',
-    outlineBorder: 'border-black',
-    text: 'text-black',
-    outlineText: 'text-black',
-    focus: 'focus:outline-black',
+    background: 'bg-gray-200 dark:bg-gray-600',
+    hoverColor: 'hover:bg-gray-300 dark:hover:bg-gray-500',
+    border: 'border-black dark:border-gray-400',
+    outlineBorder: 'border-black dark:border-gray-400',
+    text: 'text-black dark:text-white',
+    outlineText: 'text-black dark:text-white',
+    focus: 'focus:outline-black dark:focus:outline-white',
   },
 }
 

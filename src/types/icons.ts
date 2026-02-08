@@ -6,7 +6,7 @@ const toCamelCase = (kebab: string): string =>
     .map((word, index) => (index === 0 ? word : word[0].toUpperCase() + word.slice(1)))
     .join('')
 
-export const iconOptions: Record<string, string> = {
+const iconOptions: Record<string, string> = {
   'Death Star': 'mdi-death-star',
   Account: 'mdi-account',
   Chip: 'mdi-chip',

@@ -1,16 +1,13 @@
-import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { LinkPage } from '../types/linkPage'
-import { LinkGroup } from '../types/linkGroup'
-import { LinkData } from '../types/linkData'
+import { PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit'
+
+import { LinkData } from '@src/types/linkData'
+import { LinkGroup } from '@src/types/linkGroup'
+import { LinkPage } from '@src/types/linkPage'
 
 // Local Storage Key
 const LOCAL_STORAGE_KEY = 'app'
 // Load State from Local Storage
-const loadState = (): {
-  selectedDash: string
-  linkPages: LinkPage[]
-  numberOfColumns: number
-} => {
+const loadState = () => {
   try {
     const storedState = localStorage.getItem(LOCAL_STORAGE_KEY)
     if (storedState) {
@@ -19,12 +16,14 @@ const loadState = (): {
         selectedDash: parsedState.selectedDash || '',
         linkPages: parsedState.quickDashConfig || [],
         numberOfColumns: parsedState.numberOfColumns ?? 3,
+        fontSize: parsedState.fontSize ?? 16,
+        darkMode: parsedState.darkMode ?? false,
       }
     }
   } catch (error) {
     console.error('Error loading state from localStorage:', error)
   }
-  return { selectedDash: '', linkPages: [], numberOfColumns: 3 }
+  return { selectedDash: '', linkPages: [], numberOfColumns: 3, fontSize: 16, darkMode: false }
 }
 
 // Initial state
@@ -36,6 +35,8 @@ const appSlice = createSlice({
   initialState: {
     selectedDash: initialState.selectedDash,
     numberOfColumns: initialState.numberOfColumns,
+    fontSize: initialState.fontSize,
+    darkMode: initialState.darkMode,
   },
   reducers: {
     setSelectedDash(state, action: PayloadAction<string>) {
@@ -44,13 +45,19 @@ const appSlice = createSlice({
     setNumberOfColumns(state, action: PayloadAction<number>) {
       state.numberOfColumns = action.payload
     },
+    setFontSize(state, action: PayloadAction<number>) {
+      state.fontSize = action.payload
+    },
+    setDarkMode(state, action: PayloadAction<boolean>) {
+      state.darkMode = action.payload
+    },
   },
 })
 
 // Slice for managing link pages
 const linkPageSlice = createSlice({
   name: 'linkPages',
-  initialState: initialState.linkPages,
+  initialState: initialState.linkPages as LinkPage[],
   reducers: {
     overwriteConfig(state, action: PayloadAction<LinkPage[]>) {
       state.splice(0, state.length, ...action.payload)
@@ -151,7 +158,7 @@ const linkPageSlice = createSlice({
   },
 })
 
-export const { setSelectedDash, setNumberOfColumns } = appSlice.actions
+export const { setSelectedDash, setNumberOfColumns, setFontSize, setDarkMode } = appSlice.actions
 export const {
   overwriteConfig,
   addLinkPage,
@@ -182,8 +189,10 @@ store.subscribe(() => {
     const state = store.getState()
     const persistedState = {
       selectedDash: state.app.selectedDash,
-      quickDashConfig: state.linkPages, // Still using legacy key
+      quickDashConfig: state.linkPages,
       numberOfColumns: state.app.numberOfColumns,
+      fontSize: state.app.fontSize,
+      darkMode: state.app.darkMode,
     }
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedState))
   } catch (error) {

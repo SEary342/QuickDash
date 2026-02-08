@@ -1,14 +1,17 @@
 import { mdiChevronDown, mdiChevronUp, mdiLink, mdiPencil } from '@mdi/js'
-import { getColorLookup } from '../types/colors'
-import { iconTranslation } from '../types/icons'
-import { LinkData } from '../types/linkData'
 import Icon from '@mdi/react'
-import IconBtn from './IconBtn'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { deleteLinkData, reorderLinkData, updateLinkData } from '../store/store'
-import LinkDialog from './LinkDialog'
+
+import { deleteLinkData, reorderLinkData, updateLinkData } from '@src/store/store'
+import { getColorLookup } from '@src/types/colors'
+import { iconTranslation } from '@src/types/icons'
+import { LinkData } from '@src/types/linkData'
+
+import IconBtn from '@comp/IconBtn'
+import LinkDialog from '@comp/LinkDialog'
+import Tooltip from '@comp/Tooltip'
 
 const Link = ({
   pageId,
@@ -30,7 +33,9 @@ const Link = ({
   const dispatch = useDispatch()
   const colorLookup = getColorLookup(item.color)
   const iconColor = item.outline ? colorLookup.outlineText : colorLookup.text
-  const hoverColor = item.outline ? 'hover:bg-gray-100' : colorLookup.hoverColor
+  const hoverColor = item.outline
+    ? 'hover:bg-gray-100 dark:hover:bg-gray-700'
+    : colorLookup.hoverColor
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     window.open(item.url, '_blank', 'noopener noreferrer')
@@ -43,24 +48,26 @@ const Link = ({
         item.outline ? `border-3 ${colorLookup.outlineBorder}` : colorLookup.background
       }`}
     >
-      <a
-        href={item.url}
-        className={`${hoverColor} flex cursor-pointer w-full pl-3 py-3 rounded-s-xl ${
-          editMode ? '' : 'rounded-e-xl'
-        }`}
-        onClick={handleClick}
-      >
-        <Icon
-          path={item.icon ? iconTranslation[item.icon] : mdiLink}
-          size={1}
-          className={iconColor}
-        />
-        <span
-          className={`${item.outline ? colorLookup.outlineText : colorLookup.text} font-bold ms-3`}
+      <Tooltip text={item.description} position="top">
+        <a
+          href={item.url}
+          className={`${hoverColor} flex cursor-pointer w-full pl-3 py-3 rounded-s-xl ${
+            editMode ? '' : 'rounded-e-xl'
+          }`}
+          onClick={handleClick}
         >
-          {item.text}
-        </span>
-      </a>
+          <Icon
+            path={item.icon ? iconTranslation[item.icon] : mdiLink}
+            size={1}
+            className={iconColor}
+          />
+          <span
+            className={`${item.outline ? colorLookup.outlineText : colorLookup.text} font-bold ms-3`}
+          >
+            {item.text}
+          </span>
+        </a>
+      </Tooltip>
 
       <AnimatePresence>
         {editMode && (

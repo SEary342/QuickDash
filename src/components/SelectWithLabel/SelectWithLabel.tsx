@@ -1,8 +1,9 @@
 import { mdiChevronDown } from '@mdi/js'
 import Icon from '@mdi/react'
 import { useState } from 'react'
-import { getColorLookup } from '../../types/colors'
-import { iconTranslation } from '../../types/icons'
+
+import { getColorLookup } from '@src/types/colors'
+import { iconTranslation } from '@src/types/icons'
 
 type SelectOption = {
   value: string
@@ -33,11 +34,14 @@ const SelectWithLabel = ({
 
   return (
     <div className={`relative w-full ${className}`}>
-      <label htmlFor={id} className="absolute left-3 top-1 text-gray-500 text-sm">
+      <label
+        htmlFor={id}
+        className="absolute left-3 top-1 text-gray-500 dark:text-gray-400 text-sm"
+      >
         {children}
       </label>
       <div
-        className="peer w-full border border-gray-300 rounded-md px-3 pt-6 pb-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none cursor-pointer flex items-center justify-between"
+        className="peer w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 pt-6 pb-2 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none cursor-pointer flex items-center justify-between"
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-2">
@@ -51,14 +55,14 @@ const SelectWithLabel = ({
           )}
           <span>{selectedOption?.label || 'Select an option'}</span>
         </div>
-        <Icon path={mdiChevronDown} size={1} className="text-gray-500" />
+        <Icon path={mdiChevronDown} size={1} className="text-gray-500 dark:text-gray-400" />
       </div>
       {isOpen && (
-        <div className="absolute w-full bg-white border border-gray-300 rounded-md mt-1 shadow-md z-10 max-h-60 overflow-y-auto">
+        <div className="absolute w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md mt-1 shadow-md z-10 max-h-60 overflow-y-auto">
           {options.map((option) => (
             <div
               key={option.value}
-              className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100"
+              className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-white"
               onClick={() => {
                 onChange(option.value)
                 setIsOpen(false)
@@ -79,4 +83,4 @@ const SelectWithLabel = ({
   )
 }
 
-export { SelectWithLabel }
+export default SelectWithLabel

@@ -1,6 +1,7 @@
-import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { spawn, execSync } from 'node:child_process'
+
+import { execSync, spawn } from 'node:child_process'
+import { readFile, writeFile } from 'node:fs/promises'
 
 // --- Configuration ---
 const PACKAGE_PATH = resolve(process.cwd(), 'package.json')
@@ -8,17 +9,16 @@ const LOCK_PATH = resolve(process.cwd(), 'package-lock.json')
 
 const args = process.argv.slice(2)
 const isFinishMode = args.includes('--finish')
-const manualVersion = args.find(arg => !arg.startsWith('--'))
+const manualVersion = args.find((arg) => !arg.startsWith('--'))
 
 /**
- * Executes a shell command. 
+ * Executes a shell command.
  * Use 'inherit' for stdio so user can interact with prompts (like GPG).
  */
 function runInteractiveCommand(command) {
   return new Promise((resolve, reject) => {
     console.log(`\n--- Running: ${command} ---`)
-    const [cmd, ...args] = command.split(' ')
-    const child = spawn(cmd, args, { stdio: 'inherit', shell: true })
+    const child = spawn(command, { stdio: 'inherit', shell: true })
 
     child.on('close', (code) => {
       if (code === 0) resolve()
@@ -46,7 +46,8 @@ function calculateVersion(currentVersion) {
   if (isFinishMode) return currentVersion
 
   const parts = currentVersion.split('.').map(Number)
-  if (parts.length < 3 || parts.some(isNaN)) throw new Error(`Cannot parse version "${currentVersion}".`)
+  if (parts.length < 3 || parts.some(isNaN))
+    throw new Error(`Cannot parse version "${currentVersion}".`)
   parts[2]++
   return parts.join('.')
 }
@@ -79,32 +80,33 @@ async function main() {
 
       console.log(`🚀 Starting release: **${targetVersion}**`)
       await updateFiles(targetVersion)
-      
+
       const branchName = `release/v${targetVersion}`
       await runInteractiveCommand(`git checkout -b ${branchName}`)
       await runInteractiveCommand(`git add package.json package-lock.json`)
       await runInteractiveCommand(`git commit -m "chore: start release ${targetVersion}"`)
-      
-      console.log(`\n✅ Branch **${branchName}** created.`)
 
+      console.log(`\n✅ Branch **${branchName}** created.`)
     } else {
       console.log(`🏗️ Finishing release: **${targetVersion}**`)
-      
+
       if (!currentBranch.startsWith('release/v')) {
         console.warn(`⚠️ Warning: Not on a release branch (Currently: ${currentBranch})`)
       }
 
       await updateFiles(targetVersion)
       await runInteractiveCommand('npm run build')
-      
+
       const tagName = `v${targetVersion}`
       await runInteractiveCommand(`git add .`)
       // Added --allow-empty to prevent stalls if nothing changed in build
-      await runInteractiveCommand(`git commit -m "chore: final release build ${tagName}" --allow-empty`)
-      
+      await runInteractiveCommand(
+        `git commit -m "chore: final release build ${tagName}" --allow-empty`,
+      )
+
       // If this stalls, you will now see the GPG prompt in your terminal!
       await runInteractiveCommand(`git tag -a ${tagName} -m "Release ${tagName}"`)
-      
+
       console.log(`\n✅ Tagged as **${tagName}**!`)
     }
   } catch (error) {
