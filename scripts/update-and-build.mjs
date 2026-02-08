@@ -18,8 +18,7 @@ const manualVersion = args.find((arg) => !arg.startsWith('--'))
 function runInteractiveCommand(command) {
   return new Promise((resolve, reject) => {
     console.log(`\n--- Running: ${command} ---`)
-    const [cmd, ...args] = command.split(' ')
-    const child = spawn(cmd, args, { stdio: 'inherit', shell: true })
+    const child = spawn(command, { stdio: 'inherit', shell: true })
 
     child.on('close', (code) => {
       if (code === 0) resolve()
