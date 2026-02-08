@@ -192,6 +192,7 @@ describe('Redux Store', () => {
         quickDashConfig: [],
         numberOfColumns: 4,
         fontSize: 16,
+        darkMode: false,
       }),
     )
   })

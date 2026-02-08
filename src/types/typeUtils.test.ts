@@ -16,7 +16,7 @@ describe('colors.ts', () => {
     const unknown = getColorLookup('non-existent-color')
     expect(unknown).toBeDefined()
     expect(unknown.name).toBe('Unknown')
-    expect(unknown.background).toBe('bg-gray-200')
+    expect(unknown.background).toBe('bg-gray-200 dark:bg-gray-600')
   })
 
   test('getColorLookup returns unknown color struct for undefined color', () => {
