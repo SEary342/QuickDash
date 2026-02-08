@@ -33,22 +33,22 @@ const Dialog = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="bg-white rounded-lg shadow-xl max-w-md w-full transform">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full transform">
               <div className="flex justify-between px-6 py-4">
-                <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">{title}</h3>
                 <button
                   onClick={() => onClose(false)}
-                  className="text-gray-400 hover:text-gray-500 cursor-pointer"
+                  className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200 cursor-pointer"
                   aria-label="Close dialog"
                 >
                   <Icon path={mdiClose} size={1} />
                 </button>
               </div>
-              <div className="px-6 pb-4 text-black text-start">{children}</div>
-              <div className="bg-gray-50 px-6 p-4 flex justify-between space-x-3 rounded-b-lg">
+              <div className="px-6 pb-4 text-black dark:text-gray-200 text-start">{children}</div>
+              <div className="bg-gray-50 dark:bg-gray-700 px-6 p-4 flex justify-between space-x-3 rounded-b-lg">
                 <button
                   onClick={() => onClose(false)}
-                  className="bg-white px-4 py-2 rounded-md cursor-pointer text-sm font-medium text-gray-700 hover:bg-gray-100 border border-gray-300"
+                  className="bg-white dark:bg-gray-600 px-4 py-2 rounded-md cursor-pointer text-sm font-medium text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-500 border border-gray-300 dark:border-gray-500"
                 >
                   Cancel
                 </button>
@@ -66,7 +66,7 @@ const Dialog = ({
                   className={`px-4 py-2 rounded-md text-sm font-medium 
                     ${
                       disableConfirm
-                        ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                        ? 'bg-gray-400 dark:bg-gray-600 text-gray-200 dark:text-gray-400 cursor-not-allowed'
                         : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
                     } ${confirmClass}`}
                   onClick={() => onClose(true)}

@@ -17,12 +17,13 @@ const loadState = () => {
         linkPages: parsedState.quickDashConfig || [],
         numberOfColumns: parsedState.numberOfColumns ?? 3,
         fontSize: parsedState.fontSize ?? 16,
+        darkMode: parsedState.darkMode ?? false,
       }
     }
   } catch (error) {
     console.error('Error loading state from localStorage:', error)
   }
-  return { selectedDash: '', linkPages: [], numberOfColumns: 3, fontSize: 16 }
+  return { selectedDash: '', linkPages: [], numberOfColumns: 3, fontSize: 16, darkMode: false }
 }
 
 // Initial state
@@ -35,6 +36,7 @@ const appSlice = createSlice({
     selectedDash: initialState.selectedDash,
     numberOfColumns: initialState.numberOfColumns,
     fontSize: initialState.fontSize,
+    darkMode: initialState.darkMode,
   },
   reducers: {
     setSelectedDash(state, action: PayloadAction<string>) {
@@ -45,6 +47,9 @@ const appSlice = createSlice({
     },
     setFontSize(state, action: PayloadAction<number>) {
       state.fontSize = action.payload
+    },
+    setDarkMode(state, action: PayloadAction<boolean>) {
+      state.darkMode = action.payload
     },
   },
 })
@@ -153,7 +158,7 @@ const linkPageSlice = createSlice({
   },
 })
 
-export const { setSelectedDash, setNumberOfColumns, setFontSize } = appSlice.actions
+export const { setSelectedDash, setNumberOfColumns, setFontSize, setDarkMode } = appSlice.actions
 export const {
   overwriteConfig,
   addLinkPage,
@@ -187,6 +192,7 @@ store.subscribe(() => {
       quickDashConfig: state.linkPages,
       numberOfColumns: state.app.numberOfColumns,
       fontSize: state.app.fontSize,
+      darkMode: state.app.darkMode,
     }
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedState))
   } catch (error) {

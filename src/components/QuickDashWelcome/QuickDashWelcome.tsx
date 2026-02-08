@@ -3,7 +3,7 @@ import Icon from '@mdi/react'
 
 export default function QuickDashWelcome() {
   return (
-    <div className="border border-gray-300 rounded-lg p-4 mx-[25%] mt-10">
+    <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-4 mx-[25%] mt-10">
       <h2 className="text-lg font-semibold">Welcome to QuickDash!</h2>
       <p className="mt-2">
         There are currently no dashboards to display. To start a new one, use the add{' '}

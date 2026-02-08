@@ -42,7 +42,7 @@ const LinkPanel = ({
   const colorLookup = getColorLookup(linkGroup.color)
 
   return (
-    <div className="rounded-md flex flex-col border border-black m-3 bg-white overflow-hidden">
+    <div className="rounded-md flex flex-col border border-black dark:border-gray-600 m-3 bg-white dark:bg-gray-800 overflow-hidden">
       <div
         className={`flex flex-row w-full ${colorLookup.text} p-3 items-center font-bold ${colorLookup.background}`}
       >

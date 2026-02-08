@@ -6,13 +6,22 @@
  * layout adjustments.
  *
  */
-import { mdiChevronDown, mdiCog, mdiExport, mdiImport, mdiMinus, mdiPlus } from '@mdi/js'
+import {
+  mdiChevronDown,
+  mdiCog,
+  mdiExport,
+  mdiImport,
+  mdiMinus,
+  mdiPlus,
+  mdiWeatherNight,
+  mdiWeatherSunny,
+} from '@mdi/js'
 import Icon from '@mdi/react'
 import { motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { RootState, setFontSize, setNumberOfColumns } from '@src/store/store'
+import { RootState, setDarkMode, setFontSize, setNumberOfColumns } from '@src/store/store'
 import { LinkPage } from '@src/types/linkPage'
 
 import ExportReminder from '@comp/ExportReminder'
@@ -40,6 +49,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
   const columns = useSelector((state: RootState) => state.app.numberOfColumns) // Subscribes to the numberOfColumns state from the store.
   const appVersion = import.meta.env.APP_VERSION
   const fontSize = useSelector((state: RootState) => state.app.fontSize) // Select font size
+  const darkMode = useSelector((state: RootState) => state.app.darkMode) // Select dark mode state
 
   /**
    * Created to access the DOM elements directly, which is necessary for detecting clicks outside the menu.
@@ -69,6 +79,11 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
   const handleFontDecrease = () => {
     if (fontSize > fontMin) dispatch(setFontSize(fontSize - 1))
   }
+
+  const handleThemeToggle = () => {
+    dispatch(setDarkMode(!darkMode))
+  }
+
   /**
    * Calls Export config to download the current config as a .QDConfig
    * and closes menu
@@ -125,7 +140,7 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
       {isDropdownOpen && (
         <motion.div
           ref={dropdownRef}
-          className="absolute right-0 top-full mt-1 w-48 bg-white text-black rounded-lg shadow-lg p-3 z-10"
+          className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-gray-800 text-black dark:text-white rounded-lg shadow-lg p-3 z-10"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
@@ -139,29 +154,29 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
           <div className="space-y-2">
             <button
               onClick={() => setImportOpen(true)}
-              className="w-full text-left p-2 hover:bg-gray-200 rounded flex flex-row cursor-pointer"
+              className="w-full text-left p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded flex flex-row cursor-pointer"
             >
               <Icon path={mdiImport} size={1} className="mr-2" />
               Import
             </button>
             <button
               onClick={handleExport}
-              className="w-full text-left p-2 hover:bg-gray-200 rounded flex flex-row cursor-pointer"
+              className="w-full text-left p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded flex flex-row cursor-pointer"
             >
               <Icon path={mdiExport} size={1} className="mr-2" /> Export
             </button>
             {/**  ------------------- Column Area ---------------- */}
-            <hr className="border-gray-200" />
+            <hr className="border-gray-200 dark:border-gray-700" />
             <div className="px-2">
-              <p className="text-sm font-semibold text-gray-500">Columns</p>
+              <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Columns</p>
               <div className="flex items-center space-x-2 w-full text-left py-1">
                 <IconBtn
                   path={mdiMinus}
                   size={1}
                   onClick={handleColumnDecrease}
                   tooltipText="Decrease Columns"
-                  color="text-black"
-                  className="bg-gray-200 rounded hover:bg-gray-300"
+                  color="text-black dark:text-white"
+                  className="bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
                   disabled={columns <= colMin}
                 />
                 <span className="text-lg font-semibold">{columns}</span>
@@ -170,24 +185,24 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
                   size={1}
                   onClick={handleColumnIncrease}
                   tooltipText="Increase Columns"
-                  color="text-black"
-                  className="bg-gray-200 rounded hover:bg-gray-300"
+                  color="text-black dark:text-white"
+                  className="bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
                   disabled={columns >= colMax}
                 />
               </div>
             </div>
             {/**  ------------------- Font Area ---------------- */}
-            <hr className="border-gray-200" />
+            <hr className="border-gray-200 dark:border-gray-700" />
             <div className="px-2">
-              <p className="text-sm font-semibold text-gray-500">Font Size</p>
+              <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Font Size</p>
               <div className="flex items-center space-x-2 w-full text-left py-1">
                 <IconBtn
                   path={mdiMinus}
                   size={0.8}
                   onClick={handleFontDecrease}
                   tooltipText="Smaller Text"
-                  color="text-black"
-                  className="bg-gray-200 rounded hover:bg-gray-300"
+                  color="text-black dark:text-white"
+                  className="bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
                   disabled={fontSize <= fontMin}
                 />
                 <span className="text-lg font-semibold w-6 text-center">{fontSize}</span>
@@ -196,29 +211,45 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
                   size={0.8}
                   onClick={handleFontIncrease}
                   tooltipText="Larger Text"
-                  color="text-black"
-                  className="bg-gray-200 rounded hover:bg-gray-300"
+                  color="text-black dark:text-white"
+                  className="bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
                   disabled={fontSize >= fontMax}
                 />
               </div>
             </div>
+            {/**  ------------------- Theme Area ---------------- */}
+            <hr className="border-gray-200 dark:border-gray-700" />
+            <div className="px-2">
+              <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Theme</p>
+              <button
+                onClick={handleThemeToggle}
+                className="w-full text-left p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded flex flex-row cursor-pointer items-center"
+              >
+                <Icon
+                  path={darkMode ? mdiWeatherSunny : mdiWeatherNight}
+                  size={1}
+                  className="mr-2"
+                />
+                {darkMode ? 'Light Mode' : 'Dark Mode'}
+              </button>
+            </div>
             {/**  ------------------- Help Area ---------------- */}
-            <hr className="border-gray-200" />
+            <hr className="border-gray-200 dark:border-gray-700" />
             <a
               href="https://github.com/SEary342/QuickDash/issues"
-              className="block w-full text-left p-2 hover:bg-gray-200 rounded"
+              className="block w-full text-left p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
               target="_blank"
               rel="noreferrer"
             >
               Help
             </a>
             {/**  ------------------- Version Area ---------------- */}
-            <hr className="border-gray-200" />
+            <hr className="border-gray-200 dark:border-gray-700" />
             <div className="w-full text-left p-2">
               <span className="block text-xs font-semibold text-gray-400 uppercase">
                 App Version
               </span>
-              <p className="text-sm text-gray-600">{appVersion}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">{appVersion}</p>
             </div>
           </div>
         </motion.div>

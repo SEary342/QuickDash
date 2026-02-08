@@ -11,7 +11,7 @@ const LinkAdd = ({ pageId, panelId }: { pageId: number; panelId: number }) => {
   const dispatch = useDispatch()
   const [addDialog, setAddDialog] = useState(false)
   return (
-    <div className="relative flex items-center gap-3 m-3 hover:shadow-md rounded-xl border-3 border-black hover:bg-gray-100">
+    <div className="relative flex items-center gap-3 m-3 hover:shadow-md rounded-xl border-3 border-black dark:border-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
       <LinkDialog
         key={addDialog ? 'open' : 'closed'}
         pageId={pageId}
@@ -29,8 +29,8 @@ const LinkAdd = ({ pageId, panelId }: { pageId: number; panelId: number }) => {
         className=" flex cursor-pointer w-full pl-3 py-3 rounded-s-xl"
         onClick={() => setAddDialog(true)}
       >
-        <Icon path={mdiPlus} size={1} color="black" />
-        <span className="font-bold ms-3">Add Link</span>
+        <Icon path={mdiPlus} size={1} className="text-black dark:text-white" />
+        <span className="font-bold ms-3 text-black dark:text-white">Add Link</span>
       </span>
     </div>
   )

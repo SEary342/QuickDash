@@ -16,7 +16,7 @@ const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
   const dispatch = useDispatch()
   const [addGroup, setAddGroup] = useState(false)
   return (
-    <div className="rounded-md flex flex-col border border-black m-3">
+    <div className="rounded-md flex flex-col border border-black dark:border-gray-600 m-3 bg-white dark:bg-gray-800">
       <div
         className={`flex flex-row w-full ${colorLookup.text} rounded-t-md px-3 py-3 items-center font-bold ${colorLookup.background}`}
       >
@@ -25,8 +25,8 @@ const LinkPanelAdd = ({ pageId }: { pageId: number }) => {
           path={mdiPlus}
           size={0.8}
           tooltipText="Add Group"
-          color=""
-          className={`border-2 border-black ml-auto ${colorLookup.hoverColor}`}
+          color={colorLookup.text}
+          className={`border-2 border-black dark:border-gray-400 ml-auto ${colorLookup.hoverColor}`}
           onClick={() => setAddGroup(true)}
         />
         <PanelDialog

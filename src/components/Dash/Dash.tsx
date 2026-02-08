@@ -185,10 +185,10 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
           <li className="flex items-center justify-center">
             <IconBtn
               path={mdiPlus}
-              className="cursor-pointer hover:bg-gray-300 rounded-full"
+              className="cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full"
               tooltipText="Add Dash"
               tooltipPosition="right"
-              color="text-black"
+              color="text-black dark:text-white"
               onClick={() => setAddPage(!addPage)}
               size={1.5}
             />

@@ -185,8 +185,10 @@ const LinkDialog = ({
         </label>
       </div>
 
-      <div className="mt-4 p-4 border rounded bg-slate-50">
-        <p className="text-xs font-semibold uppercase text-slate-400 mb-2">Preview:</p>
+      <div className="mt-4 p-4 border rounded bg-slate-50 dark:bg-gray-900 dark:border-gray-600">
+        <p className="text-xs font-semibold uppercase text-slate-400 dark:text-gray-400 mb-2">
+          Preview:
+        </p>
         <Link pageId={-1} panelId={-1} id={-1} item={formData} />
       </div>
     </Dialog>

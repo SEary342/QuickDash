@@ -33,7 +33,9 @@ const Link = ({
   const dispatch = useDispatch()
   const colorLookup = getColorLookup(item.color)
   const iconColor = item.outline ? colorLookup.outlineText : colorLookup.text
-  const hoverColor = item.outline ? 'hover:bg-gray-100' : colorLookup.hoverColor
+  const hoverColor = item.outline
+    ? 'hover:bg-gray-100 dark:hover:bg-gray-700'
+    : colorLookup.hoverColor
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     window.open(item.url, '_blank', 'noopener noreferrer')
