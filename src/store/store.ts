@@ -65,7 +65,7 @@ const linkPageSlice = createSlice({
     addLinkPage(state, action: PayloadAction<LinkPage>) {
       state.push(action.payload)
     },
-    updateLinkPage(state, action: PayloadAction<{ index: number; data: LinkPage }>) {
+    updateLinkPageInternal(state, action: PayloadAction<{ index: number; data: LinkPage }>) {
       const { index, data } = action.payload
       state[index] = data
     },
@@ -162,7 +162,7 @@ export const { setSelectedDash, setNumberOfColumns, setFontSize, setDarkMode } =
 export const {
   overwriteConfig,
   addLinkPage,
-  updateLinkPage,
+  updateLinkPageInternal,
   deleteLinkPage,
   reorderLinkPages,
   addLinkGroup,
@@ -201,4 +201,20 @@ store.subscribe(() => {
 })
 
 export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
+
+export const updateLinkPage =
+  (payload: { index: number; data: LinkPage }) =>
+  (dispatch: AppDispatch, getState: () => RootState) => {
+    const state = getState()
+    const { index, data } = payload
+    const oldPage = state.linkPages[index]
+    const shouldUpdateDash =
+      oldPage && oldPage.name !== data.name && state.app.selectedDash === oldPage.name
+
+    dispatch(updateLinkPageInternal(payload))
+
+    if (shouldUpdateDash) dispatch(setSelectedDash(data.name))
+  }
+
 export default store
