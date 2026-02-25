@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { reorderLinkPages, updateLinkPage } from '@src/store/store'
+import { AppDispatch, reorderLinkPages, updateLinkPage } from '@src/store/store'
 import { getColorLookup } from '@src/types/colors'
 import { iconTranslation } from '@src/types/icons'
 import { LinkGroup } from '@src/types/linkGroup'
@@ -30,7 +30,7 @@ const TabBtn = ({
   onRemove: (id: number) => void
   selected?: boolean
 }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const [tabEdit, setTabEdit] = useState(false)
   const colorLookup = getColorLookup(linkPage.color)
   const [editDialog, setEditDialog] = useState(false)
