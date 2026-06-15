@@ -1,5 +1,5 @@
 import { mdiChevronDown, mdiChevronUp, mdiLink, mdiPencil } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'

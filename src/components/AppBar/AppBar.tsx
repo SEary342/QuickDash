@@ -16,7 +16,7 @@ import {
   mdiWeatherNight,
   mdiWeatherSunny,
 } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import { motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'

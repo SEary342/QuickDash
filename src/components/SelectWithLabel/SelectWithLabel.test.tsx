@@ -5,7 +5,7 @@ import SelectWithLabel from './SelectWithLabel'
 
 // Mock dependencies
 vi.mock('@mdi/react', () => ({
-  default: ({ path }: { path: string }) => <svg data-testid="icon">{path}</svg>,
+  Icon: ({ path }: { path: string }) => <svg data-testid="icon">{path}</svg>,
 }))
 vi.mock('@src/types/colors', () => ({
   getColorLookup: (value: string) => ({
