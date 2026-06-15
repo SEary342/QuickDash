@@ -1,5 +1,5 @@
 import { mdiPlus } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 

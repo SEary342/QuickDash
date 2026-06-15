@@ -59,7 +59,7 @@ vi.mock('@src/types/icons', () => ({
 
 // Mock child components
 vi.mock('@mdi/react', () => ({
-  default: () => <div data-testid="mdi-icon" />,
+  Icon: () => <div data-testid="mdi-icon" />,
 }))
 
 vi.mock('@comp/IconBtn', () => ({
