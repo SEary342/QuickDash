@@ -2,7 +2,7 @@
 import { resolve } from 'path'
 
 import tailwindcss from '@tailwindcss/vite'
-import react from '@vitejs/plugin-react-swc'
+import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { viteSingleFile } from 'vite-plugin-singlefile'
 
@@ -11,8 +11,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), viteSingleFile()],
   resolve: {
     alias: {
-      '@src': resolve(__dirname, './src'),
-      '@comp': resolve(__dirname, './src/components'),
+      '@src': resolve(import.meta.dirname, './src'),
+      '@comp': resolve(import.meta.dirname, './src/components'),
     },
   },
   define: {
