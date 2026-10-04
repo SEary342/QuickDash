@@ -159,10 +159,10 @@ const linkPageSlice = createSlice({
 })
 
 export const { setSelectedDash, setNumberOfColumns, setFontSize, setDarkMode } = appSlice.actions
+const { updateLinkPageInternal } = linkPageSlice.actions
 export const {
   overwriteConfig,
   addLinkPage,
-  updateLinkPageInternal,
   deleteLinkPage,
   reorderLinkPages,
   addLinkGroup,
