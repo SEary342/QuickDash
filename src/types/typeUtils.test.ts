@@ -1,4 +1,4 @@
-import * as mdiIcons from '@mdi/js'
+import { mdiAccount, mdiDeathStar } from '@mdi/js'
 import { describe, expect, test } from 'vitest'
 
 import { colorConversions, colorOptionsArray, getColorLookup } from './colors'
@@ -41,8 +41,8 @@ describe('icons.ts', () => {
   test('iconTranslation maps keys to mdi icons', () => {
     // Verify that the translation map correctly resolves the mdi icon path
     // 'Death Star' -> 'mdi-death-star' -> mdiDeathStar
-    expect(iconTranslation['mdi-death-star']).toBe(mdiIcons.mdiDeathStar)
-    expect(iconTranslation['mdi-account']).toBe(mdiIcons.mdiAccount)
+    expect(iconTranslation['mdi-death-star']).toBe(mdiDeathStar)
+    expect(iconTranslation['mdi-account']).toBe(mdiAccount)
   })
 
   test('iconOptionsArray is sorted by title', () => {
