@@ -1,0 +1,197 @@
+[
+  {
+    "name": "Work",
+    "icon": "mdi-account",
+    "groupList": [
+      {
+        "name": "Documents",
+        "icon": "mdi-file-document-outline",
+        "color": "blue",
+        "linkList": [
+          { "text": "Project Brief", "url": "https://brief.example.com", "description": "Overview, goals, and project requirements", "color": "blue", "outline": false, "icon": "mdi-file-document-outline" },
+          { "text": "Meeting Notes", "url": "https://meetings.example.com/notes", "description": "Notes and action items from team meetings", "color": "teal", "outline": false, "icon": "mdi-file-document-outline" },
+          { "text": "Roadmap", "url": "https://roadmap.example.com", "description": "Quarterly product plans and milestones", "color": "green", "outline": false, "icon": "mdi-compass" },
+          { "text": "Team Handbook", "url": "https://handbook.example.com", "description": "Policies, onboarding, and team processes", "color": "grey-lighten-4", "outline": true, "icon": "mdi-school-outline" }
+        ]
+      },
+      {
+        "name": "Planning",
+        "icon": "mdi-console",
+        "color": "amber",
+        "linkList": [
+          { "text": "Sprint Board", "url": "https://sprint.example.com", "description": "Current sprint tasks and backlog", "color": "amber", "outline": false, "icon": "mdi-jira" },
+          { "text": "Release Calendar", "url": "https://calendar.example.com/releases", "description": "Upcoming launch dates and release schedule", "color": "orange", "outline": false, "icon": "mdi-console" },
+          { "text": "Team Directory", "url": "https://directory.example.com", "description": "People, roles, and contact information", "color": "pink", "outline": false, "icon": "mdi-account" },
+          { "text": "Design Review", "url": "https://design-review.example.com", "description": "Review mockups and provide feedback", "color": "deep-orange", "outline": false, "icon": "mdi-lightbulb-group-outline" }
+        ]
+      },
+      {
+        "name": "Company Tools",
+        "icon": "mdi-tools",
+        "color": "blue-grey",
+        "linkList": [
+          { "text": "Expense Reports", "url": "https://expenses.example.com", "description": "Submit receipts and track reimbursements", "color": "green", "outline": true, "icon": "mdi-calculator" },
+          { "text": "Support Portal", "url": "https://support.example.com", "description": "Get help with account and workplace issues", "color": "red", "outline": false, "icon": "mdi-help" },
+          { "text": "Time Off Request", "url": "https://time-off.example.com", "description": "Request vacation and check leave balance", "color": "teal", "outline": false, "icon": "mdi-console" },
+          { "text": "Company News", "url": "https://news.example.com", "description": "Announcements and internal updates", "color": "lime", "outline": false, "icon": "mdi-earth" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Development",
+    "icon": "mdi-code-braces-box",
+    "groupList": [
+      {
+        "name": "Source Control",
+        "icon": "mdi-git",
+        "color": "deep-orange",
+        "linkList": [
+          { "text": "GitHub Projects", "url": "https://github.example.com/projects", "description": "Repositories, pull requests, and project boards", "color": "black", "outline": false, "icon": "mdi-github" },
+          { "text": "API Repository", "url": "https://git.example.com/api", "description": "Backend API source code and documentation", "color": "blue", "outline": false, "icon": "mdi-api" },
+          { "text": "Web Client Repo", "url": "https://git.example.com/web-client", "description": "Frontend application source and issues", "color": "teal", "outline": false, "icon": "mdi-react" },
+          { "text": "Build Pipeline", "url": "https://ci.example.com/pipelines", "description": "Continuous integration jobs and build status", "color": "amber", "outline": false, "icon": "mdi-source-branch" }
+        ]
+      },
+      {
+        "name": "Environments",
+        "icon": "mdi-server",
+        "color": "green",
+        "linkList": [
+          { "text": "Staging Dashboard", "url": "https://staging.example.com", "description": "Preview environment for release candidates", "color": "amber", "outline": false, "icon": "mdi-server-network" },
+          { "text": "Production Monitor", "url": "https://monitor.example.com", "description": "Production health, uptime, and alerts", "color": "red", "outline": false, "icon": "mdi-cogs" },
+          { "text": "Cloud Console", "url": "https://cloud.example.com", "description": "Manage cloud accounts and infrastructure", "color": "blue", "outline": false, "icon": "mdi-cloud-cog" },
+          { "text": "Container Registry", "url": "https://registry.example.com", "description": "Browse and publish container images", "color": "teal", "outline": false, "icon": "mdi-docker" }
+        ]
+      },
+      {
+        "name": "Engineering Docs",
+        "icon": "mdi-school-outline",
+        "color": "blue",
+        "linkList": [
+          { "text": "TypeScript Guide", "url": "https://typescript.example.com/guide", "description": "Patterns and examples for TypeScript development", "color": "blue", "outline": false, "icon": "mdi-language-typescript" },
+          { "text": "Python Cookbook", "url": "https://python.example.com/recipes", "description": "Common Python snippets and debugging tips", "color": "amber", "outline": false, "icon": "mdi-language-python" },
+          { "text": "Database Schema", "url": "https://schema.example.com", "description": "Tables, relationships, and migration history", "color": "green", "outline": false, "icon": "mdi-database" },
+          { "text": "Troubleshooting", "url": "https://debug.example.com", "description": "Debugging common errors and flaky tests", "color": "red", "outline": false, "icon": "mdi-bug" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Learning",
+    "icon": "mdi-school-outline",
+    "groupList": [
+      {
+        "name": "Courses",
+        "icon": "mdi-school-outline",
+        "color": "blue",
+        "linkList": [
+          { "text": "Frontend Fundamentals", "url": "https://frontend-course.example.com", "description": "HTML, CSS, accessibility, and responsive layouts", "color": "pink", "outline": false, "icon": "mdi-react" },
+          { "text": "Practical SQL", "url": "https://sql-course.example.com", "description": "Queries, joins, indexes, and database design", "color": "blue", "outline": false, "icon": "mdi-database" },
+          { "text": "Cloud Basics", "url": "https://cloud-course.example.com", "description": "Introduction to cloud services and networking", "color": "teal", "outline": false, "icon": "mdi-cloud-cog" },
+          { "text": "Rust Workshop", "url": "https://rust-workshop.example.com", "description": "Ownership, borrowing, and systems programming", "color": "deep-orange", "outline": false, "icon": "mdi-language-rust" }
+        ]
+      },
+      {
+        "name": "Reference",
+        "icon": "mdi-file-document-outline",
+        "color": "teal",
+        "linkList": [
+          { "text": "MDN Web Docs", "url": "https://mdn.example.com", "description": "Web platform references and browser APIs", "color": "black", "outline": true, "icon": "mdi-earth" },
+          { "text": "Regex Cheatsheet", "url": "https://regex.example.com", "description": "Regular expression syntax and examples", "color": "amber", "outline": false, "icon": "mdi-code-braces-box" },
+          { "text": "Keyboard Shortcuts", "url": "https://shortcuts.example.com", "description": "Editor and terminal productivity shortcuts", "color": "grey-lighten-4", "outline": false, "icon": "mdi-console" },
+          { "text": "Accessibility Checklist", "url": "https://a11y.example.com", "description": "Keyboard, contrast, and screen reader checks", "color": "green", "outline": false, "icon": "mdi-check-circle" }
+        ]
+      },
+      {
+        "name": "Practice",
+        "icon": "mdi-flask",
+        "color": "lime",
+        "linkList": [
+          { "text": "Code Challenges", "url": "https://challenges.example.com", "description": "Short daily programming exercises", "color": "blue", "outline": false, "icon": "mdi-code-braces-box" },
+          { "text": "Algorithm Visualizer", "url": "https://algorithms.example.com", "description": "Explore sorting and graph algorithms", "color": "orange", "outline": false, "icon": "mdi-cogs" },
+          { "text": "Mock Interview", "url": "https://interview.example.com", "description": "Practice technical interview questions", "color": "pink", "outline": false, "icon": "mdi-account" },
+          { "text": "UI Playground", "url": "https://playground.example.com", "description": "Experiment with components and color palettes", "color": "purple", "outline": false, "icon": "mdi-lightbulb-group-outline" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Personal",
+    "icon": "mdi-account",
+    "groupList": [
+      {
+        "name": "Reading List",
+        "icon": "mdi-book-open-variant",
+        "color": "amber",
+        "linkList": [
+          { "text": "The Quiet Garden", "url": "https://garden-book.example.com", "description": "A novel about a botanist and a hidden garden", "color": "green", "outline": false, "icon": "mdi-file-document-outline" },
+          { "text": "Space Atlas", "url": "https://space-atlas.example.com", "description": "Maps and facts about the solar system", "color": "blue", "outline": false, "icon": "mdi-earth" },
+          { "text": "Baking at Home", "url": "https://baking.example.com", "description": "Bread, pastry, and weekend recipes", "color": "orange", "outline": false, "icon": "mdi-baguette" },
+          { "text": "Design Notes", "url": "https://design-notes.example.com", "description": "Essays on typography and visual design", "color": "pink", "outline": false, "icon": "mdi-lightbulb-group-outline" }
+        ]
+      },
+      {
+        "name": "Everyday",
+        "icon": "mdi-account",
+        "color": "teal",
+        "linkList": [
+          { "text": "Grocery List", "url": "https://groceries.example.com", "description": "Weekly shopping list and pantry staples", "color": "lime", "outline": false, "icon": "mdi-baguette" },
+          { "text": "Recipe Box", "url": "https://recipes.example.com", "description": "Saved dinners, desserts, and meal ideas", "color": "deep-orange", "outline": false, "icon": "mdi-baguette" },
+          { "text": "Weather", "url": "https://weather.example.com", "description": "Local forecast and weekend outlook", "color": "blue", "outline": false, "icon": "mdi-earth" },
+          { "text": "Travel Planner", "url": "https://travel.example.com", "description": "Trip ideas, packing lists, and itineraries", "color": "purple", "outline": false, "icon": "mdi-compass" }
+        ]
+      },
+      {
+        "name": "Hobbies",
+        "icon": "mdi-lightbulb-group-outline",
+        "color": "pink",
+        "linkList": [
+          { "text": "Photo Archive", "url": "https://photos.example.com", "description": "Organized albums and camera notes", "color": "blue-grey", "outline": false, "icon": "mdi-file-document-outline" },
+          { "text": "Garden Planner", "url": "https://garden-planner.example.com", "description": "Planting calendar and seed inventory", "color": "green", "outline": false, "icon": "mdi-earth" },
+          { "text": "Music Practice", "url": "https://music.example.com", "description": "Chord charts and practice schedule", "color": "amber", "outline": false, "icon": "mdi-robot" },
+          { "text": "Board Game Night", "url": "https://games.example.com", "description": "Game rules, scores, and player list", "color": "red", "outline": false, "icon": "mdi-cube" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Operations",
+    "icon": "mdi-cogs",
+    "groupList": [
+      {
+        "name": "Monitoring",
+        "icon": "mdi-chart-line",
+        "color": "red",
+        "linkList": [
+          { "text": "Service Status", "url": "https://status.example.com", "description": "Live uptime and active incidents", "color": "green", "outline": false, "icon": "mdi-server-network" },
+          { "text": "Error Tracker", "url": "https://errors.example.com", "description": "Application exceptions and stack traces", "color": "red", "outline": false, "icon": "mdi-bug" },
+          { "text": "Usage Analytics", "url": "https://analytics.example.com", "description": "Traffic trends and product usage metrics", "color": "blue", "outline": false, "icon": "mdi-cogs" },
+          { "text": "Log Search", "url": "https://logs.example.com", "description": "Search service logs by time and request ID", "color": "grey-lighten-4", "outline": false, "icon": "mdi-console" }
+        ]
+      },
+      {
+        "name": "Security",
+        "icon": "mdi-shield-lock-outline",
+        "color": "blue-grey",
+        "linkList": [
+          { "text": "Secrets Vault", "url": "https://vault.example.com", "description": "Encrypted credentials and access keys", "color": "amber", "outline": false, "icon": "mdi-shield-key" },
+          { "text": "Access Reviews", "url": "https://access.example.com", "description": "Review team permissions and account access", "color": "blue", "outline": false, "icon": "mdi-account" },
+          { "text": "Dependency Audit", "url": "https://audit.example.com", "description": "Package vulnerabilities and upgrade advice", "color": "red", "outline": false, "icon": "mdi-shield-lock-outline" },
+          { "text": "Incident Playbook", "url": "https://playbook.example.com", "description": "Response steps for common security incidents", "color": "orange", "outline": false, "icon": "mdi-file-document-outline" }
+        ]
+      },
+      {
+        "name": "Infrastructure",
+        "icon": "mdi-cloud-cog",
+        "color": "blue",
+        "linkList": [
+          { "text": "Terraform State", "url": "https://terraform.example.com", "description": "Infrastructure plans and deployment state", "color": "blue", "outline": false, "icon": "mdi-terraform" },
+          { "text": "Kubernetes Cluster", "url": "https://kubernetes.example.com", "description": "Cluster workloads, pods, and namespaces", "color": "blue", "outline": false, "icon": "mdi-kubernetes" },
+          { "text": "DNS Manager", "url": "https://dns.example.com", "description": "Domains, records, and certificate renewals", "color": "teal", "outline": false, "icon": "mdi-earth" },
+          { "text": "Backup Console", "url": "https://backup.example.com", "description": "Backup schedules and restore verification", "color": "green", "outline": false, "icon": "mdi-database" }
+        ]
+      }
+    ]
+  }
+]

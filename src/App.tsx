@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { RootState } from '@src/store/store'
@@ -9,6 +9,7 @@ import Dash from '@comp/Dash'
 function App() {
   const linkPages = useSelector((state: RootState) => state.linkPages)
   const darkMode = useSelector((state: RootState) => state.app.darkMode)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     if (darkMode) {
@@ -20,8 +21,8 @@ function App() {
 
   return (
     <>
-      <AppBar linkPages={linkPages} />
-      <Dash linkPages={linkPages} />
+      <AppBar linkPages={linkPages} onSearchChange={setSearchQuery} />
+      <Dash linkPages={linkPages} searchQuery={searchQuery} />
     </>
   )
 }

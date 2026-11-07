@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 
 import { getColorLookup } from '@src/types/colors'
 import { iconTranslation } from '@src/types/icons'
+import { getFuzzyMatchScore } from '@src/utils/fuzzySearch'
 
 type SelectOption = {
   value: string
@@ -35,10 +36,15 @@ const SelectWithLabel = ({
   const [searchQuery, setSearchQuery] = useState('')
   const selectedOption = options.find((opt) => opt.value === value)
   const filteredOptions = useMemo(() => {
-    const query = searchQuery.trim().toLocaleLowerCase()
-    return query
-      ? options.filter((option) => option.label.toLocaleLowerCase().includes(query))
-      : options
+    if (!searchQuery.trim()) return options
+
+    return options
+      .flatMap((option) => {
+        const score = getFuzzyMatchScore(searchQuery, [option.label])
+        return score === undefined ? [] : [{ option, score }]
+      })
+      .sort((a, b) => b.score - a.score)
+      .map(({ option }) => option)
   }, [options, searchQuery])
 
   return (

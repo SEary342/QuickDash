@@ -66,6 +66,7 @@ vi.mock('motion/react', () => ({
 
 describe('AppBar Component', () => {
   const mockDispatch = vi.fn()
+  const mockOnSearchChange = vi.fn()
   const mockLinkPages: LinkPage[] = [{ name: 'Page 1', groupList: [] }]
 
   beforeEach(() => {
@@ -83,13 +84,23 @@ describe('AppBar Component', () => {
   })
 
   test('renders correctly', () => {
-    render(<AppBar linkPages={mockLinkPages} />)
+    render(<AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />)
     expect(screen.getByText('QuickDash')).toBeInTheDocument()
     expect(screen.getByLabelText('Settings')).toBeInTheDocument()
   })
 
+  test('passes search input changes to the parent', () => {
+    render(<AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />)
+
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search links' }), {
+      target: { value: 'docs' },
+    })
+
+    expect(mockOnSearchChange).toHaveBeenCalledWith('docs')
+  })
+
   test('toggles settings dropdown', () => {
-    render(<AppBar linkPages={mockLinkPages} />)
+    render(<AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />)
     const settingsBtn = screen.getByLabelText('Settings')
 
     // Open
@@ -103,7 +114,7 @@ describe('AppBar Component', () => {
   })
 
   test('handles column increase', () => {
-    render(<AppBar linkPages={mockLinkPages} />)
+    render(<AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />)
     fireEvent.click(screen.getByLabelText('Settings'))
 
     const increaseBtn = screen.getByLabelText('Increase Columns')
@@ -114,7 +125,7 @@ describe('AppBar Component', () => {
   })
 
   test('handles column decrease', () => {
-    render(<AppBar linkPages={mockLinkPages} />)
+    render(<AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />)
     fireEvent.click(screen.getByLabelText('Settings'))
 
     const decreaseBtn = screen.getByLabelText('Decrease Columns')
@@ -131,7 +142,7 @@ describe('AppBar Component', () => {
       }),
     )
 
-    render(<AppBar linkPages={mockLinkPages} />)
+    render(<AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />)
     fireEvent.click(screen.getByLabelText('Settings'))
 
     const increaseBtn = screen.getByLabelText('Increase Columns')
@@ -147,7 +158,7 @@ describe('AppBar Component', () => {
       }),
     )
 
-    render(<AppBar linkPages={mockLinkPages} />)
+    render(<AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />)
     fireEvent.click(screen.getByLabelText('Settings'))
 
     const decreaseBtn = screen.getByLabelText('Decrease Columns')
@@ -157,7 +168,7 @@ describe('AppBar Component', () => {
   })
 
   test('handles font size increase', () => {
-    render(<AppBar linkPages={mockLinkPages} />)
+    render(<AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />)
     fireEvent.click(screen.getByLabelText('Settings'))
 
     const increaseBtn = screen.getByLabelText('Larger Text')
@@ -168,7 +179,7 @@ describe('AppBar Component', () => {
   })
 
   test('handles font size decrease', () => {
-    render(<AppBar linkPages={mockLinkPages} />)
+    render(<AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />)
     fireEvent.click(screen.getByLabelText('Settings'))
 
     const decreaseBtn = screen.getByLabelText('Smaller Text')
@@ -179,7 +190,7 @@ describe('AppBar Component', () => {
   })
 
   test('handles export', () => {
-    render(<AppBar linkPages={mockLinkPages} />)
+    render(<AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />)
     fireEvent.click(screen.getByLabelText('Settings'))
 
     const exportBtn = screen.getByText('Export')
@@ -190,7 +201,7 @@ describe('AppBar Component', () => {
   })
 
   test('handles import dialog', () => {
-    render(<AppBar linkPages={mockLinkPages} />)
+    render(<AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />)
     fireEvent.click(screen.getByLabelText('Settings'))
 
     const importBtn = screen.getByText('Import')
@@ -208,7 +219,7 @@ describe('AppBar Component', () => {
     render(
       <div>
         <div data-testid="outside">Outside</div>
-        <AppBar linkPages={mockLinkPages} />
+        <AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />
       </div>,
     )
 
@@ -220,7 +231,7 @@ describe('AppBar Component', () => {
   })
 
   test('updates document font size effect', () => {
-    render(<AppBar linkPages={mockLinkPages} />)
+    render(<AppBar linkPages={mockLinkPages} onSearchChange={mockOnSearchChange} />)
     expect(document.documentElement.style.fontSize).toBe('16px')
   })
 })

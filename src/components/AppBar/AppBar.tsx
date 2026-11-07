@@ -11,6 +11,7 @@ import {
   mdiCog,
   mdiExport,
   mdiImport,
+  mdiMagnify,
   mdiMinus,
   mdiPlus,
   mdiWeatherNight,
@@ -42,7 +43,13 @@ const fontMax = 24
  * @param linkPages  Current Dashboard Configuration
  * @returns div with branding, triggers and dropdown menu
  */
-const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
+const AppBar = ({
+  linkPages,
+  onSearchChange,
+}: {
+  linkPages: LinkPage[]
+  onSearchChange: (query: string) => void
+}) => {
   const dispatch = useDispatch() //Used to send actions (like changing column count) to the Redux store.
   const [isDropdownOpen, setIsDropdownOpen] = useState(false) //  Toggles the visibility of the settings menu.
   const [importOpen, setImportOpen] = useState(false) // Toggles the visibility of the "Import File" dialog.
@@ -126,6 +133,17 @@ const AppBar = ({ linkPages }: { linkPages: LinkPage[] }) => {
       />
       {/* Title Banner */}
       <span className="ml-3 text-2xl font-bold text-white">QuickDash</span>
+
+      <label className="mx-auto flex min-w-0 max-w-xl flex-1 items-center rounded-lg bg-white px-3 text-gray-700 focus-within:ring-2 focus-within:ring-purple-400 dark:bg-gray-700 dark:text-white">
+        <Icon path={mdiMagnify} size={1} className="mr-2 shrink-0" />
+        <input
+          type="search"
+          aria-label="Search links"
+          placeholder="Search links..."
+          onChange={(event) => onSearchChange(event.target.value)}
+          className="app-bar-search w-full min-w-0 bg-transparent py-2 outline-none placeholder:text-gray-500 dark:placeholder:text-gray-300"
+        />
+      </label>
 
       {/* --------------- Settings Button -------------- */}
       <IconBtn

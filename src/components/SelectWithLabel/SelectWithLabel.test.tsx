@@ -96,6 +96,32 @@ describe('SelectWithLabel', () => {
     expect(onChange).toHaveBeenCalledWith('apple')
   })
 
+  it('ranks exact, partial, and typo-tolerant label matches', () => {
+    const fuzzyOptions = [
+      { value: 'apple', label: 'Apple', color: false, icon: false },
+      { value: 'pineapple', label: 'Pineapple', color: false, icon: false },
+      { value: 'aple', label: 'Aple', color: false, icon: false },
+      { value: 'grape', label: 'Grape', color: false, icon: false },
+    ]
+
+    render(
+      <SelectWithLabel id="fruit" options={fuzzyOptions} onChange={onChange} searchable>
+        Fruit
+      </SelectWithLabel>,
+    )
+
+    fireEvent.click(screen.getByText('Select an option'))
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search Fruit' }), {
+      target: { value: 'apple' },
+    })
+
+    const matches = screen.getAllByText(/Apple|Pineapple|Aple/)
+    expect(matches[0]).toHaveTextContent('Apple')
+    expect(matches[1]).toHaveTextContent('Pineapple')
+    expect(matches[2]).toHaveTextContent('Aple')
+    expect(screen.queryByText('Grape')).not.toBeInTheDocument()
+  })
+
   it('shows a message when searchable options have no match', () => {
     render(
       <SelectWithLabel id="fruit" options={options} onChange={onChange} searchable>
