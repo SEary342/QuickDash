@@ -96,9 +96,20 @@ vi.mock('@comp/DashGroupDialog', () => ({
     ) : null,
 }))
 
-vi.mock('@comp/Link', () => ({
-  default: ({ item }: { item: { text: string } }) => <div>{item.text}</div>,
-}))
+vi.mock('@comp/Link', () => {
+  const MockLink = ({ item }: { item: { text: string } }) => {
+    const [count, setCount] = React.useState(0)
+    return (
+      <div>
+        <span>{item.text}</span>
+        <button aria-label={`increment ${item.text}`} onClick={() => setCount(count + 1)}>
+          {count}
+        </button>
+      </div>
+    )
+  }
+  return { default: MockLink }
+})
 
 vi.mock('@comp/LinkAdd', () => ({
   default: () => <div data-testid="link-add">Add Link</div>,
@@ -131,6 +142,25 @@ describe('LinkPanel', () => {
     expect(screen.getByText('Test Group')).toBeInTheDocument()
     expect(screen.getByText('Link 1')).toBeInTheDocument()
     expect(screen.getByTestId('mdi-icon')).toBeInTheDocument()
+  })
+
+  test('preserves link component state when links are reordered', () => {
+    const linkList = [
+      ...defaultProps.linkGroup.linkList,
+      { ...defaultProps.linkGroup.linkList[0], text: 'Link 2', url: 'http://second.test' },
+    ]
+    const linkGroup = { ...defaultProps.linkGroup, linkList }
+    const { rerender } = render(<LinkPanel {...defaultProps} linkGroup={linkGroup} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'increment Link 2' }))
+    rerender(
+      <LinkPanel
+        {...defaultProps}
+        linkGroup={{ ...linkGroup, linkList: [...linkList].reverse() }}
+      />,
+    )
+
+    expect(screen.getByRole('button', { name: 'increment Link 2' })).toHaveTextContent('1')
   })
 
   test('toggles edit controls', () => {

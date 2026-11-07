@@ -77,4 +77,37 @@ describe('SelectWithLabel', () => {
 
     expect(screen.getByText('Apple')).toBeInTheDocument()
   })
+
+  it('filters searchable options by label and selects a match', () => {
+    render(
+      <SelectWithLabel id="fruit" options={options} onChange={onChange} searchable>
+        Fruit
+      </SelectWithLabel>,
+    )
+
+    fireEvent.click(screen.getByText('Select an option'))
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search Fruit' }), {
+      target: { value: 'app' },
+    })
+
+    expect(screen.getByText('Apple')).toBeInTheDocument()
+    expect(screen.queryByText('Banana')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByText('Apple'))
+    expect(onChange).toHaveBeenCalledWith('apple')
+  })
+
+  it('shows a message when searchable options have no match', () => {
+    render(
+      <SelectWithLabel id="fruit" options={options} onChange={onChange} searchable>
+        Fruit
+      </SelectWithLabel>,
+    )
+
+    fireEvent.click(screen.getByText('Select an option'))
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search Fruit' }), {
+      target: { value: 'not found' },
+    })
+
+    expect(screen.getByText('No matches found')).toBeInTheDocument()
+  })
 })

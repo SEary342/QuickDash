@@ -118,12 +118,15 @@ const LinkPanel = ({
         <AnimatePresence initial={false}>
           {linkGroup.linkList.map((item, index) => (
             <motion.div
-              key={item.url + index}
-              layout
+              key={item.text}
+              layout="position"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.2 }}
+              transition={{
+                layout: { duration: 0.2, ease: 'easeOut' },
+                opacity: { duration: 0.2 },
+              }}
             >
               <Link
                 pageId={pageId}

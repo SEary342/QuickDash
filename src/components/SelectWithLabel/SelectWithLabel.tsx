@@ -1,6 +1,6 @@
 import { mdiChevronDown } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { getColorLookup } from '@src/types/colors'
 import { iconTranslation } from '@src/types/icons'
@@ -18,6 +18,7 @@ type SelectWithLabelProps = {
   options: SelectOption[]
   onChange: (value: string) => void
   className?: string
+  searchable?: boolean
   children: React.ReactNode
 }
 
@@ -27,10 +28,18 @@ const SelectWithLabel = ({
   options,
   onChange,
   className,
+  searchable = false,
   children,
 }: SelectWithLabelProps) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const selectedOption = options.find((opt) => opt.value === value)
+  const filteredOptions = useMemo(() => {
+    const query = searchQuery.trim().toLocaleLowerCase()
+    return query
+      ? options.filter((option) => option.label.toLocaleLowerCase().includes(query))
+      : options
+  }, [options, searchQuery])
 
   return (
     <div className={`relative w-full ${className}`}>
@@ -59,13 +68,33 @@ const SelectWithLabel = ({
       </div>
       {isOpen && (
         <div className="absolute w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md mt-1 shadow-md z-10 max-h-60 overflow-y-auto">
-          {options.map((option) => (
+          {searchable && (
+            <div className="sticky top-0 bg-white dark:bg-gray-700 p-2">
+              <input
+                type="search"
+                aria-label={`Search ${children}`}
+                placeholder="Search..."
+                autoComplete="off"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Escape') {
+                    setIsOpen(false)
+                    setSearchQuery('')
+                  }
+                }}
+                className="w-full rounded border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-800 px-2 py-1 text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+          )}
+          {filteredOptions.map((option) => (
             <div
               key={option.value}
               className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-white"
               onClick={() => {
                 onChange(option.value)
                 setIsOpen(false)
+                setSearchQuery('')
               }}
             >
               {option.color && (
@@ -77,6 +106,9 @@ const SelectWithLabel = ({
               <span>{option.label}</span>
             </div>
           ))}
+          {filteredOptions.length === 0 && (
+            <p className="px-3 py-2 text-sm text-gray-500 dark:text-gray-300">No matches found</p>
+          )}
         </div>
       )}
     </div>

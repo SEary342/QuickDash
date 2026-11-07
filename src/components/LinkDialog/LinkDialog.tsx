@@ -167,6 +167,7 @@ const LinkDialog = ({
         value={formData.icon}
         options={iconSelect}
         onChange={(val) => setFormData((prev) => ({ ...prev, icon: val }))}
+        searchable
         className="my-2"
       >
         Icon
@@ -178,7 +179,7 @@ const LinkDialog = ({
           type="checkbox"
           checked={formData.outline}
           onChange={(e) => setFormData((prev) => ({ ...prev, outline: e.target.checked }))}
-          className="mr-2 cursor-pointer"
+          className="ml-2 mr-2 cursor-pointer"
         />
         <label htmlFor="outlined" className="cursor-pointer select-none text-sm font-semibold">
           Outlined
