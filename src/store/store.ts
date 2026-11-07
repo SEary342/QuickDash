@@ -4,6 +4,28 @@ import { LinkData } from '@src/types/linkData'
 import { LinkGroup } from '@src/types/linkGroup'
 import { LinkPage } from '@src/types/linkPage'
 
+export type MoveLinkDestination =
+  | { type: 'existing'; pageIndex: number; groupIndex: number }
+  | { type: 'new-group'; pageIndex: number; groupName: string }
+  | { type: 'new-page'; pageName: string; groupName: string }
+
+type MoveLinkPayload = {
+  sourcePageIndex: number
+  sourceGroupIndex: number
+  sourceLinkIndex: number
+  destination: MoveLinkDestination
+}
+
+export type MoveGroupDestination =
+  | { type: 'existing'; pageIndex: number }
+  | { type: 'new-page'; pageName: string }
+
+type MoveGroupPayload = {
+  sourcePageIndex: number
+  sourceGroupIndex: number
+  destination: MoveGroupDestination
+}
+
 // Local Storage Key
 const LOCAL_STORAGE_KEY = 'app'
 // Load State from Local Storage
@@ -108,6 +130,23 @@ const linkPageSlice = createSlice({
       const [movedItem] = state[pageIndex].groupList.splice(fromIndex, 1)
       state[pageIndex].groupList.splice(toIndex, 0, movedItem)
     },
+    moveLinkGroup(state, action: PayloadAction<MoveGroupPayload>) {
+      const { sourcePageIndex, sourceGroupIndex, destination } = action.payload
+      const sourcePage = state[sourcePageIndex]
+      const group = sourcePage?.groupList[sourceGroupIndex]
+      if (!sourcePage || !group) return
+
+      if (destination.type === 'existing') {
+        const targetPage = state[destination.pageIndex]
+        if (!targetPage || destination.pageIndex === sourcePageIndex) return
+        sourcePage.groupList.splice(sourceGroupIndex, 1)
+        targetPage.groupList.push(group)
+        return
+      }
+
+      sourcePage.groupList.splice(sourceGroupIndex, 1)
+      state.push({ name: destination.pageName, groupList: [group] })
+    },
     addLinkData(
       state,
       action: PayloadAction<{
@@ -142,6 +181,42 @@ const linkPageSlice = createSlice({
       const { pageIndex, groupIndex, linkIndex } = action.payload
       state[pageIndex].groupList[groupIndex].linkList.splice(linkIndex, 1)
     },
+    moveLinkData(state, action: PayloadAction<MoveLinkPayload>) {
+      const { sourcePageIndex, sourceGroupIndex, sourceLinkIndex, destination } = action.payload
+      const sourceGroup = state[sourcePageIndex]?.groupList[sourceGroupIndex]
+      const link = sourceGroup?.linkList[sourceLinkIndex]
+      if (!sourceGroup || !link) return
+
+      if (
+        destination.type === 'existing' &&
+        destination.pageIndex === sourcePageIndex &&
+        destination.groupIndex === sourceGroupIndex
+      ) {
+        return
+      }
+
+      if (destination.type === 'existing') {
+        const targetGroup = state[destination.pageIndex]?.groupList[destination.groupIndex]
+        if (!targetGroup) return
+        sourceGroup.linkList.splice(sourceLinkIndex, 1)
+        targetGroup.linkList.push(link)
+        return
+      }
+
+      if (destination.type === 'new-group') {
+        const targetPage = state[destination.pageIndex]
+        if (!targetPage) return
+        sourceGroup.linkList.splice(sourceLinkIndex, 1)
+        targetPage.groupList.push({ name: destination.groupName, linkList: [link] })
+        return
+      }
+
+      sourceGroup.linkList.splice(sourceLinkIndex, 1)
+      state.push({
+        name: destination.pageName,
+        groupList: [{ name: destination.groupName, linkList: [link] }],
+      })
+    },
     reorderLinkData(
       state,
       action: PayloadAction<{
@@ -169,9 +244,11 @@ export const {
   updateLinkGroup,
   deleteLinkGroup,
   reorderLinkGroups,
+  moveLinkGroup,
   addLinkData,
   updateLinkData,
   deleteLinkData,
+  moveLinkData,
   reorderLinkData,
 } = linkPageSlice.actions
 

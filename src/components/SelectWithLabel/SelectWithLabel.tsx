@@ -20,6 +20,8 @@ type SelectWithLabelProps = {
   onChange: (value: string) => void
   className?: string
   searchable?: boolean
+  isOpen?: boolean
+  onOpenChange?: (isOpen: boolean) => void
   children: React.ReactNode
 }
 
@@ -30,10 +32,17 @@ const SelectWithLabel = ({
   onChange,
   className,
   searchable = false,
+  isOpen: controlledIsOpen,
+  onOpenChange,
   children,
 }: SelectWithLabelProps) => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [internalIsOpen, setInternalIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const isOpen = controlledIsOpen ?? internalIsOpen
+  const setIsOpen = (nextIsOpen: boolean) => {
+    if (controlledIsOpen === undefined) setInternalIsOpen(nextIsOpen)
+    onOpenChange?.(nextIsOpen)
+  }
   const selectedOption = options.find((opt) => opt.value === value)
   const filteredOptions = useMemo(() => {
     if (!searchQuery.trim()) return options
@@ -48,7 +57,7 @@ const SelectWithLabel = ({
   }, [options, searchQuery])
 
   return (
-    <div className={`relative w-full ${className}`}>
+    <div className={`relative w-full font-normal ${className}`}>
       <label
         htmlFor={id}
         className="absolute left-3 top-1 text-gray-500 dark:text-gray-400 text-sm"
@@ -56,7 +65,7 @@ const SelectWithLabel = ({
         {children}
       </label>
       <div
-        className="peer w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 pt-6 pb-2 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none cursor-pointer flex items-center justify-between"
+        className="peer relative w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 pt-6 pb-2 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none cursor-pointer flex items-center justify-between"
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-2">
@@ -70,7 +79,11 @@ const SelectWithLabel = ({
           )}
           <span>{selectedOption?.label || 'Select an option'}</span>
         </div>
-        <Icon path={mdiChevronDown} size={1} className="text-gray-500 dark:text-gray-400" />
+        <Icon
+          path={mdiChevronDown}
+          size={1}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400"
+        />
       </div>
       {isOpen && (
         <div className="absolute w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md mt-1 shadow-md z-10 max-h-60 overflow-y-auto">

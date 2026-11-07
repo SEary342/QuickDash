@@ -15,7 +15,9 @@ vi.mock('react-redux', () => ({
 
 vi.mock('@src/store/store', () => ({
   deleteLinkData: vi.fn(),
+  moveLinkData: vi.fn(),
   reorderLinkData: vi.fn(),
+  setSelectedDash: vi.fn(),
   updateLinkData: vi.fn(),
 }))
 
@@ -55,6 +57,20 @@ vi.mock('@comp/LinkDialog', () => ({
         </button>
         <button data-testid="close-dialog" onClick={() => onClose()}>
           Cancel
+        </button>
+      </div>
+    ) : null,
+}))
+
+vi.mock('@comp/MoveLinkDialog', () => ({
+  default: ({ isOpen, onClose }: any) =>
+    isOpen ? (
+      <div data-testid="move-link-dialog">
+        <button
+          data-testid="move-to-personal"
+          onClick={() => onClose({ type: 'existing', pageIndex: 1, groupIndex: 0 }, 'Personal')}
+        >
+          Move to Personal
         </button>
       </div>
     ) : null,
@@ -121,6 +137,7 @@ describe('Link Component', () => {
     render(<Link {...defaultProps} editMode={true} />)
     expect(screen.getByTestId('icon-btn-Move Up')).toBeInTheDocument()
     expect(screen.getByTestId('icon-btn-Move Down')).toBeInTheDocument()
+    expect(screen.getByTestId('icon-btn-Move Link')).toBeInTheDocument()
     expect(screen.getByTestId('icon-btn-Edit Link')).toBeInTheDocument()
   })
 
@@ -145,6 +162,23 @@ describe('Link Component', () => {
     render(<Link {...defaultProps} editMode={true} />)
     fireEvent.click(screen.getByTestId('icon-btn-Edit Link'))
     expect(screen.getByTestId('link-dialog')).toBeInTheDocument()
+  })
+
+  it('moves a link and selects the destination tab', () => {
+    render(<Link {...defaultProps} editMode={true} />)
+
+    fireEvent.click(screen.getByTestId('icon-btn-Move Link'))
+    fireEvent.click(screen.getByTestId('move-to-personal'))
+
+    expect(storeActions.moveLinkData).toHaveBeenCalledWith({
+      sourcePageIndex: 0,
+      sourceGroupIndex: 0,
+      sourceLinkIndex: 0,
+      destination: { type: 'existing', pageIndex: 1, groupIndex: 0 },
+    })
+    expect(storeActions.setSelectedDash).toHaveBeenCalledWith('Personal')
+    expect(dispatchMock).toHaveBeenCalledTimes(2)
+    expect(screen.queryByTestId('move-link-dialog')).not.toBeInTheDocument()
   })
 
   it('dispatches deleteLinkData when dialog deletes', () => {

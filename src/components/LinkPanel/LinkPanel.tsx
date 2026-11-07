@@ -1,4 +1,5 @@
 import {
+  mdiArrowRight,
   mdiChevronDown,
   mdiChevronUp,
   mdiFormatListGroup,
@@ -10,7 +11,14 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { deleteLinkGroup, reorderLinkGroups, updateLinkGroup } from '@src/store/store'
+import {
+  deleteLinkGroup,
+  moveLinkGroup,
+  MoveGroupDestination,
+  reorderLinkGroups,
+  setSelectedDash,
+  updateLinkGroup,
+} from '@src/store/store'
 import { getColorLookup } from '@src/types/colors'
 import { iconTranslation } from '@src/types/icons'
 import { LinkGroup } from '@src/types/linkGroup'
@@ -20,6 +28,7 @@ import PanelDialog from '@comp/DashGroupDialog'
 import IconBtn from '@comp/IconBtn'
 import Link from '@comp/Link'
 import LinkAdd from '@comp/LinkAdd'
+import MoveGroupDialog from '@comp/MoveGroupDialog'
 
 const LinkPanel = ({
   pageId,
@@ -37,6 +46,7 @@ const LinkPanel = ({
   const dispatch = useDispatch()
   const [tabEdit, setTabEdit] = useState(false)
   const [editDialog, setEditDialog] = useState(false)
+  const [moveDialog, setMoveDialog] = useState(false)
 
   const iconLookup = linkGroup.icon ? iconTranslation[linkGroup.icon] : mdiFormatListGroup
   const colorLookup = getColorLookup(linkGroup.color)
@@ -56,6 +66,32 @@ const LinkPanel = ({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
             >
+              <IconBtn
+                path={mdiArrowRight}
+                className={colorLookup.hoverColor}
+                tooltipText="Move Group"
+                color={colorLookup.text}
+                size={1}
+                onClick={() => setMoveDialog(true)}
+              />
+              <MoveGroupDialog
+                isOpen={moveDialog}
+                sourcePageIndex={pageId}
+                group={linkGroup}
+                onClose={(destination?: MoveGroupDestination, destinationPageName?: string) => {
+                  if (destination && destinationPageName) {
+                    dispatch(
+                      moveLinkGroup({
+                        sourcePageIndex: pageId,
+                        sourceGroupIndex: panelId,
+                        destination,
+                      }),
+                    )
+                    dispatch(setSelectedDash(destinationPageName))
+                  }
+                  setMoveDialog(false)
+                }}
+              />
               <IconBtn
                 path={mdiPencil}
                 className={colorLookup.hoverColor}
