@@ -1,7 +1,6 @@
-import { resolve } from 'node:path'
-
 import { execSync, spawn } from 'node:child_process'
 import { readFile, writeFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
 
 // --- Configuration ---
 const PACKAGE_PATH = resolve(process.cwd(), 'package.json')

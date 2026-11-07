@@ -1,0 +1,35 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "semi": false,
+  "trailingComma": "all",
+  "printWidth": 100,
+  "tabWidth": 2,
+  "endOfLine": "lf",
+  "ignorePatterns": [
+    "dist/**",
+    "build/**",
+    "coverage/**",
+    "node_modules/**",
+    "docs/**",
+    "backend/**",
+    ".github/**",
+    ".venv/**",
+    "package-lock.json"
+  ],
+  "sortImports": {
+    "customGroups": [
+      {
+        "groupName": "src-alias",
+        "elementNamePattern": ["@src", "@src/**"]
+      },
+      {
+        "groupName": "comp-alias",
+        "elementNamePattern": ["@comp", "@comp/**"]
+      }
+    ],
+    "groups": ["builtin", "external", "src-alias", "comp-alias", "parent", "sibling", "index"],
+    "newlinesBetween": true
+  },
+  "sortPackageJson": true
+}
