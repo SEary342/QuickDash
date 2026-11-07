@@ -1,4 +1,4 @@
-import * as mdiIcons from '@mdi/js'
+import { mdiAccount, mdiDeathStar } from '@mdi/js'
 import { describe, expect, test } from 'vitest'
 
 import { colorConversions, colorOptionsArray, getColorLookup } from './colors'
@@ -9,14 +9,14 @@ describe('colors.ts', () => {
     const red = getColorLookup('red')
     expect(red).toBeDefined()
     expect(red.name).toBe('Red')
-    expect(red.background).toBe('bg-red-600')
+    expect(red.background).toBe('bg-red-600 dark:bg-red-500')
   })
 
   test('getColorLookup returns unknown color struct for unknown color', () => {
     const unknown = getColorLookup('non-existent-color')
     expect(unknown).toBeDefined()
     expect(unknown.name).toBe('Unknown')
-    expect(unknown.background).toBe('bg-gray-200 dark:bg-gray-600')
+    expect(unknown.background).toBe('bg-gray-200 dark:bg-gray-500')
   })
 
   test('getColorLookup returns unknown color struct for undefined color', () => {
@@ -41,8 +41,8 @@ describe('icons.ts', () => {
   test('iconTranslation maps keys to mdi icons', () => {
     // Verify that the translation map correctly resolves the mdi icon path
     // 'Death Star' -> 'mdi-death-star' -> mdiDeathStar
-    expect(iconTranslation['mdi-death-star']).toBe(mdiIcons.mdiDeathStar)
-    expect(iconTranslation['mdi-account']).toBe(mdiIcons.mdiAccount)
+    expect(iconTranslation['mdi-death-star']).toBe(mdiDeathStar)
+    expect(iconTranslation['mdi-account']).toBe(mdiAccount)
   })
 
   test('iconOptionsArray is sorted by title', () => {
@@ -55,5 +55,11 @@ describe('icons.ts', () => {
     const deathStar = iconOptionsArray.find((i) => i.title === 'Death Star')
     expect(deathStar).toBeDefined()
     expect(deathStar?.value).toBe('mdi-death-star')
+  })
+
+  test('icon options include software and mechanical engineering icons', () => {
+    const titles = iconOptionsArray.map((icon) => icon.title)
+    expect(titles).toEqual(expect.arrayContaining(['React', 'Docker', 'Kubernetes', '3D Printer']))
+    expect(Object.values(iconTranslation).every(Boolean)).toBe(true)
   })
 })

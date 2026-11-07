@@ -150,6 +150,56 @@ describe('Dash Component', () => {
     expect(screen.getByTestId('link-panel')).toHaveTextContent('Group 1')
   })
 
+  test('shows typo-tolerant search results from every page instead of tabs', () => {
+    ;(useSelector as unknown as Mock).mockImplementation((selector) =>
+      selector({
+        app: { selectedDash: 'Page 1', numberOfColumns: 2 },
+      }),
+    )
+
+    const pagesWithLinks: LinkPage[] = [
+      {
+        name: 'Work',
+        groupList: [
+          {
+            name: 'Productivity',
+            linkList: [
+              {
+                text: 'Google Docs',
+                url: 'https://docs.google.com',
+                color: 'blue',
+                outline: false,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Personal',
+        groupList: [
+          {
+            name: 'Social',
+            linkList: [
+              {
+                text: 'GitHub',
+                url: 'https://github.com',
+                color: 'blue',
+                outline: false,
+              },
+            ],
+          },
+        ],
+      },
+    ]
+
+    render(<Dash linkPages={pagesWithLinks} searchQuery="gogle doc" />)
+
+    expect(screen.getByText('Google Docs')).toBeInTheDocument()
+    expect(screen.getByText('Work / Productivity')).toBeInTheDocument()
+    expect(screen.queryByTestId('tab-btn')).not.toBeInTheDocument()
+    expect(screen.queryByText('GitHub')).not.toBeInTheDocument()
+  })
+
   test('handles tab switching', () => {
     ;(useSelector as unknown as Mock).mockImplementation((selector) =>
       selector({

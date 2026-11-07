@@ -11,9 +11,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState, addLinkPage, deleteLinkPage, setSelectedDash } from '@src/store/store'
 import { LinkGroup } from '@src/types/linkGroup'
 import { LinkPage } from '@src/types/linkPage'
+import { getFuzzyMatchScore } from '@src/utils/fuzzySearch'
 
 import PanelDialog from '@comp/DashGroupDialog'
 import IconBtn from '@comp/IconBtn'
+import Link from '@comp/Link'
 import LinkPanel from '@comp/LinkPanel'
 import LinkPanelAdd from '@comp/LinkPanelAdd'
 import QuickDashWelcome from '@comp/QuickDashWelcome'
@@ -74,7 +76,7 @@ function distributeLinkGroups(linkGroups: LinkGroup[], groupsCount: number): Lin
  * @param linkPages
  * @returns 2D array (column of groups)
  */
-const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
+const Dash = ({ linkPages, searchQuery = '' }: { linkPages: LinkPage[]; searchQuery?: string }) => {
   // Hook to dispatch actions to the Redux store
   const dispatch = useDispatch()
 
@@ -108,6 +110,38 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
    * toallow for reordering of the groups
    **/
   const flattenedGroups = columnGroups.flat()
+
+  const normalizedQuery = searchQuery.trim()
+  const searchResults = normalizedQuery
+    ? linkPages
+        .flatMap((page, pageId) =>
+          page.groupList.flatMap((group, panelId) =>
+            group.linkList.flatMap((item, id) => {
+              const score = getFuzzyMatchScore(normalizedQuery, [
+                item.text,
+                item.url,
+                item.description ?? '',
+                group.name,
+                page.name,
+              ])
+              return score === undefined
+                ? []
+                : [
+                    {
+                      item,
+                      pageId,
+                      panelId,
+                      id,
+                      pageName: page.name,
+                      groupName: group.name,
+                      score,
+                    },
+                  ]
+            }),
+          ),
+        )
+        .sort((a, b) => b.score - a.score)
+    : []
 
   // Total number of groups, used to determine if "Move Down" buttons should be enabled
   const totalGroups = flattenedGroups.length
@@ -151,61 +185,67 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
     // Add event listener to recalculate height when window is resized
     window.addEventListener('resize', updateHeight)
     return () => window.removeEventListener('resize', updateHeight)
-  }, [linkPages.length])
+  }, [linkPages.length, normalizedQuery])
 
   return (
     <>
       {/* 1. Header / Tab Navigation Bar */}
       <div className="border-b border-gray-200 dark:border-gray-700" ref={aboveScrollRef}>
-        <ul className="flex flex-wrap text-sm font-medium text-center ms-0.5">
-          {/* Iterate through all available dashboard pages to create tabs */}
-          {linkPages.map((pg, idx) => (
-            <TabBtn
-              key={`${pg.name}-${idx}`}
-              id={idx}
-              linkPage={pg}
-              // Only show left chevron if not the first tab
-              chevronLeft={idx !== 0}
-              // Only show right chevron if not the last tab
-              chevronRight={idx < linkPages.length - 1}
-              tabSelectFunc={handlePageIndexChange}
-              selected={resolvedPageIndex === idx}
-              onRemove={(id) => {
-                // Logic to determine which page to select if the current one is deleted
-                const newPage =
-                  selectedDash === linkPages[id].name
-                    ? linkPages[id - 1]?.name || linkPages[id + 1]?.name || ''
-                    : linkPages[id].name
-                dispatch(deleteLinkPage(id))
-                dispatch(setSelectedDash(newPage))
-              }}
-            />
-          ))}
-          {/* The "Add New Dashboard" button at the end of the tab list */}
-          <li className="flex items-center justify-center">
-            <IconBtn
-              path={mdiPlus}
-              className="cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full"
-              tooltipText="Add Dash"
-              tooltipPosition="right"
-              color="text-black dark:text-white"
-              onClick={() => setAddPage(!addPage)}
-              size={1.5}
-            />
-            {/* Dialog for creating a new dashboard page */}
-            <PanelDialog
-              key={addPage ? 'open' : 'closed'}
-              isOpen={addPage}
-              onClose={(linkPage?: LinkPage) => {
-                if (linkPage) {
-                  dispatch(addLinkPage(linkPage))
-                  dispatch(setSelectedDash(linkPage.name))
-                }
-                setAddPage(false)
-              }}
-            />
-          </li>
-        </ul>
+        {normalizedQuery ? (
+          <div className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
+            {searchResults.length} {searchResults.length === 1 ? 'link' : 'links'} found
+          </div>
+        ) : (
+          <ul className="flex flex-wrap text-sm font-medium text-center ms-0.5">
+            {/* Iterate through all available dashboard pages to create tabs */}
+            {linkPages.map((pg, idx) => (
+              <TabBtn
+                key={`${pg.name}-${idx}`}
+                id={idx}
+                linkPage={pg}
+                // Only show left chevron if not the first tab
+                chevronLeft={idx !== 0}
+                // Only show right chevron if not the last tab
+                chevronRight={idx < linkPages.length - 1}
+                tabSelectFunc={handlePageIndexChange}
+                selected={resolvedPageIndex === idx}
+                onRemove={(id) => {
+                  // Logic to determine which page to select if the current one is deleted
+                  const newPage =
+                    selectedDash === linkPages[id].name
+                      ? linkPages[id - 1]?.name || linkPages[id + 1]?.name || ''
+                      : linkPages[id].name
+                  dispatch(deleteLinkPage(id))
+                  dispatch(setSelectedDash(newPage))
+                }}
+              />
+            ))}
+            {/* The "Add New Dashboard" button at the end of the tab list */}
+            <li className="flex items-center justify-center">
+              <IconBtn
+                path={mdiPlus}
+                className="cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full"
+                tooltipText="Add Dash"
+                tooltipPosition="right"
+                color="text-black dark:text-white"
+                onClick={() => setAddPage(!addPage)}
+                size={1.5}
+              />
+              {/* Dialog for creating a new dashboard page */}
+              <PanelDialog
+                key={addPage ? 'open' : 'closed'}
+                isOpen={addPage}
+                onClose={(linkPage?: LinkPage) => {
+                  if (linkPage) {
+                    dispatch(addLinkPage(linkPage))
+                    dispatch(setSelectedDash(linkPage.name))
+                  }
+                  setAddPage(false)
+                }}
+              />
+            </li>
+          </ul>
+        )}
       </div>
       {/* 2. Main Scrollable Content Area */}
       <div
@@ -215,58 +255,82 @@ const Dash = ({ linkPages }: { linkPages: LinkPage[] }) => {
           height: scrollAreaHeight !== null ? `${scrollAreaHeight}px` : 'auto',
         }}
       >
-        {/* Show welcome screen if no dashboards exist */}
-        {linkPages.length == 0 && <QuickDashWelcome />}
-        {/* Animation wrapper for smooth page transitions */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={pageIndex}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="grid gap-4 mt-2"
-            // Dynamic grid columns based on user settings
-            style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
-          >
-            {/* Render each column of link groups */}
-            {columnGroups.map((groupColumn, colIdx) => {
-              // Logic to determine where to place the "Add Group" panel
-              const isFirstEmptyColumn =
-                groupColumn.length === 0 &&
-                columnGroups.findIndex((col) => col.length === 0) === colIdx
-              const isLastColumn = colIdx === columnGroups.length - 1
-              // Place "Add Group" in the first empty column found, OR at the bottom of the last column
-              const shouldRenderAddPanel =
-                linkPages.length > 0 &&
-                (isFirstEmptyColumn ||
-                  (isLastColumn && columnGroups.every((col) => col.length > 0)))
-              return (
-                <div key={`column-${colIdx}`} className="flex flex-col gap-4">
-                  {/* Render all groups assigned to this column */}
-                  {groupColumn.map((gp, idx) => {
-                    // Calculate global index for reordering logic
-                    const globalIndex = flattenedGroups.indexOf(gp)
-                    return (
-                      <LinkPanel
-                        pageId={pageIndex}
-                        panelId={globalIndex}
-                        key={`${gp.name}-${idx}`}
-                        linkGroup={gp}
-                        // Enable "Move Up" unless it's the very first group
-                        moveUp={globalIndex > 0}
-                        // Enable "Move Down" unless it's the very last group
-                        moveDown={globalIndex < totalGroups - 1}
-                      />
-                    )
-                  })}
-                  {/* Render the "Add Group" panel if this is the correct column */}
-                  {shouldRenderAddPanel && <LinkPanelAdd pageId={pageIndex} />}
+        {normalizedQuery ? (
+          searchResults.length > 0 ? (
+            <div className="mx-auto max-w-3xl divide-y divide-gray-200 dark:divide-gray-700">
+              {searchResults.map((result) => (
+                <div key={`${result.pageId}-${result.panelId}-${result.id}`} className="py-2">
+                  <p className="px-3 text-xs text-gray-500 dark:text-gray-400">
+                    {result.pageName} / {result.groupName}
+                  </p>
+                  <Link
+                    pageId={result.pageId}
+                    panelId={result.panelId}
+                    id={result.id}
+                    item={result.item}
+                  />
                 </div>
-              )
-            })}
-          </motion.div>
-        </AnimatePresence>
+              ))}
+            </div>
+          ) : (
+            <p className="p-6 text-center text-gray-600 dark:text-gray-300">No links found.</p>
+          )
+        ) : (
+          <>
+            {/* Show welcome screen if no dashboards exist */}
+            {linkPages.length == 0 && <QuickDashWelcome />}
+            {/* Animation wrapper for smooth page transitions */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={pageIndex}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="grid gap-4 mt-2"
+                // Dynamic grid columns based on user settings
+                style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
+              >
+                {/* Render each column of link groups */}
+                {columnGroups.map((groupColumn, colIdx) => {
+                  // Logic to determine where to place the "Add Group" panel
+                  const isFirstEmptyColumn =
+                    groupColumn.length === 0 &&
+                    columnGroups.findIndex((col) => col.length === 0) === colIdx
+                  const isLastColumn = colIdx === columnGroups.length - 1
+                  // Place "Add Group" in the first empty column found, OR at the bottom of the last column
+                  const shouldRenderAddPanel =
+                    linkPages.length > 0 &&
+                    (isFirstEmptyColumn ||
+                      (isLastColumn && columnGroups.every((col) => col.length > 0)))
+                  return (
+                    <div key={`column-${colIdx}`} className="flex flex-col gap-4">
+                      {/* Render all groups assigned to this column */}
+                      {groupColumn.map((gp, idx) => {
+                        // Calculate global index for reordering logic
+                        const globalIndex = flattenedGroups.indexOf(gp)
+                        return (
+                          <LinkPanel
+                            pageId={pageIndex}
+                            panelId={globalIndex}
+                            key={`${gp.name}-${idx}`}
+                            linkGroup={gp}
+                            // Enable "Move Up" unless it's the very first group
+                            moveUp={globalIndex > 0}
+                            // Enable "Move Down" unless it's the very last group
+                            moveDown={globalIndex < totalGroups - 1}
+                          />
+                        )
+                      })}
+                      {/* Render the "Add Group" panel if this is the correct column */}
+                      {shouldRenderAddPanel && <LinkPanelAdd pageId={pageIndex} />}
+                    </div>
+                  )
+                })}
+              </motion.div>
+            </AnimatePresence>
+          </>
+        )}
       </div>
     </>
   )

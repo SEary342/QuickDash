@@ -3,7 +3,13 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { Mock, beforeEach, describe, expect, test, vi } from 'vitest'
 
-import { deleteLinkGroup, reorderLinkGroups, updateLinkGroup } from '@src/store/store'
+import {
+  deleteLinkGroup,
+  moveLinkGroup,
+  reorderLinkGroups,
+  setSelectedDash,
+  updateLinkGroup,
+} from '@src/store/store'
 import { LinkGroup } from '@src/types/linkGroup'
 import { LinkPage } from '@src/types/linkPage'
 
@@ -38,7 +44,9 @@ vi.mock('motion/react', () => ({
 
 vi.mock('@src/store/store', () => ({
   deleteLinkGroup: vi.fn(),
+  moveLinkGroup: vi.fn(),
   reorderLinkGroups: vi.fn(),
+  setSelectedDash: vi.fn(),
   updateLinkGroup: vi.fn(),
 }))
 
@@ -96,12 +104,37 @@ vi.mock('@comp/DashGroupDialog', () => ({
     ) : null,
 }))
 
-vi.mock('@comp/Link', () => ({
-  default: ({ item }: { item: { text: string } }) => <div>{item.text}</div>,
-}))
+vi.mock('@comp/Link', () => {
+  const MockLink = ({ item }: { item: { text: string } }) => {
+    const [count, setCount] = React.useState(0)
+    return (
+      <div>
+        <span>{item.text}</span>
+        <button aria-label={`increment ${item.text}`} onClick={() => setCount(count + 1)}>
+          {count}
+        </button>
+      </div>
+    )
+  }
+  return { default: MockLink }
+})
 
 vi.mock('@comp/LinkAdd', () => ({
   default: () => <div data-testid="link-add">Add Link</div>,
+}))
+
+vi.mock('@comp/MoveGroupDialog', () => ({
+  default: ({ isOpen, onClose }: { isOpen: boolean; onClose: (...args: unknown[]) => void }) =>
+    isOpen ? (
+      <div data-testid="move-group-dialog">
+        <button
+          data-testid="move-group-to-personal"
+          onClick={() => onClose({ type: 'existing', pageIndex: 1 }, 'Personal')}
+        >
+          Move to Personal
+        </button>
+      </div>
+    ) : null,
 }))
 
 describe('LinkPanel', () => {
@@ -133,6 +166,25 @@ describe('LinkPanel', () => {
     expect(screen.getByTestId('mdi-icon')).toBeInTheDocument()
   })
 
+  test('preserves link component state when links are reordered', () => {
+    const linkList = [
+      ...defaultProps.linkGroup.linkList,
+      { ...defaultProps.linkGroup.linkList[0], text: 'Link 2', url: 'http://second.test' },
+    ]
+    const linkGroup = { ...defaultProps.linkGroup, linkList }
+    const { rerender } = render(<LinkPanel {...defaultProps} linkGroup={linkGroup} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'increment Link 2' }))
+    rerender(
+      <LinkPanel
+        {...defaultProps}
+        linkGroup={{ ...linkGroup, linkList: [...linkList].reverse() }}
+      />,
+    )
+
+    expect(screen.getByRole('button', { name: 'increment Link 2' })).toHaveTextContent('1')
+  })
+
   test('toggles edit controls', () => {
     render(<LinkPanel {...defaultProps} />)
 
@@ -143,6 +195,7 @@ describe('LinkPanel', () => {
     fireEvent.click(toggleBtn)
 
     expect(screen.getByTestId('icon-btn-Edit Group')).toBeInTheDocument()
+    expect(screen.getByTestId('icon-btn-Move Group')).toBeInTheDocument()
     expect(screen.getByTestId('icon-btn-Move Up')).toBeInTheDocument()
     expect(screen.getByTestId('icon-btn-Move Down')).toBeInTheDocument()
     expect(screen.getByTestId('link-add')).toBeInTheDocument()
@@ -187,5 +240,21 @@ describe('LinkPanel', () => {
 
     fireEvent.click(screen.getByTestId('icon-btn-Move Down'))
     expect(reorderLinkGroups).toHaveBeenCalledWith({ pageIndex: 0, fromIndex: 1, toIndex: 2 })
+  })
+
+  test('moves group to another tab and selects that tab', () => {
+    render(<LinkPanel {...defaultProps} />)
+    fireEvent.click(screen.getByTestId('icon-btn-Show Controls'))
+    fireEvent.click(screen.getByTestId('icon-btn-Move Group'))
+    fireEvent.click(screen.getByTestId('move-group-to-personal'))
+
+    expect(moveLinkGroup).toHaveBeenCalledWith({
+      sourcePageIndex: 0,
+      sourceGroupIndex: 1,
+      destination: { type: 'existing', pageIndex: 1 },
+    })
+    expect(setSelectedDash).toHaveBeenCalledWith('Personal')
+    expect(mockDispatch).toHaveBeenCalledTimes(2)
+    expect(screen.queryByTestId('move-group-dialog')).not.toBeInTheDocument()
   })
 })

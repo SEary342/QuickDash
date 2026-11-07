@@ -52,33 +52,39 @@ describe('ExportReminder Component', () => {
     expect(screen.getByText(/You have 2 pages configured/i)).toBeInTheDocument()
   })
 
-  it('dismisses the reminder when "Remind me later" is clicked', () => {
+  it('asks before setting the reminder cookie when "Remind me later" is clicked', () => {
     vi.mocked(useSelector).mockReturnValue(mockLinkPages)
     render(<ExportReminder />)
 
     const dismissButton = screen.getByText(/Remind me later/i)
     fireEvent.click(dismissButton)
 
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    expect(document.cookie).not.toContain('last_export_reminder=true')
+
+    fireEvent.click(screen.getByRole('button', { name: /Accept/i }))
+
     expect(screen.queryByText(/Backup your data/i)).not.toBeInTheDocument()
     expect(document.cookie).toContain('last_export_reminder=true')
   })
 
-  it('dismisses the reminder when the close icon is clicked', () => {
+  it('does not save a cookie when consent is declined and shows the reminder after reload', () => {
     vi.mocked(useSelector).mockReturnValue(mockLinkPages)
-    render(<ExportReminder />)
+    const { unmount } = render(<ExportReminder />)
 
-    // The close icon button is the only button without text content in this component
-    const buttons = screen.getAllByRole('button')
-    const closeButton = buttons.find((btn) => !btn.textContent)
-
-    expect(closeButton).toBeDefined()
-    fireEvent.click(closeButton!)
+    fireEvent.click(screen.getByRole('button', { name: /Dismiss reminder/i }))
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /Decline/i }))
 
     expect(screen.queryByText(/Backup your data/i)).not.toBeInTheDocument()
-    expect(document.cookie).toContain('last_export_reminder=true')
+    expect(document.cookie).not.toContain('last_export_reminder=true')
+
+    unmount()
+    render(<ExportReminder />)
+    expect(screen.getByText(/Backup your data/i)).toBeInTheDocument()
   })
 
-  it('exports configuration and dismisses when "Export" is clicked', () => {
+  it('exports configuration and asks before setting the reminder cookie', () => {
     vi.mocked(useSelector).mockReturnValue(mockLinkPages)
     render(<ExportReminder />)
 
@@ -86,6 +92,10 @@ describe('ExportReminder Component', () => {
     fireEvent.click(exportButton)
 
     expect(exportConfig).toHaveBeenCalledWith('QuickDashConfig', '.QDconfig', mockLinkPages)
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    expect(document.cookie).not.toContain('last_export_reminder=true')
+
+    fireEvent.click(screen.getByRole('button', { name: /Accept/i }))
     expect(screen.queryByText(/Backup your data/i)).not.toBeInTheDocument()
     expect(document.cookie).toContain('last_export_reminder=true')
   })

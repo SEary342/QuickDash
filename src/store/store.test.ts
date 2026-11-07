@@ -11,6 +11,8 @@ import store, {
   deleteLinkData,
   deleteLinkGroup,
   deleteLinkPage,
+  moveLinkData,
+  moveLinkGroup,
   overwriteConfig,
   reorderLinkData,
   reorderLinkGroups,
@@ -178,6 +180,136 @@ describe('Redux Store', () => {
     // Delete Link Data
     store.dispatch(deleteLinkData({ pageIndex: 0, groupIndex: 0, linkIndex: 0 }))
     expect(store.getState().linkPages[0].groupList[0].linkList).toHaveLength(1)
+  })
+
+  it('moves a link to an existing group on another tab without losing its data', () => {
+    const link: LinkData = {
+      text: 'Move Me',
+      url: 'https://example.com',
+      color: 'blue',
+      outline: true,
+      description: 'Preserved details',
+      icon: 'mdi-link-variant',
+    }
+    store.dispatch(
+      overwriteConfig([
+        { name: 'Work', groupList: [{ name: 'Source', linkList: [link] }] },
+        { name: 'Personal', groupList: [{ name: 'Saved', linkList: [] }] },
+      ]),
+    )
+
+    store.dispatch(
+      moveLinkData({
+        sourcePageIndex: 0,
+        sourceGroupIndex: 0,
+        sourceLinkIndex: 0,
+        destination: { type: 'existing', pageIndex: 1, groupIndex: 0 },
+      }),
+    )
+
+    const { linkPages } = store.getState()
+    expect(linkPages[0].groupList[0].linkList).toEqual([])
+    expect(linkPages[1].groupList[0].linkList).toEqual([link])
+  })
+
+  it('creates a new group while moving a link and preserves an emptied source group', () => {
+    const link: LinkData = {
+      text: 'Move Me',
+      url: 'https://example.com',
+      color: 'blue',
+      outline: false,
+    }
+    store.dispatch(
+      overwriteConfig([{ name: 'Work', groupList: [{ name: 'Source', linkList: [link] }] }]),
+    )
+
+    store.dispatch(
+      moveLinkData({
+        sourcePageIndex: 0,
+        sourceGroupIndex: 0,
+        sourceLinkIndex: 0,
+        destination: { type: 'new-group', pageIndex: 0, groupName: 'Archive' },
+      }),
+    )
+
+    expect(store.getState().linkPages[0].groupList).toEqual([
+      { name: 'Source', linkList: [] },
+      { name: 'Archive', linkList: [link] },
+    ])
+  })
+
+  it('creates a new tab and group as part of the link move', () => {
+    const link: LinkData = {
+      text: 'Move Me',
+      url: 'https://example.com',
+      color: 'blue',
+      outline: false,
+    }
+    store.dispatch(
+      overwriteConfig([{ name: 'Work', groupList: [{ name: 'Source', linkList: [link] }] }]),
+    )
+
+    store.dispatch(
+      moveLinkData({
+        sourcePageIndex: 0,
+        sourceGroupIndex: 0,
+        sourceLinkIndex: 0,
+        destination: { type: 'new-page', pageName: 'Personal', groupName: 'Bookmarks' },
+      }),
+    )
+
+    expect(store.getState().linkPages).toEqual([
+      { name: 'Work', groupList: [{ name: 'Source', linkList: [] }] },
+      { name: 'Personal', groupList: [{ name: 'Bookmarks', linkList: [link] }] },
+    ])
+  })
+
+  it('moves a group and all its links to another existing tab', () => {
+    const group: LinkGroup = {
+      name: 'Research',
+      color: 'teal',
+      linkList: [{ text: 'Article', url: 'https://example.com', color: 'blue', outline: false }],
+    }
+    store.dispatch(
+      overwriteConfig([
+        { name: 'Work', groupList: [group] },
+        { name: 'Personal', groupList: [{ name: 'Other', linkList: [] }] },
+      ]),
+    )
+
+    store.dispatch(
+      moveLinkGroup({
+        sourcePageIndex: 0,
+        sourceGroupIndex: 0,
+        destination: { type: 'existing', pageIndex: 1 },
+      }),
+    )
+
+    expect(store.getState().linkPages).toEqual([
+      { name: 'Work', groupList: [] },
+      { name: 'Personal', groupList: [{ name: 'Other', linkList: [] }, group] },
+    ])
+  })
+
+  it('creates a new tab when moving a group', () => {
+    const group: LinkGroup = {
+      name: 'Research',
+      linkList: [{ text: 'Article', url: 'https://example.com', color: 'blue', outline: false }],
+    }
+    store.dispatch(overwriteConfig([{ name: 'Work', groupList: [group] }]))
+
+    store.dispatch(
+      moveLinkGroup({
+        sourcePageIndex: 0,
+        sourceGroupIndex: 0,
+        destination: { type: 'new-page', pageName: 'Personal' },
+      }),
+    )
+
+    expect(store.getState().linkPages).toEqual([
+      { name: 'Work', groupList: [] },
+      { name: 'Personal', groupList: [group] },
+    ])
   })
 
   it('should update localStorage when state changes', () => {

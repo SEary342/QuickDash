@@ -12,25 +12,36 @@ const ExportReminder = () => {
   const linkPages = useSelector((state: RootState) => state.linkPages)
 
   const [isDismissedSession, setIsDismissedSession] = useState(false)
+  const [cookieConsentDays, setCookieConsentDays] = useState<number | null>(null)
 
   const hasCookie = Cookies.get('last_export_reminder') === 'true'
 
   const shouldShow = linkPages.length > 0 && !hasCookie && !isDismissedSession
 
-  const handleDismiss = (days: number) => {
-    Cookies.set('last_export_reminder', 'true', { expires: days, path: '/', sameSite: 'strict' })
+  const requestCookieConsent = (days: number) => {
+    setCookieConsentDays(days)
+  }
 
-    // Update local state to hide it immediately without waiting for a cookie re-read
+  const handleCookieConsent = (accepted: boolean) => {
+    if (accepted && cookieConsentDays !== null) {
+      Cookies.set('last_export_reminder', 'true', {
+        expires: cookieConsentDays,
+        path: '/',
+        sameSite: 'strict',
+      })
+    }
+
     setIsDismissedSession(true)
+    setCookieConsentDays(null)
   }
 
   const handleShortDismiss = () => {
-    handleDismiss(1)
+    requestCookieConsent(1)
   }
 
   const handleExportAndDismiss = () => {
     exportConfig('QuickDashConfig', '.QDconfig', linkPages)
-    handleDismiss(30)
+    requestCookieConsent(30)
   }
 
   // Early return if derived logic says no
@@ -52,6 +63,7 @@ const ExportReminder = () => {
         <button
           onClick={handleShortDismiss}
           className="text-slate-500 hover:text-white transition-colors"
+          aria-label="Dismiss reminder"
         >
           <Icon path={mdiClose} size={0.7} />
         </button>
@@ -72,6 +84,42 @@ const ExportReminder = () => {
           Export
         </button>
       </div>
+
+      {cookieConsentDays !== null && (
+        <>
+          <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm" />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cookie-consent-title"
+            className="fixed inset-0 z-[70] flex items-center justify-center p-4"
+          >
+            <div className="w-full max-w-md rounded-xl border border-slate-700 bg-slate-900 p-6 text-white shadow-2xl">
+              <h3 id="cookie-consent-title" className="text-lg font-semibold">
+                Allow a reminder cookie?
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                QuickDash can save a cookie to remember that you dismissed this backup reminder. If
+                you decline, the reminder will return the next time you reload.
+              </p>
+              <div className="mt-5 flex justify-end gap-3">
+                <button
+                  onClick={() => handleCookieConsent(false)}
+                  className="rounded-lg border border-slate-600 px-4 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                >
+                  Decline
+                </button>
+                <button
+                  onClick={() => handleCookieConsent(true)}
+                  className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold transition-colors hover:bg-indigo-500"
+                >
+                  Accept
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

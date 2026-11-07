@@ -14,7 +14,7 @@ const ConfirmDialog = ({ message, isOpen, onConfirm }: ConfirmDialogProps) => {
       onClose={onConfirm}
       confirmClass="bg-red-600 hover:bg-red-700"
     >
-      <p className="text-gray-700">{message}</p>
+      <p className="text-gray-700 dark:text-gray-200">{message}</p>
     </Dialog>
   )
 }

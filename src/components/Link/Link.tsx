@@ -1,16 +1,24 @@
-import { mdiChevronDown, mdiChevronUp, mdiLink, mdiPencil } from '@mdi/js'
+import { mdiArrowRight, mdiChevronDown, mdiChevronUp, mdiLink, mdiPencil } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { deleteLinkData, reorderLinkData, updateLinkData } from '@src/store/store'
+import {
+  deleteLinkData,
+  moveLinkData,
+  MoveLinkDestination,
+  reorderLinkData,
+  setSelectedDash,
+  updateLinkData,
+} from '@src/store/store'
 import { getColorLookup } from '@src/types/colors'
 import { iconTranslation } from '@src/types/icons'
 import { LinkData } from '@src/types/linkData'
 
 import IconBtn from '@comp/IconBtn'
 import LinkDialog from '@comp/LinkDialog'
+import MoveLinkDialog from '@comp/MoveLinkDialog'
 import Tooltip from '@comp/Tooltip'
 
 const Link = ({
@@ -41,6 +49,7 @@ const Link = ({
     window.open(item.url, '_blank', 'noopener noreferrer')
   }
   const [editDialog, setEditDialog] = useState(false)
+  const [moveDialog, setMoveDialog] = useState(false)
 
   return (
     <div
@@ -114,6 +123,33 @@ const Link = ({
                 }
               />
             )}
+            <IconBtn
+              className={hoverColor}
+              path={mdiArrowRight}
+              tooltipText="Move Link"
+              color={iconColor}
+              onClick={() => setMoveDialog(true)}
+            />
+            <MoveLinkDialog
+              isOpen={moveDialog}
+              sourcePageIndex={pageId}
+              sourceGroupIndex={panelId}
+              link={item}
+              onClose={(destination?: MoveLinkDestination, destinationPageName?: string) => {
+                if (destination && destinationPageName) {
+                  dispatch(
+                    moveLinkData({
+                      sourcePageIndex: pageId,
+                      sourceGroupIndex: panelId,
+                      sourceLinkIndex: id,
+                      destination,
+                    }),
+                  )
+                  dispatch(setSelectedDash(destinationPageName))
+                }
+                setMoveDialog(false)
+              }}
+            />
             <IconBtn
               className={hoverColor}
               path={mdiPencil}
