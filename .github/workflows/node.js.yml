@@ -55,7 +55,7 @@ jobs:
 
       - name: Upload release page
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: quickdash-release-page
           path: docs/index.html
@@ -102,7 +102,7 @@ jobs:
 
       - name: Download release page
         if: steps.tag.outputs.name != ''
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: quickdash-release-page
           path: release
