@@ -43,3 +43,5 @@ Requests for new features to improve QuickDash or submission of bugs and issues 
 To deploy your changes, run `npm run build` in the quickdash directory and copy the quickdash/dist/index.html file to it's deployed destination (You are going to want to rename the output file).
 
 Please note that the build process is customized for a static (local) webpage deployment. This app does not require a server.
+
+The main-branch pipeline also creates a GitHub release when the `v<package.json version>` tag exists and has not already been released. It attaches the generated `docs/index.html` as `QuickDash.html`. If the tag is pushed after the main-branch build, manually run the **Node.js CI** workflow on `main` to publish it.
